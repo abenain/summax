@@ -9,10 +9,16 @@ import React from 'react'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
 import { Login as LoginScreen } from './screens/login'
+import { SignUp as SignUpScreen } from './screens/signup'
 
 i18n.fallbacks = true
 i18n.translations = { fr, en }
 i18n.locale = Localization.locale
+
+export type RootStackParamList = {
+  Login: undefined
+  SignUp: undefined
+}
 
 export default () => {
   const Stack = createStackNavigator()
@@ -24,11 +30,12 @@ export default () => {
       <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName={'Login'}
+            initialRouteName={'SignUp'}
             screenOptions={{
               headerShown: false
             }}>
             <Stack.Screen name='Login' component={LoginScreen}/>
+            <Stack.Screen name='SignUp' component={SignUpScreen}/>
           </Stack.Navigator>
         </NavigationContainer>
       </ApplicationProvider>

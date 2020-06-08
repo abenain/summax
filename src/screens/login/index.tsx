@@ -1,14 +1,20 @@
+import { StackNavigationProp } from '@react-navigation/stack'
 import { Button, Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import { useRef } from 'react'
 import * as React from 'react'
 import { ImageBackground, StyleSheet } from 'react-native'
+import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Form as LoginForm, FormHandle } from './form'
 
-const backgroundImage = require('./login_background.png')
+const backgroundImage = require('../../../assets/login_background.png')
 
-export function Login() {
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList, 'Login'>
+}
+
+export function Login({navigation}: Props) {
   const loginForm = useRef<FormHandle>()
 
   return (
@@ -20,6 +26,7 @@ export function Login() {
         <Button
           status='control'
           style={[styles.button, styles.signUpButton]}
+          onPress={() => navigation.navigate('SignUp')}
           appearance='outline' size='giant'>
           {i18n.t('Sign up')}
         </Button>
