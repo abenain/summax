@@ -2,8 +2,12 @@ import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import i18n from 'i18n-js'
 import { StyleSheet } from 'react-native'
+import { GlobalState } from '../../redux/store'
+import {useSelector} from 'react-redux'
 
 export function Home() {
+  const {firstname = ''} = useSelector(({userData: {user}}: GlobalState) => user.valueOr({} as any))
+
   return (
     <Layout style={{ flex: 1 }}>
 
@@ -12,7 +16,7 @@ export function Home() {
       </Layout>
 
       <Layout style={styles.titleContainer}>
-        <Text category='h2'>{i18n.t('Home - Selected for you', { firstname: 'Yannick' })}</Text>
+        <Text category='h2'>{i18n.t('Home - Selected for you', { firstname })}</Text>
       </Layout>
 
       <Layout style={styles.titleContainer}>

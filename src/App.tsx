@@ -6,8 +6,10 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import * as Localization from 'expo-localization'
 import i18n from 'i18n-js'
 import React from 'react'
+import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
+import { getStore } from './redux/store'
 import { Home as HomeScreen } from './screens/home'
 import { Login as LoginScreen } from './screens/login'
 import { SignUp as SignUpScreen } from './screens/signup'
@@ -24,9 +26,10 @@ export type RootStackParamList = {
 
 export default () => {
   const Stack = createStackNavigator()
+  const store = getStore()
 
   return (
-    <>
+    <Provider store={store}>
       <IconRegistry icons={EvaIconsPack}/>
 
       <ApplicationProvider {...eva} theme={eva.light}>
@@ -42,6 +45,6 @@ export default () => {
           </Stack.Navigator>
         </NavigationContainer>
       </ApplicationProvider>
-    </>
+    </Provider>
   )
 }
