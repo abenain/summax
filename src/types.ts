@@ -10,13 +10,9 @@ export enum IntensityLevel {
   HIGH
 }
 
-export enum Size {
-  SMALL,
-  LARGE,
-}
-
 export interface Workout {
   durationMin: number
+  id: string
   intensity: IntensityLevel
   poster: ImageSourcePropType
   subtitle: string

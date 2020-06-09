@@ -2,9 +2,9 @@ import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Image, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import { SummaxColors } from '../../colors'
-import { Duration } from '../../components/duration'
-import { Intensity } from '../../components/intensity'
-import { Size, Workout } from '../../types'
+import { Duration, Size as DurationSize } from '../../components/duration'
+import { Intensity, Size as IntensitySize } from '../../components/intensity'
+import { Workout } from '../../types'
 
 const play = require('./play.png')
 
@@ -17,25 +17,25 @@ export function FeaturedWorkout({ onPress, workout }: Props) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={.8} onPress={onPress}>
 
-        <Layout style={styles.background}/>
+      <Layout style={styles.background}/>
 
-        <ImageBackground source={workout.poster} style={styles.poster} imageStyle={{ borderRadius: 5 }}>
-          <Layout style={styles.posterContents}>
+      <ImageBackground source={workout.poster} style={styles.poster} imageStyle={{ borderRadius: 5 }}>
+        <Layout style={styles.posterContents}>
 
-            <Text category={'h4'} style={[styles.posterText, { marginBottom: 16 }]}>{workout.title}</Text>
-            <Text category={'p2'} style={styles.posterText}>{workout.subtitle}</Text>
+          <Text category={'h4'} style={[styles.posterText, { marginBottom: 16 }]}>{workout.title}</Text>
+          <Text category={'p2'} style={styles.posterText}>{workout.subtitle}</Text>
 
-            <Layout style={styles.posterFiller}>
-              <Image source={play} style={styles.play}/>
-            </Layout>
-
-            <Layout style={styles.footer}>
-              <Intensity level={workout.intensity} size={Size.LARGE} style={{ marginRight: 16 }}/>
-              <Duration durationMin={workout.durationMin} size={Size.LARGE}/>
-            </Layout>
-
+          <Layout style={styles.posterFiller}>
+            <Image source={play} style={styles.play}/>
           </Layout>
-        </ImageBackground>
+
+          <Layout style={styles.footer}>
+            <Intensity level={workout.intensity} size={IntensitySize.LARGE} style={{ marginRight: 16 }}/>
+            <Duration durationMin={workout.durationMin} size={DurationSize.LARGE}/>
+          </Layout>
+
+        </Layout>
+      </ImageBackground>
 
     </TouchableOpacity>
   )

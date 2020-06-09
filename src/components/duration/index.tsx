@@ -2,9 +2,13 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
-import { Size } from '../../types'
 
 const clock = require('./clock.png')
+
+export enum Size {
+  SMALL,
+  LARGE,
+}
 
 interface Props {
   durationMin: number
@@ -53,7 +57,8 @@ export function Duration({ durationMin, size }: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection  : 'row',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    alignItems     : 'center',
   },
   icon     : {
     marginRight: 8,

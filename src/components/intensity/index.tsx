@@ -2,9 +2,14 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet, ViewStyle } from 'react-native'
-import { IntensityLevel, Size } from '../../types'
+import { IntensityLevel } from '../../types'
 
 const thunder = require('./thunder.png')
+
+export enum Size {
+  SMALL,
+  LARGE,
+}
 
 interface Props {
   level: IntensityLevel
@@ -67,7 +72,8 @@ export function Intensity({ level, size, style = {} }: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection  : 'row',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    alignItems     : 'center',
   },
   icon     : {
     marginRight: 8,
