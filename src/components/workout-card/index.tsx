@@ -45,7 +45,7 @@ export function WorkoutCard({ onPress = () => {}, onToggleFavorite = () => {}, s
   return (
     <TouchableOpacity style={[getCardSize(size), style]} activeOpacity={.8} onPress={onPress}>
       <ImageBackground source={workout.poster} style={[styles.poster, getCardSize(size)]}
-                       imageStyle={{ borderRadius: 5 }}>
+                       imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
           <Layout style={styles.posterFiller}/>

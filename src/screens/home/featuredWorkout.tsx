@@ -9,17 +9,17 @@ import { Workout } from '../../types'
 const play = require('./play.png')
 
 interface Props {
-  onPress: () => void
+  onPress?: () => void
   workout: Workout
 }
 
-export function FeaturedWorkout({ onPress, workout }: Props) {
+export function FeaturedWorkout({ onPress = () => {}, workout }: Props) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={.8} onPress={onPress}>
 
       <Layout style={styles.background}/>
 
-      <ImageBackground source={workout.poster} style={styles.poster} imageStyle={{ borderRadius: 5 }}>
+      <ImageBackground source={workout.poster} style={styles.poster} imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
           <Text category={'h4'} style={[styles.posterText, { marginBottom: 16 }]}>{workout.title}</Text>

@@ -68,8 +68,7 @@ export function Home() {
         <Text category='h3' style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
       </Layout>
 
-      <FeaturedWorkout onPress={() => {
-      }} workout={featuredWorkout}/>
+      <FeaturedWorkout workout={featuredWorkout}/>
 
       <Separator style={styles.separator}/>
 
