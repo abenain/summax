@@ -3,6 +3,7 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { ScrollView, StatusBar, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
+import { Separator } from '../../components/separator'
 import { GlobalState } from '../../redux/store'
 import { IntensityLevel } from '../../types'
 import { FeaturedWorkout } from './FeaturedWorkout'
@@ -28,9 +29,13 @@ export function Home() {
 
       <FeaturedWorkout onPress={() => {}} workout={workout}/>
 
+      <Separator style={styles.separator}/>
+
       <Layout style={styles.titleContainer}>
         <Text category='h3' style={styles.title}>{i18n.t('Home - Selected for you', { firstname })}</Text>
       </Layout>
+
+      <Separator style={styles.separator}/>
 
       <Layout style={styles.titleContainer}>
         <Text category='h3' style={styles.title}>{i18n.t('Home - Featured themes')}</Text>
@@ -48,6 +53,8 @@ export function Home() {
         <Text category='h3' style={styles.title}>{i18n.t('Home - Intensity')}</Text>
       </Layout>
 
+      <Separator style={styles.separator}/>
+
       <Layout style={styles.titleContainer}>
         <Text category='h3' style={styles.title}>{i18n.t('Home - Duration')}</Text>
       </Layout>
@@ -62,5 +69,9 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     padding: 16,
+  },
+  separator: {
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
 })
