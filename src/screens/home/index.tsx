@@ -7,6 +7,7 @@ import { Separator } from '../../components/separator'
 import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { GlobalState } from '../../redux/store'
 import { IntensityLevel } from '../../types'
+import { DurationFilters } from './duration-filters'
 import { FeaturedWorkout } from './featuredWorkout'
 import { IntensityFilters } from './intensity-filters'
 import { PopularWorkouts } from './popularWorkouts'
@@ -100,11 +101,9 @@ export function Home() {
 
       <IntensityFilters />
 
-      <Separator style={styles.separator}/>
+      <Separator style={{...styles.separator, marginBottom: 0}}/>
 
-      <Layout style={styles.titleContainer}>
-        <Text category='h3' style={styles.title}>{i18n.t('Home - Duration')}</Text>
-      </Layout>
+      <DurationFilters />
 
     </ScrollView>
   )

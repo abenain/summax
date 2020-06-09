@@ -10,6 +10,12 @@ export enum IntensityLevel {
   HIGH
 }
 
+export enum WorkoutDuration {
+  SHORT,
+  MEDIUM,
+  LONG
+}
+
 export interface Workout {
   durationMin: number
   id: string

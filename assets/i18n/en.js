@@ -1,7 +1,10 @@
 const en = {
-	'Intensity - Intensity - High'  : 'High',
-	'Intensity - Intensity - Low'   : 'Low',
-	'Intensity - Intensity - Medium': 'Medium',
+	'Filter - Duration - Long'      : '15 to 20 min.',
+	'Filter - Duration - Medium'    : '8 to 14 min.',
+	'Filter - Duration - Short'     : '4 to 7 min.',
+	'Filter - Intensity - High'     : 'High',
+	'Filter - Intensity - Low'      : 'Low',
+	'Filter - Intensity - Medium'   : 'Medium',
 	'Filter - Target - Upper body'  : 'Upper body',
 	'Filter - Target - Lower body'  : 'Lower body',
 	'Filter - Target - Core'        : 'Core',

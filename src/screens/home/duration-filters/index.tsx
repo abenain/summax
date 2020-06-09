@@ -2,17 +2,17 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { IntensityLevel } from '../../../types'
+import { WorkoutDuration } from '../../../types'
 
-const low = require('./low.png')
+const short = require('./short.png')
 const medium = require('./medium.png')
-const high = require('./high.png')
+const long = require('./long.png')
 
 interface Props {
-  onFilter?: (intensity: IntensityLevel) => void
+  onFilter?: (duration: WorkoutDuration) => void
 }
 
-export function IntensityFilters({ onFilter = () => {} }: Props) {
+export function DurationFilters({ onFilter = () => {} }: Props) {
   return (
     <Layout style={styles.container}>
 
@@ -22,26 +22,26 @@ export function IntensityFilters({ onFilter = () => {} }: Props) {
 
         <TouchableOpacity
           style={styles.filterContainer}
-          onPress={() => onFilter(IntensityLevel.LOW)}
+          onPress={() => onFilter(WorkoutDuration.SHORT)}
           activeOpacity={.5}>
-          <Image source={low} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Intensity - Low')}</Text>
+          <Image source={short} style={styles.image}/>
+          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Duration - Short')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.filterContainer}
-          onPress={() => onFilter(IntensityLevel.MEDIUM)}
+          onPress={() => onFilter(WorkoutDuration.MEDIUM)}
           activeOpacity={.5}>
           <Image source={medium} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Intensity - Medium')}</Text>
+          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Duration - Medium')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.filterContainer}
-          onPress={() => onFilter(IntensityLevel.HIGH)}
+          onPress={() => onFilter(WorkoutDuration.LONG)}
           activeOpacity={.5}>
-          <Image source={high} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Intensity - High')}</Text>
+          <Image source={long} style={styles.image}/>
+          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Duration - Long')}</Text>
         </TouchableOpacity>
 
       </Layout>
