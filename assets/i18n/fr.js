@@ -1,4 +1,11 @@
 const fr = {
+	'Home - Duration'               : 'Durée',
+	'Home - Featured themes'        : 'Thèmes du moment',
+	'Home - Featured workout'       : 'Le cours du moment',
+	'Home - Intensity'              : 'Intensité',
+	'Home - Popular workouts'       : 'Les plus populaires',
+	'Home - Selected for you'       : 'Pour toi, {{firstname}}',
+	'Home - Target'                 : 'Zones ciblées',
 	'Placeholder - DOB'             : 'Date de naissance',
 	'Placeholder - Email'           : 'Adresse e-mail',
 	'Placeholder - Firstname'       : 'Prénom',

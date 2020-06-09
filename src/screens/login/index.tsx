@@ -1,8 +1,8 @@
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Button, Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
-import { useRef } from 'react'
 import * as React from 'react'
+import { useRef } from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
@@ -14,7 +14,7 @@ interface Props {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>
 }
 
-export function Login({navigation}: Props) {
+export function Login({ navigation }: Props) {
   const loginForm = useRef<FormHandle>()
 
   return (
@@ -36,7 +36,10 @@ export function Login({navigation}: Props) {
           status='success'
           style={[styles.button, styles.signInButton]}
           appearance='filled'
-          onPress={() => console.log(loginForm.current.getValues())}
+          onPress={() => {
+            console.log(loginForm.current.getValues())
+            navigation.replace('Home')
+          }}
           size='giant'>
           {i18n.t('Sign in')}
         </Button>

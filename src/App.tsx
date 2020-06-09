@@ -8,6 +8,7 @@ import i18n from 'i18n-js'
 import React from 'react'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
+import { Home as HomeScreen } from './screens/home'
 import { Login as LoginScreen } from './screens/login'
 import { SignUp as SignUpScreen } from './screens/signup'
 
@@ -16,6 +17,7 @@ i18n.translations = { fr, en }
 i18n.locale = Localization.locale
 
 export type RootStackParamList = {
+  Home: undefined
   Login: undefined
   SignUp: undefined
 }
@@ -30,12 +32,13 @@ export default () => {
       <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName={'SignUp'}
+            initialRouteName={'Home'}
             screenOptions={{
               headerTitle: 'SummaX'
             }}>
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
             <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name='Home' component={HomeScreen}/>
           </Stack.Navigator>
         </NavigationContainer>
       </ApplicationProvider>

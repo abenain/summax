@@ -1,4 +1,11 @@
 const en = {
+	'Home - Duration'               : 'Duration',
+	'Home - Featured themes'        : 'Featured themes',
+	'Home - Featured workout'       : 'Featured workout',
+	'Home - Intensity'              : 'Intensity',
+	'Home - Popular workouts'       : 'Popular workouts',
+	'Home - Selected for you'       : 'For you, {{firstname}}',
+	'Home - Target'                 : 'Target',
 	'Placeholder - DOB'             : 'Date of birth',
 	'Placeholder - Email'           : 'E-mail address',
 	'Placeholder - Firstname'       : 'First name',
