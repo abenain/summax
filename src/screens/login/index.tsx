@@ -3,7 +3,7 @@ import { Button, Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import { useRef } from 'react'
 import * as React from 'react'
-import { ImageBackground, StyleSheet } from 'react-native'
+import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Form as LoginForm, FormHandle } from './form'
@@ -19,6 +19,8 @@ export function Login({navigation}: Props) {
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
+
+      <StatusBar barStyle={'light-content'}/>
 
       <LoginForm ref={loginForm}/>
 

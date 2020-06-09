@@ -2,7 +2,7 @@ import { Button } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useRef } from 'react'
-import { ImageBackground, StyleSheet } from 'react-native'
+import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
 import { SummaxColors } from '../../colors'
 import { Form as SignUpForm, FormHandle } from './form'
 
@@ -13,6 +13,8 @@ export function SignUp() {
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
+
+      <StatusBar barStyle={'light-content'}/>
 
       <SignUpForm ref={signUpForm}/>
 
