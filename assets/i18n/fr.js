@@ -6,6 +6,9 @@ const fr = {
 	'Home - Popular workouts'       : 'Les plus populaires',
 	'Home - Selected for you'       : 'Pour toi, {{firstname}}',
 	'Home - Target'                 : 'Zones ciblées',
+	'Intensity - High'              : 'Haute',
+	'Intensity - Low'               : 'Faible',
+	'Intensity - Medium'            : 'Moyen',
 	'Placeholder - DOB'             : 'Date de naissance',
 	'Placeholder - Email'           : 'Adresse e-mail',
 	'Placeholder - Firstname'       : 'Prénom',
@@ -17,6 +20,7 @@ const fr = {
 	'Sign in - No account yet'      : 'Pas encore de compte?',
 	'Sign in - Go to sign up'       : 'Inscrivez-vous',
 	'Sign up'                       : 'S\'inscrire',
+	'X min'                         : '{{durationMin}} min',
 }
 
 export default fr

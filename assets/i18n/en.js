@@ -6,6 +6,9 @@ const en = {
 	'Home - Popular workouts'       : 'Popular workouts',
 	'Home - Selected for you'       : 'For you, {{firstname}}',
 	'Home - Target'                 : 'Target',
+	'Intensity - High'              : 'High',
+	'Intensity - Low'               : 'Low',
+	'Intensity - Medium'            : 'Medium',
 	'Placeholder - DOB'             : 'Date of birth',
 	'Placeholder - Email'           : 'E-mail address',
 	'Placeholder - Firstname'       : 'First name',
@@ -17,6 +20,7 @@ const en = {
 	'Sign in - No account yet'      : 'Don\'t have an account?',
 	'Sign in - Go to sign up'       : 'Sign up',
 	'Sign up'                       : 'Sign up',
+	'X min'                         : '{{durationMin}} min',
 }
 
 export default en
