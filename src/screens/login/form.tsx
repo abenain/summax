@@ -2,7 +2,9 @@ import { Icon, Input, Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+
+const summax = require('./summax.png')
 
 interface Props {
 
@@ -21,7 +23,7 @@ export const Form = forwardRef(({}: Props, ref) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   useImperativeHandle(ref, () => ({
-    getValues: function(){
+    getValues: function () {
       return {
         email,
         password
@@ -42,7 +44,7 @@ export const Form = forwardRef(({}: Props, ref) => {
   return (
     <Layout style={styles.container}>
 
-      <Text category='h4' style={styles.title}>SUMMAX</Text>
+      <Image source={summax} style={styles.title}/>
 
       <Input
         style={styles.input}
@@ -61,14 +63,14 @@ export const Form = forwardRef(({}: Props, ref) => {
         textStyle={{ fontWeight: 'bold' }}
       />
 
-      <Text category='p1'
-            style={{ alignSelf: 'flex-end', marginBottom: 32 }}>{i18n.t('Sign in - Forgot password')}</Text>
+      <Text category='s1'
+            style={{ marginBottom: 32, textDecorationLine: 'underline' }}>{i18n.t('Sign in - Forgot password')}</Text>
 
-      <Layout style={{ height: 100 }} />
+      <Layout style={{ height: 100 }}/>
 
       <Layout style={{ flexDirection: 'row' }}>
         <Text category='p1' style={{ marginRight: 8 }}>{i18n.t('Sign in - No account yet')}</Text>
-        <Text category='s1'>{i18n.t('Sign in - Go to sign up')}</Text>
+        <Text category='s1' style={{ textDecorationLine: 'underline' }}>{i18n.t('Sign in - Go to sign up')}</Text>
       </Layout>
 
     </Layout>
@@ -85,6 +87,8 @@ const styles = StyleSheet.create({
   title    : {
     alignSelf   : 'center',
     marginBottom: 32,
+    width       : 103,
+    height      : 20,
   },
   input    : {
     marginBottom: 22

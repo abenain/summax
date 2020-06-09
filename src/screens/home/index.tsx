@@ -18,7 +18,7 @@ export function Home() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, paddingVertical: 16, backgroundColor: 'white' }}>
+    <ScrollView style={{ flex: 1, paddingVertical: 12, backgroundColor: 'white' }}>
 
       <StatusBar barStyle={'dark-content'}/>
 

@@ -1,14 +1,16 @@
-import { Datepicker, Icon, Input, Layout, Text } from '@ui-kitten/components'
+import { Datepicker, Icon, Input, Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import moment from 'moment'
 import * as React from 'react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 
 const DEFAULT_DOB_AS_STRING = '01/01/1980'
 const MIN_DOB = moment().subtract(120, 'years').toDate()
 const MAX_DOB = moment().subtract(10, 'years').toDate()
 const DOB_FORMAT = 'DD/MM/YYYY'
+
+const summax = require('./summax.png')
 
 interface Props {
 
@@ -59,7 +61,7 @@ export const Form = forwardRef(({}: Props, ref) => {
   return (
     <Layout style={styles.container}>
 
-      <Text category='h4' style={styles.title}>SUMMAX</Text>
+      <Image source={summax} style={styles.title}/>
 
       <Input
         style={styles.input}
@@ -121,7 +123,9 @@ const styles = StyleSheet.create({
   },
   title    : {
     alignSelf   : 'center',
-    marginBottom: 32,
+    marginBottom: 64,
+    width       : 103,
+    height      : 20,
   },
   input    : {
     marginBottom: 22

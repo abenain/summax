@@ -16,7 +16,7 @@ const en = {
 	'Placeholder - Password'        : 'Password',
 	'Placeholder - Password confirm': 'Confirm Password',
 	'Sign in'                       : 'Sign in',
-	'Sign in - Forgot password'     : 'Forgot password',
+	'Sign in - Forgot password'     : 'Forgot password?',
 	'Sign in - No account yet'      : 'Don\'t have an account?',
 	'Sign in - Go to sign up'       : 'Sign up',
 	'Sign up'                       : 'Sign up',
