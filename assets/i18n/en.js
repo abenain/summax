@@ -1,4 +1,7 @@
 const en = {
+	'Intensity - Intensity - High'  : 'High',
+	'Intensity - Intensity - Low'   : 'Low',
+	'Intensity - Intensity - Medium': 'Medium',
 	'Filter - Target - Upper body'  : 'Upper body',
 	'Filter - Target - Lower body'  : 'Lower body',
 	'Filter - Target - Core'        : 'Core',

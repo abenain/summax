@@ -1,4 +1,7 @@
 const fr = {
+	'Intensity - Intensity - High'  : 'Haute',
+	'Intensity - Intensity - Low'   : 'Faible',
+	'Intensity - Intensity - Medium': 'Moyenne',
 	'Filter - Target - Upper body'  : 'Haut du corps',
 	'Filter - Target - Lower body'  : 'Bas du corps',
 	'Filter - Target - Core'        : 'Abdos',

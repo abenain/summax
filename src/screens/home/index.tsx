@@ -8,6 +8,7 @@ import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-c
 import { GlobalState } from '../../redux/store'
 import { IntensityLevel } from '../../types'
 import { FeaturedWorkout } from './featuredWorkout'
+import { IntensityFilters } from './intensity-filters'
 import { PopularWorkouts } from './popularWorkouts'
 import { TargetFilters } from './target-filters'
 
@@ -97,9 +98,7 @@ export function Home() {
 
       <TargetFilters />
 
-      <Layout style={styles.titleContainer}>
-        <Text category='h3' style={styles.title}>{i18n.t('Home - Intensity')}</Text>
-      </Layout>
+      <IntensityFilters />
 
       <Separator style={styles.separator}/>
 
