@@ -9,6 +9,7 @@ import { GlobalState } from '../../redux/store'
 import { IntensityLevel } from '../../types'
 import { FeaturedWorkout } from './featuredWorkout'
 import { PopularWorkouts } from './popularWorkouts'
+import { TargetFilters } from './target-filters'
 
 export function Home() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
@@ -94,9 +95,7 @@ export function Home() {
 
       <PopularWorkouts workouts={popularWorkouts}/>
 
-      <Layout style={styles.titleContainer}>
-        <Text category='h3' style={styles.title}>{i18n.t('Home - Target')}</Text>
-      </Layout>
+      <TargetFilters />
 
       <Layout style={styles.titleContainer}>
         <Text category='h3' style={styles.title}>{i18n.t('Home - Intensity')}</Text>

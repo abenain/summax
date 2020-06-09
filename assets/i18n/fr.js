@@ -1,4 +1,8 @@
 const fr = {
+	'Filter - Target - Upper body'  : 'Haut du corps',
+	'Filter - Target - Lower body'  : 'Bas du corps',
+	'Filter - Target - Core'        : 'Abdos',
+	'Filter - Target - Whole body'  : 'Tout le corps',
 	'Home - Duration'               : 'Durée',
 	'Home - Featured themes'        : 'Thèmes du moment',
 	'Home - Featured workout'       : 'Le cours du moment',

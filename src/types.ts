@@ -18,3 +18,10 @@ export interface Workout {
   subtitle: string
   title: string
 }
+
+export enum Target {
+  UPPER_BODY,
+  LOWER_BODY,
+  CORE,
+  WHOLE_BODY,
+}

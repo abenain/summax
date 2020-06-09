@@ -1,4 +1,8 @@
 const en = {
+	'Filter - Target - Upper body'  : 'Upper body',
+	'Filter - Target - Lower body'  : 'Lower body',
+	'Filter - Target - Core'        : 'Core',
+	'Filter - Target - Whole body'  : 'Whole body',
 	'Home - Duration'               : 'Duration',
 	'Home - Featured themes'        : 'Featured themes',
 	'Home - Featured workout'       : 'Featured workout',
