@@ -1,11 +1,13 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
     "android": "expo start --android",
+    "eject": "expo eject",
     "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject"
+    "publish:prod": "expo publish --release-channel prod-v1",
+    "publish:staging": "expo publish --release-channel staging-v1",
+    "start": "expo start",
+    "web": "expo start --web"
   },
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
