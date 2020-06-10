@@ -15,13 +15,15 @@ interface Props {
   onFilter?: (target: Target) => void
 }
 
-export function TargetFilters({onFilter = () => {}}: Props) {
+export function TargetFilters({ onFilter = () => {} }: Props) {
   return (
     <Layout style={styles.container}>
 
       <Image source={target} style={styles.target}/>
 
-      <Text category='h3' style={styles.title}>{i18n.t('Home - Target')}</Text>
+      <Layout style={styles.titleContainer}>
+        <Text style={styles.title}>{i18n.t('Home - Target')}</Text>
+      </Layout>
 
       <Layout style={[styles.filterRow, { marginBottom: 16 }]}>
         <Filter
@@ -54,31 +56,38 @@ export function TargetFilters({onFilter = () => {}}: Props) {
 }
 
 const styles = StyleSheet.create({
-  container  : {
-    paddingTop       : 72,
+  container     : {
+    paddingTop       : 56,
     paddingBottom    : 40,
     paddingHorizontal: 16,
     overflow         : 'hidden',
   },
-  target     : {
+  target        : {
     position: 'absolute',
     height  : 148,
     width   : 147,
     top     : -35,
     right   : 0,
   },
-  title      : {
-    color       : 'black',
-    marginBottom: 32,
+  titleContainer: {
+    height         : 56,
+    justifyContent : 'center',
+    backgroundColor: 'transparent',
+    marginBottom   : 16,
   },
-  filterRow  : {
+  title         : {
+    color     : 'black',
+    fontFamily: 'aktivGroteskXBold',
+    fontSize  : 30,
+  },
+  filterRow     : {
     flexDirection: 'row',
   },
-  leftFilter : {
+  leftFilter    : {
     flex       : 1,
     marginRight: 8,
   },
-  rightFilter: {
+  rightFilter   : {
     flex      : 1,
     marginLeft: 8,
   },

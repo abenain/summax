@@ -60,12 +60,12 @@ export function Home() {
   }]
 
   return (
-    <ScrollView style={{ flex: 1, paddingVertical: 12, backgroundColor: 'white' }}>
+    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
 
       <StatusBar barStyle={'dark-content'}/>
 
       <Layout style={styles.titleContainer}>
-        <Text category='h3' style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
+        <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
       </Layout>
 
       <FeaturedWorkout workout={featuredWorkout}/>
@@ -73,20 +73,20 @@ export function Home() {
       <Separator style={styles.separator}/>
 
       <Layout style={styles.titleContainer}>
-        <Text category='h3' style={styles.title}>{i18n.t('Home - Selected for you', { firstname })}</Text>
+        <Text style={styles.title}>{i18n.t('Home - Selected for you', { firstname })}</Text>
       </Layout>
 
-      <Layout style={{ padding: 16, marginBottom: 16 }}>
+      <Layout style={{ paddingHorizontal: 16, marginBottom: 32 }}>
         <WorkoutCard workout={forYouWorkout} size={WorkoutCardSize.LARGE}/>
       </Layout>
 
       <Separator style={styles.separator}/>
 
       <Layout style={styles.titleContainer}>
-        <Text category='h3' style={styles.title}>{i18n.t('Home - Featured themes')}</Text>
+        <Text style={styles.title}>{i18n.t('Home - Featured themes')}</Text>
       </Layout>
 
-      <ScrollView style={{ padding: 16 }} horizontal={true}>
+      <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true}>
         {thematicWorkouts.map(workout => <WorkoutCard
           key={workout.id}
           workout={workout}
@@ -96,13 +96,13 @@ export function Home() {
 
       <PopularWorkouts workouts={popularWorkouts}/>
 
-      <TargetFilters />
+      <TargetFilters/>
 
-      <IntensityFilters />
+      <IntensityFilters/>
 
-      <Separator style={{...styles.separator, marginBottom: 0}}/>
+      <Separator style={{ ...styles.separator, marginBottom: 0 }}/>
 
-      <DurationFilters />
+      <DurationFilters/>
 
     </ScrollView>
   )
@@ -110,13 +110,17 @@ export function Home() {
 
 const styles = StyleSheet.create({
   title         : {
-    color: 'black'
+    fontFamily: 'aktivGroteskXBold',
+    fontSize  : 30,
+    color     : 'black'
   },
   titleContainer: {
-    padding: 16,
+    marginVertical   : 16,
+    paddingHorizontal: 16,
+    height           : 56,
+    justifyContent   : 'center',
   },
   separator     : {
     paddingHorizontal: 16,
-    marginBottom     : 16,
   },
 })

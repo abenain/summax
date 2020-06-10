@@ -18,7 +18,7 @@ export function PopularWorkouts({ workouts }: Props) {
 
       <Image source={x} style={styles.xIcon}/>
 
-      <Text category='h3' style={styles.title}>{i18n.t('Home - Popular workouts')}</Text>
+      <Text style={styles.title}>{i18n.t('Home - Popular workouts')}</Text>
 
       {limitedWorkouts.map((workout, index, allWorkouts) => <WorkoutCard
         key={workout.id}
@@ -45,5 +45,7 @@ const styles = StyleSheet.create({
   title    : {
     color       : 'white',
     marginBottom: 32,
+    fontFamily  : 'aktivGroteskXBold',
+    fontSize    : 30,
   },
 })

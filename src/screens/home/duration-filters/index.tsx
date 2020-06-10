@@ -16,7 +16,7 @@ export function DurationFilters({ onFilter = () => {} }: Props) {
   return (
     <Layout style={styles.container}>
 
-      <Text category='h3' style={styles.title}>{i18n.t('Home - Intensity')}</Text>
+      <Text style={styles.title}>{i18n.t('Home - Duration')}</Text>
 
       <Layout style={styles.filterRow}>
 
@@ -25,7 +25,7 @@ export function DurationFilters({ onFilter = () => {} }: Props) {
           onPress={() => onFilter(WorkoutDuration.SHORT)}
           activeOpacity={.5}>
           <Image source={short} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Duration - Short')}</Text>
+          <Text style={styles.text}>{i18n.t('Filter - Duration - Short')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -33,7 +33,7 @@ export function DurationFilters({ onFilter = () => {} }: Props) {
           onPress={() => onFilter(WorkoutDuration.MEDIUM)}
           activeOpacity={.5}>
           <Image source={medium} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Duration - Medium')}</Text>
+          <Text style={styles.text}>{i18n.t('Filter - Duration - Medium')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -41,7 +41,7 @@ export function DurationFilters({ onFilter = () => {} }: Props) {
           onPress={() => onFilter(WorkoutDuration.LONG)}
           activeOpacity={.5}>
           <Image source={long} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Duration - Long')}</Text>
+          <Text style={styles.text}>{i18n.t('Filter - Duration - Long')}</Text>
         </TouchableOpacity>
 
       </Layout>
@@ -58,7 +58,9 @@ const styles = StyleSheet.create({
   },
   title          : {
     color       : 'black',
-    marginBottom: 28,
+    marginBottom: 24,
+    fontFamily  : 'aktivGroteskXBold',
+    fontSize    : 30,
   },
   filterRow      : {
     flexDirection    : 'row',
@@ -75,6 +77,8 @@ const styles = StyleSheet.create({
     width : 54,
   },
   text           : {
-    marginTop: 12,
+    marginTop : 12,
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
   },
 })

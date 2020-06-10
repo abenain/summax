@@ -56,7 +56,7 @@ export function WorkoutCard({ onPress = () => {}, onToggleFavorite = () => {}, s
           </Layout>
 
           <Layout style={styles.footerContainer}>
-            <Text category={'h4'} style={styles.title}>{workout.title}</Text>
+            <Text style={styles.title}>{workout.title}</Text>
             {false && (
               <TouchableOpacity onPress={onToggleFavorite} activeOpacity={.5}>
                 <Icon name={'plus-circle-outline'} style={styles.plusIcon} fill={'white'}/>
@@ -87,8 +87,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   title            : {
-    color: 'white',
-    flex : 1,
+    color     : 'white',
+    flex      : 1,
+    fontFamily: 'nexaHeavy',
+    fontSize  : 24,
   },
   plusIcon         : {
     height: 40,

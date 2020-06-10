@@ -13,17 +13,21 @@ interface Props {
   workout: Workout
 }
 
-export function FeaturedWorkout({ onPress = () => {}, workout }: Props) {
+export function FeaturedWorkout({
+                                  onPress = () => {
+                                  }, workout
+                                }: Props) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={.8} onPress={onPress}>
 
       <Layout style={styles.background}/>
 
-      <ImageBackground source={workout.poster} style={styles.poster} imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
+      <ImageBackground source={workout.poster} style={styles.poster}
+                       imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
-          <Text category={'h4'} style={[styles.posterText, { marginBottom: 16 }]}>{workout.title}</Text>
-          <Text category={'p2'} style={styles.posterText}>{workout.subtitle}</Text>
+          <Text style={[styles.posterText, styles.posterTitle, { marginBottom: 16 }]}>{workout.title}</Text>
+          <Text style={[styles.posterText, styles.posterSubTitle]}>{workout.subtitle}</Text>
 
           <Layout style={styles.posterFiller}>
             <Image source={play} style={styles.play}/>
@@ -43,9 +47,9 @@ export function FeaturedWorkout({ onPress = () => {}, workout }: Props) {
 
 const styles = StyleSheet.create({
   container     : {
-    alignItems  : 'center',
-    marginBottom: 16,
-    padding     : 16,
+    alignItems       : 'center',
+    marginBottom     : 32,
+    paddingHorizontal: 16,
   },
   background    : {
     position       : 'absolute',
@@ -70,6 +74,14 @@ const styles = StyleSheet.create({
   },
   posterText    : {
     color: 'white'
+  },
+  posterTitle   : {
+    fontFamily: 'nexaHeavy',
+    fontSize  : 24,
+  },
+  posterSubTitle: {
+    fontFamily: 'nexaRegular',
+    fontSize  : 12,
   },
   posterFiller  : {
     flex           : 1,

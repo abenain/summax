@@ -16,7 +16,7 @@ export function IntensityFilters({ onFilter = () => {} }: Props) {
   return (
     <Layout style={styles.container}>
 
-      <Text category='h3' style={styles.title}>{i18n.t('Home - Intensity')}</Text>
+      <Text style={styles.title}>{i18n.t('Home - Intensity')}</Text>
 
       <Layout style={styles.filterRow}>
 
@@ -25,7 +25,7 @@ export function IntensityFilters({ onFilter = () => {} }: Props) {
           onPress={() => onFilter(IntensityLevel.LOW)}
           activeOpacity={.5}>
           <Image source={low} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Intensity - Low')}</Text>
+          <Text style={styles.text}>{i18n.t('Filter - Intensity - Low')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -33,7 +33,7 @@ export function IntensityFilters({ onFilter = () => {} }: Props) {
           onPress={() => onFilter(IntensityLevel.MEDIUM)}
           activeOpacity={.5}>
           <Image source={medium} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Intensity - Medium')}</Text>
+          <Text style={styles.text}>{i18n.t('Filter - Intensity - Medium')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -41,7 +41,7 @@ export function IntensityFilters({ onFilter = () => {} }: Props) {
           onPress={() => onFilter(IntensityLevel.HIGH)}
           activeOpacity={.5}>
           <Image source={high} style={styles.image}/>
-          <Text category={'s1'} style={styles.text}>{i18n.t('Filter - Intensity - High')}</Text>
+          <Text style={styles.text}>{i18n.t('Filter - Intensity - High')}</Text>
         </TouchableOpacity>
 
       </Layout>
@@ -58,7 +58,9 @@ const styles = StyleSheet.create({
   },
   title          : {
     color       : 'black',
-    marginBottom: 28,
+    marginBottom: 24,
+    fontFamily  : 'aktivGroteskXBold',
+    fontSize    : 30,
   },
   filterRow      : {
     flexDirection    : 'row',
@@ -75,6 +77,8 @@ const styles = StyleSheet.create({
     width : 54,
   },
   text           : {
-    marginTop: 12,
+    marginTop : 12,
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
   },
 })

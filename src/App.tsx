@@ -17,6 +17,7 @@ import { getStore } from './redux/store'
 import { Home as HomeScreen } from './screens/home'
 import { Login as LoginScreen } from './screens/login'
 import { SignUp as SignUpScreen } from './screens/signup'
+import * as Font from 'expo-font'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -42,8 +43,11 @@ export default () => {
   }, [])
 
   function doLoadAssets(){
-    return new Promise((resolve) => {
-      setTimeout(resolve, 1000)
+    return Font.loadAsync({
+      aktivGroteskXBold: require('../assets/fonts/AktivGrotesk-XBold.otf'),
+      nexaHeavy: require('../assets/fonts/NexaHeavy.otf'),
+      nexaRegular: require('../assets/fonts/NexaRegular.otf'),
+      nexaXBold: require('../assets/fonts/Nexa-XBold.otf'),
     })
   }
 

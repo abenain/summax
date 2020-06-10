@@ -1,4 +1,4 @@
-import { Text } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Image, ImageSourcePropType, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 
@@ -13,20 +13,28 @@ export function Filter({ image, onPress = () => {}, style = {}, title }: Props) 
   return (
     <TouchableOpacity style={style} activeOpacity={.8} onPress={onPress}>
       <Image source={image} style={styles.image}/>
-      <Text category={'s1'} style={styles.text}>{title}</Text>
+      <Layout style={styles.textContainer}>
+        <Text style={styles.text}>{title}</Text>
+      </Layout>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  image: {
+  image        : {
     borderRadius: 5,
     resizeMode  : 'stretch',
     height      : 102,
     width       : '100%',
   },
-  text : {
-    alignSelf: 'center',
+  textContainer: {
     marginTop: 8,
+    height   : 20,
+  },
+  text         : {
+    alignSelf : 'center',
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+    lineHeight: 20,
   },
 })

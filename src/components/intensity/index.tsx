@@ -47,13 +47,18 @@ function getIconStyle(size: Size) {
   }
 }
 
-function getTextCategory(size: Size) {
+function getTextStyle(size: Size) {
   switch (size) {
     case Size.LARGE:
-      return 's1'
+      return {
+        fontSize: 14
+      }
     case Size.SMALL:
+      return {
+        fontSize: 12
+      }
     default:
-      return 's2'
+      return {}
   }
 }
 
@@ -63,7 +68,7 @@ export function Intensity({ level, size, style = {} }: Props) {
 
       <Image source={thunder} style={[styles.icon, getIconStyle(size)]}/>
 
-      <Text category={getTextCategory(size)} style={styles.text}>{getText(level).toUpperCase()}</Text>
+      <Text style={[styles.text, getTextStyle(size)]}>{getText(level).toUpperCase()}</Text>
 
     </Layout>
   )
@@ -79,6 +84,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   text     : {
-    color: 'white'
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    lineHeight: 24,
   },
 })
