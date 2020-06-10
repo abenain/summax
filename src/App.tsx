@@ -8,7 +8,7 @@ import * as Localization from 'expo-localization'
 import * as SplashScreen from 'expo-splash-screen'
 import i18n from 'i18n-js'
 import React, { useEffect, useState } from 'react'
-import { Image, View } from 'react-native'
+import { Image, Platform, View } from 'react-native'
 import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
@@ -82,7 +82,7 @@ export default () => {
             screenOptions={{
               headerTitle: HeaderTitle,
               headerStyle: {
-                height: Constants.statusBarHeight + 56,
+                height: Platform.OS === 'ios' ? Constants.statusBarHeight : 0 + 56,
               }
             }}>
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
