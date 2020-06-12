@@ -1,5 +1,6 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "author": "Antoine Benain",
   "scripts": {
     "android": "expo start --android",
     "eject": "expo eject",

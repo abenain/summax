@@ -13,6 +13,7 @@ const en = {
 	'Home - Featured themes'        : 'Featured themes',
 	'Home - Featured workout'       : 'Featured workout',
 	'Home - Intensity'              : 'Intensity',
+	'Home - No content available'   : 'We could not fetch contents from the server for you, is your internet connectivity ok?',
 	'Home - Popular workouts'       : 'Popular workouts',
 	'Home - Selected for you'       : 'For you, {{firstname}}',
 	'Home - Target'                 : 'Target',

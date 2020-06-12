@@ -13,6 +13,7 @@ const fr = {
 	'Home - Featured themes'        : 'Thèmes du moment',
 	'Home - Featured workout'       : 'Le cours du moment',
 	'Home - Intensity'              : 'Intensité',
+	'Home - No content available'   : 'Nous n\'avons pas pu récupérer les données auprès du serveur, êtes vous connecté à internet?',
 	'Home - Popular workouts'       : 'Les plus populaires',
 	'Home - Selected for you'       : 'Pour toi, {{firstname}}',
 	'Home - Target'                 : 'Zones ciblées',

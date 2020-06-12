@@ -21,7 +21,7 @@ export interface Workout {
   id: string
   intensity: IntensityLevel
   poster: ImageSourcePropType
-  subtitle: string
+  subtitle?: string
   title: string
 }
 
@@ -30,4 +30,11 @@ export enum Target {
   LOWER_BODY,
   CORE,
   WHOLE_BODY,
+}
+
+export interface Homepage {
+  featuredWorkout : Workout
+  selectedForYou  : Workout
+  thematicWorkouts: Workout[]
+  popularWorkouts : Workout[]
 }

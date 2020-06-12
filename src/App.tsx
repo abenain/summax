@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import Constants from 'expo-constants'
+import * as Font from 'expo-font'
 import * as Localization from 'expo-localization'
 import * as SplashScreen from 'expo-splash-screen'
 import i18n from 'i18n-js'
@@ -13,11 +14,12 @@ import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
 import { HeaderTitle } from './components/header-title'
+import { ActionType } from './redux/actions'
 import { getStore } from './redux/store'
 import { Home as HomeScreen } from './screens/home'
 import { Login as LoginScreen } from './screens/login'
 import { SignUp as SignUpScreen } from './screens/signup'
-import * as Font from 'expo-font'
+import * as Homepage from './webservices/homepage'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -36,37 +38,48 @@ export default () => {
   const Stack = createStackNavigator()
   const store = getStore()
   const [showSplashScreen, setShowSplashScreen] = useState(true)
-  const [appIsReady, setAppIsReady] = useState(false)
+  const [assetsLoaded, setAssetsLoaded] = useState(false)
+  const [homePageLoaded, setHomePageLoaded] = useState(false)
 
-  useEffect(function componentDidMount(){
+  useEffect(function componentDidMount() {
     SplashScreen.preventAutoHideAsync()
   }, [])
 
-  function doLoadAssets(){
+  function doLoadAssets() {
     return Font.loadAsync({
       aktivGroteskXBold: require('../assets/fonts/AktivGrotesk-XBold.otf'),
-      nexaHeavy: require('../assets/fonts/NexaHeavy.otf'),
-      nexaRegular: require('../assets/fonts/NexaRegular.otf'),
-      nexaXBold: require('../assets/fonts/Nexa-XBold.otf'),
+      nexaHeavy        : require('../assets/fonts/NexaHeavy.otf'),
+      nexaRegular      : require('../assets/fonts/NexaRegular.otf'),
+      nexaXBold        : require('../assets/fonts/Nexa-XBold.otf'),
     })
   }
 
-  async function startLoadingAssets(){
+  function loadHomepage() {
+    return Homepage.load()
+      .then(homepage => store.dispatch({
+        type: ActionType.LOADED_HOMEPAGE,
+        homepage,
+      }))
+  }
+
+  async function startLoadingAssets() {
     SplashScreen.hideAsync()
 
     setTimeout(() => setShowSplashScreen(false), MIN_SPLASH_SCREEN_DURATION_MS)
 
-    await doLoadAssets()
-    setAppIsReady(true)
+    await Promise.all([
+      doLoadAssets().then(() => setAssetsLoaded(true)),
+      loadHomepage().then(() => setHomePageLoaded(true)),
+    ])
   }
 
-  if(!appIsReady || showSplashScreen){
+  if (!assetsLoaded || !homePageLoaded || showSplashScreen) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Image
-          style={{height: '100%', width: '100%'}}
+          style={{ height: '100%', width: '100%' }}
           source={splashWithPeople}
-          onLoad={startLoadingAssets} />
+          onLoad={startLoadingAssets}/>
       </View>
     )
   }
@@ -82,7 +95,7 @@ export default () => {
             screenOptions={{
               headerTitle: HeaderTitle,
               headerStyle: {
-                height: Platform.OS === 'ios' ? Constants.statusBarHeight : 0 + 56,
+                height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
               }
             }}>
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
