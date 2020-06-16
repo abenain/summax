@@ -3,6 +3,7 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
 import { Target } from '../../../types'
+import { NoOp } from '../../../utils'
 import { Filter } from './filter'
 
 const target = require('./target.png')
@@ -15,7 +16,7 @@ interface Props {
   onFilter?: (target: Target) => void
 }
 
-export function TargetFilters({ onFilter = () => {} }: Props) {
+export function TargetFilters({ onFilter = NoOp }: Props) {
   return (
     <Layout style={styles.container}>
 

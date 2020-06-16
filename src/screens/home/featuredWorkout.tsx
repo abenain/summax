@@ -5,6 +5,7 @@ import { SummaxColors } from '../../colors'
 import { Duration, Size as DurationSize } from '../../components/duration'
 import { Intensity, Size as IntensitySize } from '../../components/intensity'
 import { Workout } from '../../types'
+import { NoOp } from '../../utils'
 
 const play = require('./play.png')
 
@@ -13,10 +14,7 @@ interface Props {
   workout: Workout
 }
 
-export function FeaturedWorkout({
-                                  onPress = () => {
-                                  }, workout
-                                }: Props) {
+export function FeaturedWorkout({ onPress = NoOp, workout }: Props) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={.8} onPress={onPress}>
 

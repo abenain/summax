@@ -3,6 +3,7 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { IntensityLevel } from '../../../types'
+import { NoOp } from '../../../utils'
 
 const low = require('./low.png')
 const medium = require('./medium.png')
@@ -12,7 +13,7 @@ interface Props {
   onFilter?: (intensity: IntensityLevel) => void
 }
 
-export function IntensityFilters({ onFilter = () => {} }: Props) {
+export function IntensityFilters({ onFilter = NoOp }: Props) {
   return (
     <Layout style={styles.container}>
 

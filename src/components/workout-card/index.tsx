@@ -2,6 +2,7 @@ import { Icon, Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { Workout } from '../../types'
+import { NoOp } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
 
@@ -41,7 +42,7 @@ function getCardSize(size: Size) {
   }
 }
 
-export function WorkoutCard({ onPress = () => {}, onToggleFavorite = () => {}, size, style = {}, workout }: Props) {
+export function WorkoutCard({ onPress = NoOp, onToggleFavorite = NoOp, size, style = {}, workout }: Props) {
   return (
     <TouchableOpacity style={[getCardSize(size), style]} activeOpacity={.8} onPress={onPress}>
       <ImageBackground source={workout.poster} style={[styles.poster, getCardSize(size)]}

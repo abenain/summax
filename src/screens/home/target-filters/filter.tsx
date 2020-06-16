@@ -1,6 +1,7 @@
 import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Image, ImageSourcePropType, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
+import { NoOp } from '../../../utils'
 
 interface Props {
   image: ImageSourcePropType
@@ -9,7 +10,7 @@ interface Props {
   title: string
 }
 
-export function Filter({ image, onPress = () => {}, style = {}, title }: Props) {
+export function Filter({ image, onPress = NoOp, style = {}, title }: Props) {
   return (
     <TouchableOpacity style={style} activeOpacity={.8} onPress={onPress}>
       <Image source={image} style={styles.image}/>

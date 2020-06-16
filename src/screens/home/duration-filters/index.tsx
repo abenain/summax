@@ -3,6 +3,7 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { WorkoutDuration } from '../../../types'
+import { NoOp } from '../../../utils'
 
 const short = require('./short.png')
 const medium = require('./medium.png')
@@ -12,7 +13,7 @@ interface Props {
   onFilter?: (duration: WorkoutDuration) => void
 }
 
-export function DurationFilters({ onFilter = () => {} }: Props) {
+export function DurationFilters({ onFilter = NoOp }: Props) {
   return (
     <Layout style={styles.container}>
 
