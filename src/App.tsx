@@ -1,6 +1,6 @@
 import * as eva from '@eva-design/eva'
 import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
+import { createStackNavigator, StackHeaderTitleProps } from '@react-navigation/stack'
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import Constants from 'expo-constants'
@@ -19,6 +19,7 @@ import { getStore } from './redux/store'
 import { Home as HomeScreen } from './screens/home'
 import { Login as LoginScreen } from './screens/login'
 import { SignUp as SignUpScreen } from './screens/signup'
+import { Workout as WorkoutScreen } from './screens/workout'
 import * as Homepage from './webservices/homepage'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
@@ -32,6 +33,10 @@ export type RootStackParamList = {
   Home: undefined
   Login: undefined
   SignUp: undefined
+  Workout: {
+    id: string
+    title: string
+  }
 }
 
 export default () => {
@@ -93,14 +98,21 @@ export default () => {
           <Stack.Navigator
             initialRouteName={'Home'}
             screenOptions={{
-              headerTitle: HeaderTitle,
               headerStyle: {
                 height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
-              }
+              },
+              headerTitle: HeaderTitle,
             }}>
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
             <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }}/>
             <Stack.Screen name='Home' component={HomeScreen}/>
+            <Stack.Screen name='Workout'
+                          component={WorkoutScreen}
+                          options={({ route }) => ({
+                            headerTitle: (props: StackHeaderTitleProps) => <HeaderTitle title={route.params['title']} {...props}/>,
+                            headerTransparent: true,
+                          })}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </ApplicationProvider>

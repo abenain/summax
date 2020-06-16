@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
@@ -6,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { Separator } from '../../components/separator'
 import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { GlobalState } from '../../redux/store'
+import { Workout } from '../../types'
 import { DurationFilters } from './duration-filters'
 import { FeaturedWorkout } from './featuredWorkout'
 import { IntensityFilters } from './intensity-filters'
@@ -15,6 +17,11 @@ import { TargetFilters } from './target-filters'
 export function Home() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const homepage = useSelector(({ contents: { homepage } }: GlobalState) => homepage)
+  const navigation = useNavigation()
+
+  function navigateToWorkout(workout: Workout) {
+    navigation.navigate('Workout', { id: workout.id, title: workout.title })
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -28,7 +35,8 @@ export function Home() {
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
             </Layout>
 
-            <FeaturedWorkout workout={homepage.featuredWorkout}/>
+            <FeaturedWorkout workout={homepage.featuredWorkout}
+                             onPress={() => navigateToWorkout(homepage.featuredWorkout)}/>
 
             <Separator style={styles.separator}/>
 
@@ -37,7 +45,8 @@ export function Home() {
             </Layout>
 
             <Layout style={{ paddingHorizontal: 16, marginBottom: 32 }}>
-              <WorkoutCard workout={homepage.selectedForYou} size={WorkoutCardSize.LARGE}/>
+              <WorkoutCard workout={homepage.selectedForYou} size={WorkoutCardSize.LARGE}
+                           onPress={() => navigateToWorkout(homepage.selectedForYou)}/>
             </Layout>
 
             <Separator style={styles.separator}/>
@@ -49,6 +58,7 @@ export function Home() {
             <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true}>
               {homepage.thematicWorkouts.map(workout => <WorkoutCard
                 key={workout.id}
+                onPress={() => navigateToWorkout(workout)}
                 workout={workout}
                 style={{ marginRight: 16, marginBottom: 16 }}
                 size={WorkoutCardSize.SMALL}/>)}
