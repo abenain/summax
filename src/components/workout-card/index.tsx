@@ -1,7 +1,7 @@
 import { Icon, Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
-import { Workout } from '../../types'
+import { HomePageWorkout } from '../../types'
 import { NoOp } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
@@ -17,7 +17,7 @@ interface Props {
   onToggleFavorite?: () => void
   size: Size
   style?: ViewStyle
-  workout: Workout
+  workout: HomePageWorkout
 }
 
 function getCardSize(size: Size) {

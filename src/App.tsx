@@ -24,6 +24,7 @@ import * as Homepage from './webservices/homepage'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
+const arrowLeftIcon = require('../assets/arrow-left.png')
 
 i18n.fallbacks = true
 i18n.translations = { fr, en }
@@ -98,10 +99,12 @@ export default () => {
           <Stack.Navigator
             initialRouteName={'Home'}
             screenOptions={{
-              headerStyle: {
+              headerBackImage: () => <Image source={arrowLeftIcon} style={{height: 24, marginLeft: 16, width: 24}}/>,
+              headerBackTitleVisible: false,
+              headerStyle           : {
                 height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
               },
-              headerTitle: HeaderTitle,
+              headerTitle           : HeaderTitle,
             }}>
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
             <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }}/>
@@ -109,7 +112,8 @@ export default () => {
             <Stack.Screen name='Workout'
                           component={WorkoutScreen}
                           options={({ route }) => ({
-                            headerTitle: (props: StackHeaderTitleProps) => <HeaderTitle title={route.params['title']} {...props}/>,
+                            headerTitle      : (props: StackHeaderTitleProps) => <HeaderTitle
+                              title={route.params['title']} {...props}/>,
                             headerTransparent: true,
                           })}
             />

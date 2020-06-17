@@ -4,14 +4,14 @@ import { Image, ImageBackground, StyleSheet, TouchableOpacity } from 'react-nati
 import { SummaxColors } from '../../colors'
 import { Duration, Size as DurationSize } from '../../components/duration'
 import { Intensity, Size as IntensitySize } from '../../components/intensity'
-import { Workout } from '../../types'
+import { HomePageWorkout } from '../../types'
 import { NoOp } from '../../utils'
 
 const play = require('./play.png')
 
 interface Props {
   onPress?: () => void
-  workout: Workout
+  workout: HomePageWorkout
 }
 
 export function FeaturedWorkout({ onPress = NoOp, workout }: Props) {

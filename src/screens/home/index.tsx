@@ -7,19 +7,19 @@ import { useSelector } from 'react-redux'
 import { Separator } from '../../components/separator'
 import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { GlobalState } from '../../redux/store'
-import { Workout } from '../../types'
-import { DurationFilters } from './duration-filters'
+import { HomePageWorkout } from '../../types'
+import { DurationFilters } from '../../components/duration-filters'
 import { FeaturedWorkout } from './featuredWorkout'
-import { IntensityFilters } from './intensity-filters'
+import { IntensityFilters } from '../../components/intensity-filters'
 import { PopularWorkouts } from './popularWorkouts'
-import { TargetFilters } from './target-filters'
+import { TargetFilters } from '../../components/target-filters'
 
 export function HomeScreen() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const homepage = useSelector(({ contents: { homepage } }: GlobalState) => homepage)
   const navigation = useNavigation()
 
-  function navigateToWorkout(workout: Workout) {
+  function navigateToWorkout(workout: HomePageWorkout) {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })
   }
 

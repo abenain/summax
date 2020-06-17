@@ -1,9 +1,9 @@
-import { Button } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useRef } from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
 import { SummaxColors } from '../../colors'
+import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { Form as SignUpForm, FormHandle } from './form'
 
 const backgroundImage = require('../../../assets/login_background.png')
@@ -18,14 +18,11 @@ export function SignUpScreen() {
 
       <SignUpForm ref={signUpForm}/>
 
-      <Button
-        status='success'
-        style={[styles.button, styles.button]}
-        appearance='filled'
+      <SummaxButton
+        buttonStyle={ButtonStyle.GREEN}
         onPress={() => console.log(signUpForm.current.getValues())}
-        size='giant'>
-        {i18n.t('Sign up')}
-      </Button>
+        text={i18n.t('Sign up')}
+      />
 
     </ImageBackground>
   )
@@ -45,10 +42,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   button         : {
-    alignSelf: 'stretch',
-    margin: 0,
-    height: 56,
+    alignSelf      : 'stretch',
+    margin         : 0,
+    height         : 56,
     backgroundColor: SummaxColors.lightishGreen,
-    marginTop: 32,
+    marginTop      : 32,
   },
 })

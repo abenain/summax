@@ -1,20 +1,28 @@
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image, StyleSheet, ViewStyle } from 'react-native'
+import { Image, ImageSourcePropType, ImageStyle, StyleSheet, ViewStyle } from 'react-native'
 import { IntensityLevel } from '../../types'
 
-const thunder = require('./thunder.png')
+const boltGreen = require('./bolt-green.png')
+const boltGrey = require('./bolt-grey.png')
 
 export enum Size {
   SMALL,
   LARGE,
 }
 
+export enum IconMode {
+  MULTIPLE,
+  SINGLE,
+}
+
 interface Props {
+  iconMode?: IconMode
   level: IntensityLevel
   size: Size
   style?: ViewStyle
+  textColor?: string
 }
 
 function getText(level: IntensityLevel) {
@@ -62,13 +70,36 @@ function getTextStyle(size: Size) {
   }
 }
 
-export function Intensity({ level, size, style = {} }: Props) {
+function getOneIcon(size: Size, source: ImageSourcePropType, style = {} as ImageStyle){
+  return (
+    <Image source={source} style={[styles.icon, getIconStyle(size), style]}/>
+  )
+}
+
+function getIcons(iconMode: IconMode, level: IntensityLevel, size: Size){
+  switch(iconMode){
+    case IconMode.MULTIPLE:
+      return (
+        <>
+          {getOneIcon(size, boltGreen, {marginRight: 3})}
+          {getOneIcon(size, level > IntensityLevel.LOW ? boltGreen : boltGrey, {marginRight: 3})}
+          {getOneIcon(size, level > IntensityLevel.MEDIUM ? boltGreen : boltGrey)}
+        </>
+      )
+    case IconMode.SINGLE:
+      return getOneIcon(size, boltGreen)
+    default:
+      return null
+  }
+}
+
+export function Intensity({ iconMode = IconMode.SINGLE, level, size, style = {}, textColor = 'white' }: Props) {
   return (
     <Layout style={[styles.container, style]}>
 
-      <Image source={thunder} style={[styles.icon, getIconStyle(size)]}/>
+      {getIcons(iconMode, level, size)}
 
-      <Text style={[styles.text, getTextStyle(size)]}>{getText(level).toUpperCase()}</Text>
+      <Text style={[styles.text, getTextStyle(size), {color: textColor}]}>{getText(level).toUpperCase()}</Text>
 
     </Layout>
   )
@@ -84,7 +115,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   text     : {
-    color     : 'white',
     fontFamily: 'nexaXBold',
     lineHeight: 24,
   },

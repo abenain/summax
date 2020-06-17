@@ -1,7 +1,7 @@
 import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Image, ImageSourcePropType, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
-import { NoOp } from '../../../utils'
+import { NoOp } from '../../utils'
 
 interface Props {
   image: ImageSourcePropType

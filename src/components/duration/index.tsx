@@ -1,18 +1,28 @@
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, ImageSourcePropType, ImageStyle, StyleSheet } from 'react-native'
+import { WorkoutDuration } from '../../types'
+import { durationFrom } from '../duration-filters'
 
-const clock = require('./clock.png')
+const clockGreen = require('./clock-green.png')
+const clockGrey = require('./clock-grey.png')
 
 export enum Size {
   SMALL,
   LARGE,
 }
 
+export enum IconMode {
+  MULTIPLE,
+  SINGLE,
+}
+
 interface Props {
   durationMin: number
+  iconMode?: IconMode
   size: Size
+  textColor?: string
 }
 
 function getIconStyle(size: Size) {
@@ -47,13 +57,36 @@ function getTextStyle(size: Size) {
   }
 }
 
-export function Duration({ durationMin, size }: Props) {
+function getOneIcon(size: Size, source: ImageSourcePropType, style = {} as ImageStyle) {
+  return (
+    <Image source={source} style={[styles.icon, getIconStyle(size), style]}/>
+  )
+}
+
+function getIcons(iconMode: IconMode, level: WorkoutDuration, size: Size) {
+  switch (iconMode) {
+    case IconMode.MULTIPLE:
+      return (
+        <>
+          {getOneIcon(size, clockGreen, { marginRight: 3 })}
+          {getOneIcon(size, level > WorkoutDuration.SHORT ? clockGreen : clockGrey, { marginRight: 3 })}
+          {getOneIcon(size, level > WorkoutDuration.MEDIUM ? clockGreen : clockGrey)}
+        </>
+      )
+    case IconMode.SINGLE:
+      return getOneIcon(size, clockGreen)
+    default:
+      return null
+  }
+}
+
+export function Duration({ durationMin, iconMode = IconMode.SINGLE, size, textColor = 'white' }: Props) {
   return (
     <Layout style={styles.container}>
 
-      <Image source={clock} style={[styles.icon, getIconStyle(size)]}/>
+      {getIcons(iconMode, durationFrom(durationMin), size)}
 
-      <Text style={[styles.text, getTextStyle(size)]}>{i18n.t('X min', { durationMin })}</Text>
+      <Text style={[styles.text, getTextStyle(size), { color: textColor }]}>{i18n.t('X min', { durationMin })}</Text>
 
     </Layout>
   )
@@ -69,7 +102,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   text     : {
-    color     : 'white',
     fontFamily: 'nexaXBold',
     lineHeight: 24,
   },

@@ -2,15 +2,30 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { WorkoutDuration } from '../../../types'
-import { NoOp } from '../../../utils'
+import { WorkoutDuration } from '../../types'
+import { NoOp } from '../../utils'
 
 const short = require('./short.png')
 const medium = require('./medium.png')
 const long = require('./long.png')
 
+const SHORT_DURATION_MAX_MINS = 7
+const MEDIUM_DURATION_MAX_MINS = 14
+
 interface Props {
   onFilter?: (duration: WorkoutDuration) => void
+}
+
+export function durationFrom(durationMin: number){
+  if(durationMin <= SHORT_DURATION_MAX_MINS){
+    return WorkoutDuration.SHORT
+  }
+
+  if(durationMin <= MEDIUM_DURATION_MAX_MINS){
+    return WorkoutDuration.MEDIUM
+  }
+
+  return WorkoutDuration.LONG
 }
 
 export function DurationFilters({ onFilter = NoOp }: Props) {

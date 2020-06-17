@@ -3,12 +3,12 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
 import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
-import { Workout } from '../../types'
+import { HomePageWorkout } from '../../types'
 
 const x = require('./x.png')
 
 interface Props {
-  workouts: Workout[]
+  workouts: HomePageWorkout[]
 }
 
 export function PopularWorkouts({ workouts }: Props) {

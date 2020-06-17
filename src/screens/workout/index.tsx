@@ -1,25 +1,32 @@
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
-import { useEffect, useState } from 'react'
+import { LinearGradient } from 'expo-linear-gradient'
+import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
-import { LinearGradient } from 'expo-linear-gradient'
+import { SummaxColors } from '../../colors'
+import { Duration, Size as DurationSize } from '../../components/duration'
 import { ErrorPage } from '../../components/ErrorPage'
+import { IconMode as IntensityIconMode, Intensity, Size as IntensitySize } from '../../components/intensity'
 import { Loading } from '../../components/Loading'
+import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { targetToString } from '../../components/target-filters'
+import { Workout } from '../../types'
 import { load } from '../../webservices/workouts'
-import {Workout} from '../../types'
 
 const backgroundImage = require('../../../assets/login_background.png')
+const plusIcon = require('./plus.png')
 
 export function WorkoutScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'Workout'>>()
-  const {id: workoutId} = route.params
+  const { id: workoutId } = route.params
   const [isLoading, setIsLoading] = useState(true)
   const [workout, setWorkout] = useState(Maybe.nothing<Workout>())
 
-  useEffect(function componentDidMount(){
+  useEffect(function componentDidMount() {
     load(workoutId)
       .then((workout: Maybe<Workout>) => {
         setWorkout(workout)
@@ -27,12 +34,12 @@ export function WorkoutScreen() {
       })
   }, [])
 
-  if(isLoading){
-    return <Loading />
+  if (isLoading) {
+    return <Loading/>
   }
 
   return workout.caseOf({
-    just: workout => (
+    just   : workout => (
       <View style={{ flex: 1, width: '100%' }}>
         <StatusBar barStyle={'light-content'} translucent={true}/>
 
@@ -45,49 +52,161 @@ export function WorkoutScreen() {
                         locations={[0, .53, 1]}/>
 
         <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
+            <Layout style={styles.contents}>
 
-          <Layout style={styles.contents}>
+              <Layout style={styles.titleContainer}>
+                <Text style={styles.title}>{workout.title}</Text>
+              </Layout>
 
-            <Layout style={styles.titleContainer}>
-              <Text style={styles.title}>{workout.title}</Text>
+              <Layout style={styles.favoritesContainer}>
+                <Image source={plusIcon} style={styles.favoritesIcon}/>
+                <Text style={styles.favoritesText}>{i18n.t('Workout Description - Add to Favorites')}</Text>
+              </Layout>
+
+              <Layout style={styles.workoutFeatures}>
+
+                <Layout style={styles.workoutFeaturesSplitContainer}>
+                  <Layout style={styles.workoutFeaturesSplitLeftContainer}>
+                    <Text style={styles.workoutFeaturesText}>{workout.techniques.join(' ')}</Text>
+                  </Layout>
+                  <Layout style={styles.workoutFeaturesSplitRightContainer}>
+                    <Text style={styles.workoutFeaturesText}>{targetToString(workout.target)}</Text>
+                  </Layout>
+                </Layout>
+
+                <Text style={styles.workoutFeaturesDetails}>{workout.details}</Text>
+
+                <Layout style={styles.workoutFeaturesSplitContainer}>
+                  <Layout style={styles.workoutFeaturesSplitLeftContainer}>
+                    <Intensity
+                      iconMode={IntensityIconMode.MULTIPLE}
+                      size={IntensitySize.SMALL}
+                      level={workout.intensity}
+                      textColor={'black'}/>
+                  </Layout>
+                  <Layout style={styles.workoutFeaturesSplitRightContainer}>
+                    <Duration
+                      iconMode={IntensityIconMode.MULTIPLE}
+                      size={DurationSize.SMALL}
+                      durationMin={workout.durationMin}
+                      textColor={'black'}/>
+                  </Layout>
+                </Layout>
+
+              </Layout>
+
             </Layout>
+          </ScrollView>
 
+          <Layout style={styles.buttonContainer}>
+            <SummaxButton
+              buttonStyle={ButtonStyle.BLACK}
+              onPress={() => {
+              }}
+              text={i18n.t('Workout Description - Warm up')}
+            />
+            <SummaxButton
+              buttonStyle={ButtonStyle.GREEN}
+              onPress={() => {
+              }}
+              text={i18n.t('Workout Description - Workout')}
+            />
           </Layout>
         </SafeAreaView>
       </View>
     ),
-    nothing: () => <ErrorPage />
+    nothing: () => <ErrorPage/>
   })
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
+  backgroundImage                   : {
     width     : '100%',
     height    : 750,
     resizeMode: 'stretch',
     position  : 'absolute',
   },
-  colorGradient: {
+  colorGradient                     : {
     position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    top     : 0,
+    bottom  : 0,
+    left    : 0,
+    right   : 0,
   },
-  contents      : {
-    flex           : 1,
-    backgroundColor: 'transparent',
-    paddingTop     : 56,
+  contents                          : {
+    flex             : 1,
+    backgroundColor  : 'transparent',
+    paddingTop       : 56,
     paddingHorizontal: 16,
   },
-  titleContainer: {
-    marginTop: 100,
+  titleContainer                    : {
+    marginTop      : 100,
     backgroundColor: 'transparent'
   },
-  title: {
-    color: 'white',
+  title                             : {
+    color     : 'white',
     fontFamily: 'nexaHeavy',
-    fontSize: 30,
+    fontSize  : 30,
     lineHeight: 40,
-  }
+  },
+  favoritesContainer                : {
+    alignSelf      : 'stretch',
+    alignItems     : 'center',
+    backgroundColor: 'transparent',
+    flexDirection  : 'row',
+    marginTop      : 20,
+  },
+  favoritesIcon                     : {
+    height     : 20,
+    marginRight: 20,
+    width      : 20,
+  },
+  favoritesText                     : {
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    fontSize  : 18,
+    lineHeight: 24,
+  },
+  workoutFeatures                   : {
+    alignSelf        : 'stretch',
+    backgroundColor  : 'white',
+    borderRadius     : 5,
+    marginTop        : 30,
+    paddingHorizontal: 16,
+    paddingVertical  : 33,
+  },
+  workoutFeaturesSplitContainer     : {
+    alignItems   : 'center',
+    flexDirection: 'row',
+  },
+  workoutFeaturesSplitLeftContainer : {
+    alignItems      : 'center',
+    borderColor     : SummaxColors.lightGrey,
+    borderRightWidth: 1,
+    flex            : 1,
+  },
+  workoutFeaturesSplitRightContainer: {
+    alignItems: 'center',
+    flex      : 1,
+  },
+  workoutFeaturesText               : {
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+    lineHeight: 24,
+  },
+  workoutFeaturesDetails            : {
+    fontFamily    : 'nexaRegular',
+    fontSize      : 14,
+    lineHeight    : 20,
+    marginVertical: 16,
+  },
+  buttonContainer                   : {
+    alignItems       : 'center',
+    justifyContent   : 'space-between',
+    backgroundColor  : 'black',
+    flexDirection    : 'row',
+    paddingHorizontal: 16,
+    paddingTop       : 30,
+  },
 })

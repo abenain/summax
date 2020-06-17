@@ -2,8 +2,8 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { IntensityLevel } from '../../../types'
-import { NoOp } from '../../../utils'
+import { IntensityLevel } from '../../types'
+import { NoOp } from '../../utils'
 
 const low = require('./low.png')
 const medium = require('./medium.png')

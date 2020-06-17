@@ -2,8 +2,8 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
-import { Target } from '../../../types'
-import { NoOp } from '../../../utils'
+import { Target } from '../../types'
+import { NoOp } from '../../utils'
 import { Filter } from './filter'
 
 const target = require('./target.png')
@@ -14,6 +14,21 @@ const wholeBody = require('./whole_body.png')
 
 interface Props {
   onFilter?: (target: Target) => void
+}
+
+export function targetToString(target: Target){
+  switch(target){
+    case Target.CORE:
+      return i18n.t('Filter - Target - Core')
+    case Target.LOWER_BODY:
+      return i18n.t('Filter - Target - Lower body')
+    case Target.UPPER_BODY:
+      return i18n.t('Filter - Target - Upper body')
+    case Target.WHOLE_BODY:
+      return i18n.t('Filter - Target - Whole body')
+    default:
+      return ''
+  }
 }
 
 export function TargetFilters({ onFilter = NoOp }: Props) {
@@ -31,12 +46,12 @@ export function TargetFilters({ onFilter = NoOp }: Props) {
           image={upperBody}
           onPress={() => onFilter(Target.UPPER_BODY)}
           style={styles.leftFilter}
-          title={i18n.t('Filter - Target - Upper body')}/>
+          title={targetToString(Target.UPPER_BODY)}/>
         <Filter
           image={lowerBody}
           onPress={() => onFilter(Target.LOWER_BODY)}
           style={styles.rightFilter}
-          title={i18n.t('Filter - Target - Lower body')}/>
+          title={targetToString(Target.LOWER_BODY)}/>
       </Layout>
 
       <Layout style={[styles.filterRow]}>
@@ -44,12 +59,12 @@ export function TargetFilters({ onFilter = NoOp }: Props) {
           image={core}
           onPress={() => onFilter(Target.CORE)}
           style={styles.leftFilter}
-          title={i18n.t('Filter - Target - Core')}/>
+          title={targetToString(Target.CORE)}/>
         <Filter
           image={wholeBody}
           onPress={() => onFilter(Target.WHOLE_BODY)}
           style={styles.rightFilter}
-          title={i18n.t('Filter - Target - Whole body')}/>
+          title={targetToString(Target.WHOLE_BODY)}/>
       </Layout>
 
     </Layout>
