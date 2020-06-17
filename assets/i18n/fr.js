@@ -1,4 +1,5 @@
 const fr = {
+	'Error Page Message'            : 'Impossible de récupérer les exercices\n Etes-vous connecté à internet?',
 	'Filter - Duration - Long'      : '15 à 20 min.',
 	'Filter - Duration - Medium'    : '8 à 14 min.',
 	'Filter - Duration - Short'     : '4 à 7 min.',
