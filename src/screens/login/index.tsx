@@ -14,7 +14,7 @@ interface Props {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>
 }
 
-export function Login({ navigation }: Props) {
+export function LoginScreen({ navigation }: Props) {
   const loginForm = useRef<FormHandle>()
 
   return (

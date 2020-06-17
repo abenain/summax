@@ -14,7 +14,7 @@ import { IntensityFilters } from './intensity-filters'
 import { PopularWorkouts } from './popularWorkouts'
 import { TargetFilters } from './target-filters'
 
-export function Home() {
+export function HomeScreen() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const homepage = useSelector(({ contents: { homepage } }: GlobalState) => homepage)
   const navigation = useNavigation()

@@ -8,7 +8,7 @@ import { Form as SignUpForm, FormHandle } from './form'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
-export function SignUp() {
+export function SignUpScreen() {
   const signUpForm = useRef<FormHandle>()
 
   return (
