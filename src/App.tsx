@@ -19,6 +19,7 @@ import { getStore } from './redux/store'
 import { HomeScreen } from './screens/home'
 import { LoginScreen } from './screens/login'
 import { SignUpScreen } from './screens/signup'
+import { TrainingScreen } from './screens/training'
 import { WorkoutScreen } from './screens/workout'
 import * as Homepage from './webservices/homepage'
 
@@ -117,6 +118,7 @@ export default () => {
                             headerTransparent: true,
                           })}
             />
+            <Stack.Screen name='Training' component={TrainingScreen} options={{headerShown: false}}/>
           </Stack.Navigator>
         </NavigationContainer>
       </ApplicationProvider>

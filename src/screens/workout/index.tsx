@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import { LinearGradient } from 'expo-linear-gradient'
 import i18n from 'i18n-js'
@@ -22,10 +22,10 @@ const plusIcon = require('./plus.png')
 
 export function WorkoutScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'Workout'>>()
+  const navigation = useNavigation()
   const { id: workoutId } = route.params
   const [isLoading, setIsLoading] = useState(true)
   const [workout, setWorkout] = useState(Maybe.nothing<Workout>())
-
   useEffect(function componentDidMount() {
     load(workoutId)
       .then((workout: Maybe<Workout>) => {
@@ -102,14 +102,11 @@ export function WorkoutScreen() {
           <Layout style={styles.buttonContainer}>
             <SummaxButton
               buttonStyle={ButtonStyle.BLACK}
-              onPress={() => {
-              }}
               text={i18n.t('Workout Description - Warm up')}
             />
             <SummaxButton
               buttonStyle={ButtonStyle.GREEN}
-              onPress={() => {
-              }}
+              onPress={() => navigation.navigate('Training')}
               text={i18n.t('Workout Description - Workout')}
             />
           </Layout>
