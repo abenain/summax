@@ -25,11 +25,24 @@ export interface HomePageWorkout {
   title: string
 }
 
+export enum ExerciseModality {
+  REPETITIONS,
+  TIME,
+}
+
+export interface Exercise {
+  duration: number
+  modality: ExerciseModality
+  thumbnailImage: ImageSourcePropType
+  title: string
+}
+
 export interface Workout {
   backgroundImage?: ImageSourcePropType
   description: string
   details: string
   durationMin: number
+  exercises: Exercise[]
   id: string
   intensity: IntensityLevel
   target: Target

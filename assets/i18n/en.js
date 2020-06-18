@@ -1,5 +1,7 @@
 const en = {
 	'Error Page Message'                    : 'Couldn\'t fetch workouts\n Please check your internet connection',
+	'Exercise - Repetitions'                : 'repetitions',
+	'Exercise - Seconds'                    : 'seconds',
 	'Filter - Duration - Long'              : '15 to 20 min.',
 	'Filter - Duration - Medium'            : '8 to 14 min.',
 	'Filter - Duration - Short'             : '4 to 7 min.',

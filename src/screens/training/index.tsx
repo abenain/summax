@@ -17,6 +17,7 @@ import { ErrorPage } from '../../components/ErrorPage'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { GlobalState } from '../../redux/store'
 import { NoOp } from '../../utils'
+import { ExerciseList } from './ExerciseList'
 
 const greenClockIcon = require('../../../assets/clock-green.png')
 const nextIcon = require('./next.png')
@@ -75,36 +76,37 @@ export function TrainingScreen() {
           <SafeAreaView style={styles.safeContentsArea}>
             <Layout style={styles.contents}>
 
+
+              <Layout style={styles.titleContainer}>
+                <Text style={styles.title}>{workout.title}</Text>
+              </Layout>
+
+              <Layout style={styles.controlsContainer}>
+
+                <SummaxButton
+                  buttonStyle={ButtonStyle.WHITE}
+                  style={styles.chronoRepControl}>
+                  <Image
+                    source={greenClockIcon}
+                    style={styles.clockIcon}
+                    resizeMode={'contain'}/>
+                  <Text style={styles.controlsText}>1 : 30 : 27</Text>
+                </SummaxButton>
+
+                <SummaxButton
+                  buttonStyle={ButtonStyle.GREEN}
+                  style={styles.nextControl}
+                  onPress={NoOp}>
+                  <Image
+                    source={nextIcon}
+                    style={styles.nextIcon}
+                    resizeMode={'contain'}/>
+                  <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
+                </SummaxButton>
+              </Layout>
+
               <ScrollView style={{ flex: 1 }}>
-
-                <Layout style={styles.titleContainer}>
-                  <Text style={styles.title}>{workout.title}</Text>
-                </Layout>
-
-                <Layout style={styles.controlsContainer}>
-
-                  <SummaxButton
-                    buttonStyle={ButtonStyle.WHITE}
-                    style={styles.chronoRepControl}>
-                    <Image
-                      source={greenClockIcon}
-                      style={styles.clockIcon}
-                      resizeMode={'contain'}/>
-                    <Text style={styles.controlsText}>1 : 30 : 27</Text>
-                  </SummaxButton>
-
-                  <SummaxButton
-                    buttonStyle={ButtonStyle.GREEN}
-                    style={styles.nextControl}
-                    onPress={NoOp}>
-                    <Image
-                      source={nextIcon}
-                      style={styles.nextIcon}
-                      resizeMode={'contain'}/>
-                    <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
-                  </SummaxButton>
-                </Layout>
-
+                <ExerciseList exercises={workout.exercises}/>
               </ScrollView>
 
               <Layout style={styles.buttonContainer}>
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   titleContainer   : {
-    marginBottom: 36,
+    marginBottom: 30,
     marginTop   : 47,
   },
   title            : {
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     width       : 26,
   },
-  controlsText        : {
+  controlsText     : {
     fontFamily: 'nexaXBold',
     fontSize  : 18,
     lineHeight: 27,
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     width       : 36,
   },
-  nextText: {
+  nextText         : {
     color: 'white'
   },
   buttonContainer  : {
