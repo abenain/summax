@@ -14,22 +14,30 @@ import { IconMode as IntensityIconMode, Intensity, Size as IntensitySize } from 
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { targetToString } from '../../components/target-filters'
+import { ActionType } from '../../redux/actions'
+import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
 import { load } from '../../webservices/workouts'
+import {useDispatch, useSelector} from 'react-redux'
 
 const backgroundImage = require('../../../assets/login_background.png')
 const plusIcon = require('./plus.png')
 
 export function WorkoutScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'Workout'>>()
-  const navigation = useNavigation()
   const { id: workoutId } = route.params
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
+  const selectedWorkout = useSelector(({uiState: {selectedWorkout}}: GlobalState) => selectedWorkout)
   const [isLoading, setIsLoading] = useState(true)
-  const [workout, setWorkout] = useState(Maybe.nothing<Workout>())
+
   useEffect(function componentDidMount() {
     load(workoutId)
       .then((workout: Maybe<Workout>) => {
-        setWorkout(workout)
+        dispatch({
+          type: ActionType.SELECTED_WORKOUT,
+          workout
+        })
         setIsLoading(false)
       })
   }, [])
@@ -38,7 +46,7 @@ export function WorkoutScreen() {
     return <Loading/>
   }
 
-  return workout.caseOf({
+  return selectedWorkout.caseOf({
     just   : workout => (
       <View style={{ flex: 1, width: '100%' }}>
         <StatusBar barStyle={'light-content'} translucent={true}/>

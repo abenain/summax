@@ -1,36 +1,64 @@
-import { Layout } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
 import { Video } from 'expo-av'
 import VideoPlayer from 'expo-video-player'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Dimensions } from 'react-native'
-import { Loading } from '../../components/Loading'
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native'
+import { useSelector } from 'react-redux'
+import { ErrorPage } from '../../components/ErrorPage'
+import { GlobalState } from '../../redux/store'
 
 export function TrainingScreen() {
-  const [isLoading, setIsLoading] = useState(true)
+  const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
 
-  useEffect(() => {
-    setTimeout(() => setIsLoading(false), 2000)
-  }, [])
+  return selectedWorkout.caseOf({
+    just   : workout => (
+      <Layout style={styles.mainContainer}>
 
-  if (isLoading) {
-    return <Loading/>
-  }
+        <VideoPlayer
+          videoProps={{
+            shouldPlay: true,
+            resizeMode: Video.RESIZE_MODE_CONTAIN,
+            source    : {
+              uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            },
+          }}
+          inFullscreen={false}
+          height={233}
+          width={Dimensions.get('window').width}
+        />
 
-  return (
-    <Layout style={{ alignItems: 'center', flex: 1 }}>
-      <VideoPlayer
-        videoProps={{
-          shouldPlay: true,
-          resizeMode: Video.RESIZE_MODE_CONTAIN,
-          source    : {
-            uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-          },
-        }}
-        inFullscreen={false}
-        height={233}
-        width={Dimensions.get('window').width}
-      />
-    </Layout>
-  )
+        <SafeAreaView style={styles.safeContentsArea}>
+          <Layout style={styles.contents}>
+
+            <Layout style={{ marginTop: 47 }}>
+              <Text style={styles.title}>{workout.title}</Text>
+            </Layout>
+
+          </Layout>
+        </SafeAreaView>
+      </Layout>
+    ),
+    nothing: () => <ErrorPage/>
+  })
 }
+
+const styles = StyleSheet.create({
+  mainContainer   : {
+    alignItems: 'center',
+    flex      : 1,
+  },
+  safeContentsArea: {
+    alignSelf: 'stretch',
+    flex     : 1,
+  },
+  contents        : {
+    alignSelf        : 'stretch',
+    flex             : 1,
+    paddingHorizontal: 16,
+  },
+  title           : {
+    fontFamily: 'aktivGroteskXBold',
+    fontSize  : 30,
+    lineHeight: 27,
+  },
+})
