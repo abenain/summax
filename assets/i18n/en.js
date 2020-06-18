@@ -32,6 +32,7 @@ const en = {
 	'Sign in - No account yet'              : 'Don\'t have an account?',
 	'Sign in - Go to sign up'               : 'Sign up',
 	'Sign up'                               : 'Sign up',
+	'Training - Quit training'              : 'I\'m done',
 	'Workout Description - Add to Favorites': 'Add to My workouts',
 	'Workout Description - Warm up'         : 'Warm up',
 	'Workout Description - Workout'         : 'Workout',

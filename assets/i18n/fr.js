@@ -32,6 +32,7 @@ const fr = {
 	'Sign in - No account yet'              : 'Pas encore de compte?',
 	'Sign in - Go to sign up'               : 'Inscrivez-vous',
 	'Sign up'                               : 'S\'inscrire',
+	'Training - Quit training'              : 'J\'ai fini l\'entraînement',
 	'Workout Description - Add to Favorites': 'Ajouter à Mes entraînements',
 	'Workout Description - Warm up'         : 'S\'échauffer',
 	'Workout Description - Workout'         : 'S\'entraîner',

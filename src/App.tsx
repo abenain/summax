@@ -35,6 +35,7 @@ export type RootStackParamList = {
   Home: undefined
   Login: undefined
   SignUp: undefined
+  Training: undefined
   Workout: {
     id: string
     title: string
