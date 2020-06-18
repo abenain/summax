@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import { Subscription } from '@unimodules/core'
-import { Video } from 'expo-av'
+import { AVPlaybackStatus, Video } from 'expo-av'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
 import VideoPlayer from 'expo-video-player'
@@ -16,10 +16,12 @@ import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { GlobalState } from '../../redux/store'
+import { ExerciseModality } from '../../types'
 import { NoOp } from '../../utils'
 import { ExerciseList } from './ExerciseList'
 
 const greenClockIcon = require('../../../assets/clock-green.png')
+const repsIcon = require('../../../assets/clock-green.png')
 const nextIcon = require('./next.png')
 
 export function TrainingScreen() {
@@ -27,6 +29,8 @@ export function TrainingScreen() {
   const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
   const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
   const [isFullScreen, setIsFullScreen] = useState(false)
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(Maybe.nothing<number>())
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(function componentDidMount() {
     ScreenOrientation.unlockAsync()
@@ -42,6 +46,8 @@ export function TrainingScreen() {
       })
     )
 
+    setCurrentExerciseIndex(selectedWorkout.map(workout => (workout.exercises && workout.exercises.length) ? 0 : null))
+
     return function componentWillUnmount() {
       orientationChangedSubscription.current.caseOf({
         just   : subscription => {
@@ -55,27 +61,52 @@ export function TrainingScreen() {
     }
   }, [])
 
+  function nextExercise() {
+    const exerciseCount = selectedWorkout.valueOr({ exercises: [] }).exercises.length
+    currentExerciseIndex.caseOf({
+      just   : index => {
+        if (index < exerciseCount - 1) {
+          setCurrentExerciseIndex(Maybe.just(index + 1))
+        }
+      },
+      nothing: NoOp
+    })
+  }
+
   return selectedWorkout.caseOf({
     just   : workout => (
       <Layout style={styles.mainContainer}>
 
-        <VideoPlayer
-          videoProps={{
-            shouldPlay: true,
-            resizeMode: Video.RESIZE_MODE_CONTAIN,
-            source    : {
-              uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            },
-          }}
-          inFullscreen={isFullScreen}
-          height={isFullScreen ? Dimensions.get('window').height : 233}
-          width={Dimensions.get('window').width}
-        />
+        {currentExerciseIndex.caseOf({
+          just   : index => (
+            <VideoPlayer
+              key={index}
+              videoProps={{
+                isLooping : true,
+                shouldPlay: true,
+                resizeMode: Video.RESIZE_MODE_CONTAIN,
+                source    : {
+                  uri: workout.exercises[index].videoUrl
+                },
+              }}
+              inFullscreen={isFullScreen}
+              height={isFullScreen ? Dimensions.get('window').height : 233}
+              width={Dimensions.get('window').width}
+              playbackCallback={(status: AVPlaybackStatus) => setIsPlaying(status.isLoaded && status.isPlaying)}
+            />
+          ),
+          nothing: () => (
+            <Layout style={{
+              backgroundColor: 'black',
+              height         : isFullScreen ? Dimensions.get('window').height : 233,
+              width          : Dimensions.get('window').width,
+            }}/>
+          )
+        })}
 
         {isFullScreen === false && (
           <SafeAreaView style={styles.safeContentsArea}>
             <Layout style={styles.contents}>
-
 
               <Layout style={styles.titleContainer}>
                 <Text style={styles.title}>{workout.title}</Text>
@@ -86,17 +117,32 @@ export function TrainingScreen() {
                 <SummaxButton
                   buttonStyle={ButtonStyle.WHITE}
                   style={styles.chronoRepControl}>
-                  <Image
-                    source={greenClockIcon}
-                    style={styles.clockIcon}
-                    resizeMode={'contain'}/>
-                  <Text style={styles.controlsText}>1 : 30 : 27</Text>
+                  {
+                    currentExerciseIndex.caseOf({
+                      just   : index => {
+                        const currentExercise = workout.exercises[index]
+                        const icon = currentExercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
+                        const text = currentExercise.modality === ExerciseModality.TIME ? '1 : 30 : 27' : `${currentExercise.duration} reps`
+
+                        return (
+                          <>
+                            <Image
+                              source={icon}
+                              style={styles.clockIcon}
+                              resizeMode={'contain'}/>
+                            <Text style={[styles.controlsText, styles.timerText]}>{text}</Text>
+                          </>
+                        )
+                      },
+                      nothing: () => null
+                    })
+                  }
                 </SummaxButton>
 
                 <SummaxButton
                   buttonStyle={ButtonStyle.GREEN}
                   style={styles.nextControl}
-                  onPress={NoOp}>
+                  onPress={nextExercise}>
                   <Image
                     source={nextIcon}
                     style={styles.nextIcon}
@@ -106,7 +152,7 @@ export function TrainingScreen() {
               </Layout>
 
               <ScrollView style={{ flex: 1 }}>
-                <ExerciseList exercises={workout.exercises}/>
+                <ExerciseList activeIndex={currentExerciseIndex} exercises={workout.exercises}/>
               </ScrollView>
 
               <Layout style={styles.buttonContainer}>
@@ -167,6 +213,9 @@ const styles = StyleSheet.create({
     fontFamily: 'nexaXBold',
     fontSize  : 18,
     lineHeight: 27,
+  },
+  timerText        : {
+    fontVariant: ['tabular-nums'],
   },
   nextControl      : {
     borderBottomLeftRadius: 0,

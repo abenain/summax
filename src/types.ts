@@ -35,6 +35,7 @@ export interface Exercise {
   modality: ExerciseModality
   thumbnailImage: ImageSourcePropType
   title: string
+  videoUrl: string
 }
 
 export interface Workout {

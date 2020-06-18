@@ -2,10 +2,14 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
+import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Exercise, ExerciseModality } from '../../types'
 
+const playIcon = require('./play-green.png')
+
 interface Props {
+  activeIndex: Maybe<number>
   exercises: Exercise[]
 }
 
@@ -24,7 +28,7 @@ function getFormattedDuration(exercise: Exercise) {
   return `${exercise.duration} ${getDurationUnitsAsString(exercise.modality)}`
 }
 
-export function ExerciseList({ exercises }: Props) {
+export function ExerciseList({ activeIndex, exercises }: Props) {
   return (
     <Layout style={styles.container}>
       {exercises.map((exercise, index) => (
@@ -35,14 +39,26 @@ export function ExerciseList({ exercises }: Props) {
             index === 0 ? styles.firstExercise : {},
             index === exercises.length - 1 ? styles.lastExercise : {}
           ]}>
+
           <Image
             resizeMode={'contain'}
             source={exercise.thumbnailImage}
             style={styles.exerciseThumbnail}/>
-          <Layout style={styles.exerciseDetailsContainer}>
+
+            <Layout style={styles.exerciseDetailsContainer}>
             <Text style={styles.exerciseTitle}>{exercise.title}</Text>
             <Text style={styles.exerciseDuration}>{getFormattedDuration(exercise)}</Text>
           </Layout>
+
+          <Layout style={{justifyContent: 'center'}}>
+            {activeIndex.caseOf({
+              just   : activeIndex => index === activeIndex && (
+                <Image source={playIcon} style={styles.playIcon} resizeMode={'contain'}/>
+              ),
+              nothing: () => null
+            })}
+          </Layout>
+
         </Layout>
       ))}
     </Layout>
@@ -71,7 +87,9 @@ const styles = StyleSheet.create({
     width : 131,
   },
   exerciseDetailsContainer: {
-    padding: 16,
+    flex        : 1,
+    padding     : 16,
+    paddingRight: 4,
   },
   exerciseTitle           : {
     fontFamily: 'nexaXBold',
@@ -82,5 +100,9 @@ const styles = StyleSheet.create({
     fontFamily: 'nexaRegular',
     fontSize  : 12,
     lineHeight: 16,
+  },
+  playIcon                : {
+    height: 20,
+    width : 46,
   }
 })
