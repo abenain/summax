@@ -9,7 +9,7 @@ import VideoPlayer from 'expo-video-player'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
@@ -17,6 +17,9 @@ import { ErrorPage } from '../../components/ErrorPage'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { GlobalState } from '../../redux/store'
 import { NoOp } from '../../utils'
+
+const greenClockIcon = require('../../../assets/clock-green.png')
+const nextIcon = require('./next.png')
 
 export function TrainingScreen() {
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
@@ -63,7 +66,6 @@ export function TrainingScreen() {
               uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             },
           }}
-          debug={true}
           inFullscreen={isFullScreen}
           height={isFullScreen ? Dimensions.get('window').height : 233}
           width={Dimensions.get('window').width}
@@ -74,12 +76,38 @@ export function TrainingScreen() {
             <Layout style={styles.contents}>
 
               <ScrollView style={{ flex: 1 }}>
-                <Layout style={{ marginTop: 47 }}>
+
+                <Layout style={styles.titleContainer}>
                   <Text style={styles.title}>{workout.title}</Text>
                 </Layout>
+
+                <Layout style={styles.controlsContainer}>
+
+                  <SummaxButton
+                    buttonStyle={ButtonStyle.WHITE}
+                    style={styles.chronoRepControl}>
+                    <Image
+                      source={greenClockIcon}
+                      style={styles.clockIcon}
+                      resizeMode={'contain'}/>
+                    <Text style={styles.controlsText}>1 : 30 : 27</Text>
+                  </SummaxButton>
+
+                  <SummaxButton
+                    buttonStyle={ButtonStyle.GREEN}
+                    style={styles.nextControl}
+                    onPress={NoOp}>
+                    <Image
+                      source={nextIcon}
+                      style={styles.nextIcon}
+                      resizeMode={'contain'}/>
+                    <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
+                  </SummaxButton>
+                </Layout>
+
               </ScrollView>
 
-              <Layout style={{ marginTop: 33, height: 56 }}>
+              <Layout style={styles.buttonContainer}>
                 <SummaxButton
                   buttonStyle={ButtonStyle.GREEN}
                   text={i18n.t('Training - Quit training')}
@@ -97,22 +125,62 @@ export function TrainingScreen() {
 }
 
 const styles = StyleSheet.create({
-  mainContainer   : {
+  mainContainer    : {
     alignItems: 'center',
     flex      : 1,
   },
-  safeContentsArea: {
+  safeContentsArea : {
     alignSelf: 'stretch',
     flex     : 1,
   },
-  contents        : {
+  contents         : {
     alignSelf        : 'stretch',
     flex             : 1,
     paddingHorizontal: 16,
   },
-  title           : {
+  titleContainer   : {
+    marginBottom: 36,
+    marginTop   : 47,
+  },
+  title            : {
     fontFamily: 'aktivGroteskXBold',
     fontSize  : 30,
     lineHeight: 27,
+  },
+  controlsContainer: {
+    flexDirection: 'row'
+  },
+  chronoRepControl : {
+    borderBottomRightRadius: 0,
+    borderTopRightRadius   : 0,
+    height                 : 94,
+    marginRight            : 0,
+  },
+  clockIcon        : {
+    height      : 26,
+    marginBottom: 8,
+    width       : 26,
+  },
+  controlsText        : {
+    fontFamily: 'nexaXBold',
+    fontSize  : 18,
+    lineHeight: 27,
+  },
+  nextControl      : {
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius   : 0,
+    height                : 94,
+  },
+  nextIcon         : {
+    height      : 28,
+    marginBottom: 8,
+    width       : 36,
+  },
+  nextText: {
+    color: 'white'
+  },
+  buttonContainer  : {
+    marginTop: 33,
+    height   : 56,
   },
 })

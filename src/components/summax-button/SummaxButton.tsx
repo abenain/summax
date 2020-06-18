@@ -1,18 +1,21 @@
-import { Button, Text } from '@ui-kitten/components'
+import { Text } from '@ui-kitten/components'
 import * as React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { SummaxColors } from '../../colors'
 import { NoOp } from '../../utils'
 
 export enum ButtonStyle {
   BLACK,
   GREEN,
+  WHITE,
 }
 
 interface Props {
   buttonStyle?: ButtonStyle
+  children?: React.ReactNode
   onPress?: () => void
-  text: string
+  style?: ViewStyle
+  text?: string
 }
 
 function getStylesForButton(buttonStyle: ButtonStyle) {
@@ -21,8 +24,23 @@ function getStylesForButton(buttonStyle: ButtonStyle) {
       return [styles.baseButton, styles.blackButton]
     case ButtonStyle.GREEN:
       return [styles.baseButton, styles.greenButton]
+    case ButtonStyle.WHITE:
+      return [styles.baseButton, styles.whiteButton]
     default:
-      return {}
+      return []
+  }
+}
+
+function getStylesForText(buttonStyle: ButtonStyle) {
+  switch (buttonStyle) {
+    case ButtonStyle.BLACK:
+      return [styles.text, styles.blackButtonText]
+    case ButtonStyle.GREEN:
+      return [styles.text, styles.greenButtonText]
+    case ButtonStyle.WHITE:
+      return [styles.text, styles.whiteButtonText]
+    default:
+      return []
   }
 }
 
@@ -38,40 +56,65 @@ function getPropsForButton(buttonStyle: ButtonStyle) {
         status    : 'success',
         appearance: 'filled'
       }
+    case ButtonStyle.WHITE:
+      return {
+        status    : 'success',
+        appearance: 'filled'
+      }
     default:
       return {}
   }
 }
 
-export function SummaxButton({ buttonStyle = ButtonStyle.BLACK, onPress = NoOp, text }: Props) {
+export function SummaxButton({ buttonStyle = ButtonStyle.BLACK, children, onPress = NoOp, style = {}, text }: Props) {
   return (
-    <Button
-      style={getStylesForButton(buttonStyle)}
+    <TouchableOpacity
+      activeOpacity={.9}
+      style={[...getStylesForButton(buttonStyle), style]}
       onPress={onPress}
-      size='giant'
       {...getPropsForButton(buttonStyle)}>
-      {evaProps => <Text style={styles.text} {...evaProps}>{text}</Text>}
-    </Button>
+      {children ? children : (
+        <Text style={getStylesForText(buttonStyle)}>{text}</Text>
+      )}
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  baseButton : {
-    flex  : 1,
-    margin: 0,
-    height: 56,
+  baseButton     : {
+    alignItems    : 'center',
+    flex          : 1,
+    justifyContent: 'center',
+    margin        : 0,
+    height        : 56,
   },
-  blackButton: {
-    marginRight: 11,
-    borderWidth: 2,
-    borderColor: SummaxColors.lightishGreen
+  blackButton    : {
+    backgroundColor: 'black',
+    borderWidth    : 2,
+    borderColor    : SummaxColors.lightishGreen,
+    marginRight    : 11,
   },
-  greenButton: {
+  greenButton    : {
     backgroundColor: SummaxColors.lightishGreen
   },
-  text       : {
-    fontFamily: 'nexaXBold',
+  whiteButton    : {
+    backgroundColor: 'white',
+    borderWidth    : 2,
+    borderColor    : SummaxColors.lightishGreen,
+  },
+  text           : {
+    color     : 'white',
     fontSize  : 18,
     lineHeight: 24,
+  },
+  blackButtonText: {
+    fontFamily: 'nexaXBold',
+  },
+  whiteButtonText: {
+    color     : 'black',
+    fontFamily: 'nexaXBold',
+  },
+  greenButtonText: {
+    fontFamily: 'nexaHeavy',
   },
 })

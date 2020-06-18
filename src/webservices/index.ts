@@ -1,5 +1,5 @@
 const SCHEME_HTTP = 'http'
-const BACKEND_URL_DEV = '10.0.0.6:18000'
+const BACKEND_URL_DEV = '192.168.1.18:18000'
 
 export function getBackendUrl(){
   return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`

@@ -5,7 +5,7 @@ import { Image, ImageSourcePropType, ImageStyle, StyleSheet } from 'react-native
 import { WorkoutDuration } from '../../types'
 import { durationFrom } from '../duration-filters'
 
-const clockGreen = require('./clock-green.png')
+const clockGreen = require('../../../assets/clock-green.png')
 const clockGrey = require('./clock-grey.png')
 
 export enum Size {
