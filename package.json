@@ -13,14 +13,19 @@
   "dependencies": {
     "@eva-design/eva": "^2.0.0",
     "@react-native-community/masked-view": "0.1.6",
+    "@react-native-community/netinfo": "5.5.1",
     "@react-navigation/native": "^5.5.1",
     "@react-navigation/stack": "^5.4.2",
     "@ui-kitten/components": "^5.0.0",
     "@ui-kitten/eva-icons": "^5.0.0",
     "expo": "~37.0.3",
+    "expo-av": "~8.1.0",
     "expo-constants": "~9.0.0",
+    "expo-font": "~8.1.0",
+    "expo-linear-gradient": "~8.1.0",
     "expo-localization": "~8.1.0",
     "expo-splash-screen": "^0.2.3",
+    "expo-video-player": "^1.5.8",
     "i18n-js": "^3.7.0",
     "moment": "^2.26.0",
     "react": "~16.9.0",
@@ -34,9 +39,7 @@
     "react-native-web": "~0.11.7",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
-    "tsmonad": "^0.8.0",
-    "expo-font": "~8.1.0",
-    "expo-linear-gradient": "~8.1.0"
+    "tsmonad": "^0.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
