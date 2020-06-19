@@ -44,6 +44,21 @@ export function TrainingScreen() {
   }, [Math.floor(timerValue / 1000)])
 
   useEffect(() => {
+    const isTimedExercise = currentExercise.caseOf({
+      just: exercise => exercise.modality === ExerciseModality.TIME,
+      nothing: () => false
+    })
+
+    if(isTimedExercise && isPlaying){
+      startTimer()
+    }
+
+    if(isTimedExercise && isPlaying === false){
+      stopTimer()
+    }
+  }, [isPlaying])
+
+  useEffect(() => {
     selectedWorkout.caseOf({
       just   : workout => {
         if (selectedExerciseIndex >= 0 && selectedExerciseIndex < workout.exercises.length) {
@@ -80,10 +95,11 @@ export function TrainingScreen() {
       })
     )
 
-    selectExerciseAt(selectedWorkout.caseOf({
-      just   : workout => (workout.exercises && workout.exercises.length) ? 0 : null,
-      nothing: () => null
-    }))
+    selectedWorkout.caseOf({
+      just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0),
+      nothing: () => {}
+    })
+
 
     return function componentWillUnmount() {
       orientationChangedSubscription.current.caseOf({
@@ -122,7 +138,6 @@ export function TrainingScreen() {
         {currentExercise.caseOf({
           just   : exercise => (
             <VideoPlayer
-              key={selectedExerciseIndex}
               videoProps={{
                 isLooping : true,
                 shouldPlay: true,
