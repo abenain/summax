@@ -2,7 +2,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
 
-const summax = require('./summax.png')
+const summax = require('../../../assets/summax.png')
 
 interface Props {
   title?: string

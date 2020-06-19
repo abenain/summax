@@ -8,6 +8,7 @@ export enum ButtonStyle {
   BLACK,
   GREEN,
   WHITE,
+  WHITE_GREEN_TEXT,
 }
 
 interface Props {
@@ -25,6 +26,7 @@ function getStylesForButton(buttonStyle: ButtonStyle) {
     case ButtonStyle.GREEN:
       return [styles.baseButton, styles.greenButton]
     case ButtonStyle.WHITE:
+    case ButtonStyle.WHITE_GREEN_TEXT:
       return [styles.baseButton, styles.whiteButton]
     default:
       return []
@@ -39,6 +41,8 @@ function getStylesForText(buttonStyle: ButtonStyle) {
       return [styles.text, styles.greenButtonText]
     case ButtonStyle.WHITE:
       return [styles.text, styles.whiteButtonText]
+    case ButtonStyle.WHITE_GREEN_TEXT:
+      return [styles.text, styles.whiteGreenText]
     default:
       return []
   }
@@ -57,6 +61,7 @@ function getPropsForButton(buttonStyle: ButtonStyle) {
         appearance: 'filled'
       }
     case ButtonStyle.WHITE:
+    case ButtonStyle.WHITE_GREEN_TEXT:
       return {
         status    : 'success',
         appearance: 'filled'
@@ -114,6 +119,10 @@ const styles = StyleSheet.create({
   whiteButtonText: {
     color     : 'black',
     fontFamily: 'nexaXBold',
+  },
+  whiteGreenText : {
+    color     : SummaxColors.lightishGreen,
+    fontFamily: 'nexaHeavy',
   },
   greenButtonText: {
     fontFamily: 'nexaHeavy',

@@ -20,6 +20,7 @@ import { GlobalState } from '../../redux/store'
 import { Exercise, ExerciseModality } from '../../types'
 import { NoOp } from '../../utils'
 import { ExerciseList } from './ExerciseList'
+import { TrainingExit } from './TrainingExit'
 
 const greenClockIcon = require('../../../assets/clock-green.png')
 const repsIcon = require('../../../assets/clock-green.png')
@@ -38,6 +39,7 @@ export function TrainingScreen() {
     onCountdownExpired: () => nextExercise()
   })
   const [timerText, setTimerText] = useState(format(0))
+  const [isLeaving, setIsLeaving] = useState(false)
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -131,6 +133,23 @@ export function TrainingScreen() {
     navigation.navigate('Reward')
   }
 
+  if(isLeaving){
+    return <TrainingExit
+      onResume={() => {
+        const isTimedExercise = currentExercise.caseOf({
+          just: exercise => exercise.modality === ExerciseModality.TIME,
+          nothing: () => false
+        })
+
+        setIsLeaving(false)
+
+        if(isTimedExercise){
+          startTimer()
+        }
+      }}
+      onQuit={navigation.popToTop}/>
+  }
+
   return selectedWorkout.caseOf({
     just   : workout => (
       <Layout style={styles.mainContainer}>
@@ -217,7 +236,18 @@ export function TrainingScreen() {
                 <SummaxButton
                   buttonStyle={ButtonStyle.GREEN}
                   text={i18n.t('Training - Quit training')}
-                  onPress={() => navigation.popToTop()}
+                  onPress={() => {
+                    const isTimedExercise = currentExercise.caseOf({
+                      just: exercise => exercise.modality === ExerciseModality.TIME,
+                      nothing: () => false
+                    })
+
+                    if(isTimedExercise){
+                      stopTimer()
+                    }
+
+                    setIsLeaving(true)
+                  }}
                 />
               </Layout>
 
