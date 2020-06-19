@@ -15,6 +15,7 @@ import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
 import { ExerciseModality } from '../../types'
 import { NoOp } from '../../utils'
@@ -31,6 +32,32 @@ export function TrainingScreen() {
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(Maybe.nothing<number>())
   const [isPlaying, setIsPlaying] = useState(false)
+  const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({ countdown: true })
+  const [timerText, setTimerText] = useState(format(0))
+
+  useEffect(() => {
+    setTimerText(format(timerValue))
+  }, [Math.floor(timerValue / 1000)])
+
+
+  function selectExerciseAt(index: number) {
+    setCurrentExerciseIndex(Maybe.maybe(index))
+    setIsPlaying(true)
+
+    selectedWorkout.caseOf({
+      just   : workout => {
+        if (index !== undefined && index !== null && index >= 0 && index < workout.exercises.length) {
+          const selectedExercise = workout.exercises[index]
+
+          if (selectedExercise.modality === ExerciseModality.TIME) {
+            setTimerValue(selectedExercise.duration * 1000)
+            startTimer()
+          }
+        }
+      },
+      nothing: NoOp
+    })
+  }
 
   useEffect(function componentDidMount() {
     ScreenOrientation.unlockAsync()
@@ -46,7 +73,10 @@ export function TrainingScreen() {
       })
     )
 
-    setCurrentExerciseIndex(selectedWorkout.map(workout => (workout.exercises && workout.exercises.length) ? 0 : null))
+    selectExerciseAt(selectedWorkout.caseOf({
+      just   : workout => (workout.exercises && workout.exercises.length) ? 0 : null,
+      nothing: () => null
+    }))
 
     return function componentWillUnmount() {
       orientationChangedSubscription.current.caseOf({
@@ -58,6 +88,8 @@ export function TrainingScreen() {
       })
 
       ScreenOrientation.lockAsync(OrientationLock.PORTRAIT_UP)
+
+      stopTimer()
     }
   }, [])
 
@@ -66,7 +98,7 @@ export function TrainingScreen() {
     currentExerciseIndex.caseOf({
       just   : index => {
         if (index < exerciseCount - 1) {
-          setCurrentExerciseIndex(Maybe.just(index + 1))
+          selectExerciseAt(index + 1)
         }
       },
       nothing: NoOp
@@ -86,7 +118,7 @@ export function TrainingScreen() {
                 shouldPlay: true,
                 resizeMode: Video.RESIZE_MODE_CONTAIN,
                 source    : {
-                  uri: workout.exercises[index].videoUrl
+                  uri: index >= 0 ? workout.exercises[index].videoUrl : null
                 },
               }}
               inFullscreen={isFullScreen}
@@ -120,9 +152,9 @@ export function TrainingScreen() {
                   {
                     currentExerciseIndex.caseOf({
                       just   : index => {
-                        const currentExercise = workout.exercises[index]
-                        const icon = currentExercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
-                        const text = currentExercise.modality === ExerciseModality.TIME ? '1 : 30 : 27' : `${currentExercise.duration} reps`
+                        const currentExercise = index >= 0 && workout.exercises[index]
+                        const icon = currentExercise && currentExercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
+                        const text = currentExercise && currentExercise.modality === ExerciseModality.TIME ? timerText : `${currentExercise.duration} reps`
 
                         return (
                           <>
