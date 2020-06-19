@@ -83,6 +83,7 @@ export function SummaxButton({ buttonStyle = ButtonStyle.BLACK, children, onPres
 const styles = StyleSheet.create({
   baseButton     : {
     alignItems    : 'center',
+    borderRadius  : 5,
     flex          : 1,
     justifyContent: 'center',
     margin        : 0,
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   blackButtonText: {
-    fontFamily: 'nexaXBold',
+    fontFamily: 'nexaHeavy',
   },
   whiteButtonText: {
     color     : 'black',
