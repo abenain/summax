@@ -21,7 +21,11 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "fr.summax.app"
+    },
     "ios": {
+      "bundleIdentifier": "fr.summax.app",
       "supportsTablet": true
     }
   }

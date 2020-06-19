@@ -3,6 +3,10 @@
   "author": "Antoine Benain",
   "scripts": {
     "android": "expo start --android",
+    "build:android:staging": "expo build:android --release-channel staging-v1",
+    "build:android:prod": "expo build:android --release-channel prod-v1",
+    "build:ios:staging": "expo build:ios --release-channel staging-v1",
+    "build:ios:prod": "expo build:ios --release-channel prod-v1",
     "eject": "expo eject",
     "ios": "expo start --ios",
     "publish:prod": "expo publish --release-channel prod-v1",
