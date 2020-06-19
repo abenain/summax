@@ -281,9 +281,9 @@ const styles = StyleSheet.create({
     height                : 94,
   },
   nextIcon         : {
-    height      : 28,
-    marginBottom: 8,
-    width       : 36,
+    height      : 20,
+    marginBottom: 11,
+    width       : 29,
   },
   nextText         : {
     color: 'white'

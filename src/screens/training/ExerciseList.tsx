@@ -103,6 +103,6 @@ const styles = StyleSheet.create({
   },
   playIcon                : {
     height: 20,
-    width : 46,
+    width : 20,
   }
 })
