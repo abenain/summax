@@ -6,6 +6,7 @@ import { NoOp } from '../utils'
 export interface TimerConfig {
   countdown?: boolean
   countdownFromMs?: number
+  onCountdownExpired?: () => void
 }
 
 function formatNumberValue(value: number) {
@@ -20,14 +21,14 @@ export function format(durationMs: number) {
   return `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`
 }
 
-export function useTimer({ countdown, countdownFromMs } = {} as TimerConfig): [
+export function useTimer({ countdown, countdownFromMs, onCountdownExpired = NoOp } = {} as TimerConfig): [
   number,
   () => void,
   () => void,
   (newValueSeconds: number) => void
 ] {
   const latestTimeCapture = useRef(Maybe.nothing<moment.Moment>())
-  const running = useRef(true)
+  const isRunning = useRef(true)
   const animationFrameHandle = useRef(Maybe.nothing<number>())
   const internalValue = useRef(countdownFromMs ? countdownFromMs : 0)
   const [timerValue, setTimerValue] = useState(internalValue.current)
@@ -37,27 +38,36 @@ export function useTimer({ countdown, countdownFromMs } = {} as TimerConfig): [
     const previousCapture = latestTimeCapture.current.valueOr(now)
     const timeDelta = moment.duration(now.diff(previousCapture)).asMilliseconds()
 
-    internalValue.current = countdown ? internalValue.current - timeDelta : internalValue.current + timeDelta
+    if (countdown) {
+      internalValue.current = Math.max(internalValue.current - timeDelta, 0)
+      if (internalValue.current === 0) {
+        isRunning.current = false
+        onCountdownExpired()
+      }
+    } else {
+      internalValue.current = internalValue.current + timeDelta
+    }
+
     latestTimeCapture.current = Maybe.just(now)
     setTimerValue(internalValue.current)
 
-    if (running.current) {
+    if (isRunning.current) {
       animationFrameHandle.current = Maybe.just(requestAnimationFrame(updateTimerValue))
     }
   }
 
   function start() {
-    running.current = true
+    isRunning.current = true
     latestTimeCapture.current = Maybe.just(moment())
 
     animationFrameHandle.current = Maybe.just(requestAnimationFrame(updateTimerValue))
   }
 
   function stop() {
-    running.current = false
+    isRunning.current = false
 
     animationFrameHandle.current.caseOf({
-      just   : handle => clearTimeout(handle),
+      just   : handle => cancelAnimationFrame(handle),
       nothing: NoOp
     })
 

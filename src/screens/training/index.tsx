@@ -17,7 +17,7 @@ import { ErrorPage } from '../../components/ErrorPage'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
-import { ExerciseModality } from '../../types'
+import { Exercise, ExerciseModality } from '../../types'
 import { NoOp } from '../../utils'
 import { ExerciseList } from './ExerciseList'
 
@@ -30,24 +30,25 @@ export function TrainingScreen() {
   const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
   const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
   const [isFullScreen, setIsFullScreen] = useState(false)
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(Maybe.nothing<number>())
+  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
+  const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
   const [isPlaying, setIsPlaying] = useState(false)
-  const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({ countdown: true })
+  const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({
+    countdown         : true,
+    onCountdownExpired: () => nextExercise()
+  })
   const [timerText, setTimerText] = useState(format(0))
 
   useEffect(() => {
     setTimerText(format(timerValue))
   }, [Math.floor(timerValue / 1000)])
 
-
-  function selectExerciseAt(index: number) {
-    setCurrentExerciseIndex(Maybe.maybe(index))
-    setIsPlaying(true)
-
+  useEffect(() => {
     selectedWorkout.caseOf({
       just   : workout => {
-        if (index !== undefined && index !== null && index >= 0 && index < workout.exercises.length) {
-          const selectedExercise = workout.exercises[index]
+        if (selectedExerciseIndex >= 0 && selectedExerciseIndex < workout.exercises.length) {
+          const selectedExercise = workout.exercises[selectedExerciseIndex]
+          setCurrentExercise(Maybe.just(selectedExercise))
 
           if (selectedExercise.modality === ExerciseModality.TIME) {
             setTimerValue(selectedExercise.duration * 1000)
@@ -57,6 +58,12 @@ export function TrainingScreen() {
       },
       nothing: NoOp
     })
+  }, [selectedExerciseIndex])
+
+
+  const selectExerciseAt = (index: number) => {
+    setSelectedExerciseIndex(index)
+    setIsPlaying(true)
   }
 
   useEffect(function componentDidMount() {
@@ -95,30 +102,25 @@ export function TrainingScreen() {
 
   function nextExercise() {
     const exerciseCount = selectedWorkout.valueOr({ exercises: [] }).exercises.length
-    currentExerciseIndex.caseOf({
-      just   : index => {
-        if (index < exerciseCount - 1) {
-          selectExerciseAt(index + 1)
-        }
-      },
-      nothing: NoOp
-    })
+    if (selectedExerciseIndex >= 0 && selectedExerciseIndex < exerciseCount - 1) {
+      selectExerciseAt(selectedExerciseIndex + 1)
+    }
   }
 
   return selectedWorkout.caseOf({
     just   : workout => (
       <Layout style={styles.mainContainer}>
 
-        {currentExerciseIndex.caseOf({
-          just   : index => (
+        {currentExercise.caseOf({
+          just   : exercise => (
             <VideoPlayer
-              key={index}
+              key={selectedExerciseIndex}
               videoProps={{
                 isLooping : true,
                 shouldPlay: true,
                 resizeMode: Video.RESIZE_MODE_CONTAIN,
                 source    : {
-                  uri: index >= 0 ? workout.exercises[index].videoUrl : null
+                  uri: exercise.videoUrl
                 },
               }}
               inFullscreen={isFullScreen}
@@ -150,11 +152,10 @@ export function TrainingScreen() {
                   buttonStyle={ButtonStyle.WHITE}
                   style={styles.chronoRepControl}>
                   {
-                    currentExerciseIndex.caseOf({
-                      just   : index => {
-                        const currentExercise = index >= 0 && workout.exercises[index]
-                        const icon = currentExercise && currentExercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
-                        const text = currentExercise && currentExercise.modality === ExerciseModality.TIME ? timerText : `${currentExercise.duration} reps`
+                    currentExercise.caseOf({
+                      just   : exercise => {
+                        const icon = currentExercise && exercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
+                        const text = currentExercise && exercise.modality === ExerciseModality.TIME ? timerText : `${exercise.duration} reps`
 
                         return (
                           <>
@@ -184,7 +185,9 @@ export function TrainingScreen() {
               </Layout>
 
               <ScrollView style={{ flex: 1 }}>
-                <ExerciseList activeIndex={currentExerciseIndex} exercises={workout.exercises}/>
+                <ExerciseList
+                  activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
+                  exercises={workout.exercises}/>
               </ScrollView>
 
               <Layout style={styles.buttonContainer}>
