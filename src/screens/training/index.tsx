@@ -102,9 +102,17 @@ export function TrainingScreen() {
 
   function nextExercise() {
     const exerciseCount = selectedWorkout.valueOr({ exercises: [] }).exercises.length
-    if (selectedExerciseIndex >= 0 && selectedExerciseIndex < exerciseCount - 1) {
-      selectExerciseAt(selectedExerciseIndex + 1)
+
+    if(selectedExerciseIndex < 0){
+      return
     }
+
+    if (selectedExerciseIndex < exerciseCount - 1) {
+      selectExerciseAt(selectedExerciseIndex + 1)
+      return
+    }
+
+    navigation.navigate('Reward')
   }
 
   return selectedWorkout.caseOf({

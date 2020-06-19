@@ -18,6 +18,7 @@ import { ActionType } from './redux/actions'
 import { getStore } from './redux/store'
 import { HomeScreen } from './screens/home'
 import { LoginScreen } from './screens/login'
+import { RewardScreen } from './screens/reward'
 import { SignUpScreen } from './screens/signup'
 import { TrainingScreen } from './screens/training'
 import { WorkoutScreen } from './screens/workout'
@@ -34,6 +35,7 @@ i18n.locale = Localization.locale
 export type RootStackParamList = {
   Home: undefined
   Login: undefined
+  Reward: undefined
   SignUp: undefined
   Training: undefined
   Workout: {
@@ -101,7 +103,8 @@ export default () => {
           <Stack.Navigator
             initialRouteName={'Home'}
             screenOptions={{
-              headerBackImage: () => <Image source={arrowLeftIcon} style={{height: 24, marginLeft: 16, width: 24}}/>,
+              headerBackImage       : () => <Image source={arrowLeftIcon}
+                                                   style={{ height: 24, marginLeft: 16, width: 24 }}/>,
               headerBackTitleVisible: false,
               headerStyle           : {
                 height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
@@ -111,6 +114,7 @@ export default () => {
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
             <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }}/>
             <Stack.Screen name='Home' component={HomeScreen}/>
+            <Stack.Screen name='Reward' component={RewardScreen}/>
             <Stack.Screen name='Workout'
                           component={WorkoutScreen}
                           options={({ route }) => ({
@@ -119,7 +123,7 @@ export default () => {
                             headerTransparent: true,
                           })}
             />
-            <Stack.Screen name='Training' component={TrainingScreen} options={{headerShown: false}}/>
+            <Stack.Screen name='Training' component={TrainingScreen} options={{ headerShown: false }}/>
           </Stack.Navigator>
         </NavigationContainer>
       </ApplicationProvider>
