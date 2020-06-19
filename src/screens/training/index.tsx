@@ -23,7 +23,7 @@ import { ExerciseList } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
 
 const greenClockIcon = require('../../../assets/clock-green.png')
-const repsIcon = require('../../../assets/clock-green.png')
+const repsIcon = require('./reps.png')
 const nextIcon = require('./next.png')
 
 export function TrainingScreen() {
