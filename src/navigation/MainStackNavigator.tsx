@@ -1,12 +1,15 @@
-import { createStackNavigator, StackHeaderTitleProps } from '@react-navigation/stack'
+import { createStackNavigator } from '@react-navigation/stack'
+import Constants from 'expo-constants'
 import * as React from 'react'
-import { HeaderTitle } from '../components/header-title'
+import { Image, Platform } from 'react-native'
 import { LoginScreen } from '../screens/login'
-import { RewardScreen } from '../screens/reward'
+import { ProfileScreen } from '../screens/profile'
 import { SignUpScreen } from '../screens/signup'
-import { TrainingScreen } from '../screens/training'
-import { WorkoutScreen } from '../screens/workout'
 import { BottomTabNavigator } from './BottomTabNavigator'
+import { RightButtons } from './header/RightButtons'
+import { HeaderTitle } from './header/Title'
+
+const arrowLeftIcon = require('../../assets/arrow-left-black.png')
 
 export function MainStackNavigator() {
   const Stack = createStackNavigator()
@@ -15,21 +18,19 @@ export function MainStackNavigator() {
     <Stack.Navigator
       initialRouteName={'Home'}
       screenOptions={{
-        headerShown       : false
+        headerBackImage       : () => <Image source={arrowLeftIcon}
+                                             style={{ height: 24, marginLeft: 16, width: 24 }}/>,
+        headerBackTitleVisible: false,
+        headerStyle           : {
+          height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
+        },
+        headerTitle           : HeaderTitle,
+        headerRight           : props => <RightButtons {...props}/>,
       }}>
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name='Home' component={BottomTabNavigator}/>
-      <Stack.Screen name='Reward' component={RewardScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name='Workout'
-                    component={WorkoutScreen}
-                    options={({ route }) => ({
-                      headerTitle      : (props: StackHeaderTitleProps) => <HeaderTitle
-                        title={route.params['title']} {...props}/>,
-                      headerTransparent: true,
-                    })}
-      />
-      <Stack.Screen name='Training' component={TrainingScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
+      <Stack.Screen name='Profile' component={ProfileScreen}/>
     </Stack.Navigator>
   )
 }

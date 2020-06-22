@@ -2,13 +2,14 @@ import { createStackNavigator, StackHeaderTitleProps } from '@react-navigation/s
 import Constants from 'expo-constants'
 import * as React from 'react'
 import { Image, Platform } from 'react-native'
-import { HeaderTitle } from '../components/header-title'
 import { HomeScreen } from '../screens/home'
 import { RewardScreen } from '../screens/reward'
 import { TrainingScreen } from '../screens/training'
 import { WorkoutScreen } from '../screens/workout'
+import { RightButtons } from './header/RightButtons'
+import { HeaderTitle } from './header/Title'
 
-const arrowLeftIcon = require('../../assets/arrow-left.png')
+const arrowLeftIcon = require('../../assets/arrow-left-white.png')
 
 export function HomeStackNavigator() {
   const Stack = createStackNavigator()
@@ -24,6 +25,7 @@ export function HomeStackNavigator() {
           height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
         headerTitle           : HeaderTitle,
+        headerRight           : props => <RightButtons {...props}/>,
       }}>
       <Stack.Screen name="Home" component={HomeScreen}/>
       <Stack.Screen name='Reward' component={RewardScreen} options={{ headerShown: false }}/>
