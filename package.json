@@ -12,6 +12,7 @@
     "publish:prod": "expo publish --release-channel prod-v1",
     "publish:staging": "expo publish --release-channel staging-v1",
     "start": "expo start",
+    "upload:ios": "echo \"use this command to upload to Testflight: \nxcrun altool --upload-app --type ios --file \"path/to/application.ipa\" --username \"APPLE_ID\" --password \"APPLICATION_PASSWORD\"\"",
     "web": "expo start --web"
   },
   "dependencies": {
