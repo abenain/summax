@@ -6,7 +6,7 @@ import { LoginScreen } from '../screens/login'
 import { ProfileScreen } from '../screens/profile'
 import { SignUpScreen } from '../screens/signup'
 import { BottomTabNavigator } from './BottomTabNavigator'
-import { RightButtons } from './header/RightButtons'
+import { ButtonsTint, RightButtons } from './header/RightButtons'
 import { HeaderTitle } from './header/Title'
 
 const arrowLeftIcon = require('../../assets/arrow-left-black.png')
@@ -25,7 +25,7 @@ export function MainStackNavigator() {
           height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
         headerTitle           : HeaderTitle,
-        headerRight           : props => <RightButtons {...props}/>,
+        headerRight           : props => <RightButtons {...props} tint={ButtonsTint.DARK}/>,
       }}>
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }}/>

@@ -4,13 +4,34 @@ import * as React from 'react'
 import { Image, TouchableOpacity } from 'react-native'
 
 const personBlack = require('./person-black.png')
+const personWhite = require('./person-white.png')
 
-export function RightButtons(props: { tintColor?: string }) {
+export enum ButtonsTint {
+  DARK,
+  LIGHT,
+}
+
+interface Props {
+  tint?: ButtonsTint
+  tintColor?: string
+}
+
+function getPersonIcon(tint: ButtonsTint){
+  switch (tint) {
+    case ButtonsTint.DARK:
+      return personBlack
+    case ButtonsTint.LIGHT:
+    default:
+      return personWhite
+  }
+}
+
+export function RightButtons(props: Props) {
   const navigation = useNavigation()
   return (
-    <Layout style={{ paddingRight: 16 }} {...props}>
+    <Layout style={{ paddingRight: 16, backgroundColor: 'transparent' }} {...props}>
       <TouchableOpacity activeOpacity={.8} onPress={() => navigation.navigate('Profile')}>
-        <Image source={personBlack} style={{ height: 24, width: 24 }}/>
+        <Image source={getPersonIcon(props.tint)} style={{ height: 24, width: 24 }}/>
       </TouchableOpacity>
     </Layout>
   )

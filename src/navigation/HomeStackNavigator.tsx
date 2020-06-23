@@ -6,7 +6,7 @@ import { HomeScreen } from '../screens/home'
 import { RewardScreen } from '../screens/reward'
 import { TrainingScreen } from '../screens/training'
 import { WorkoutScreen } from '../screens/workout'
-import { RightButtons } from './header/RightButtons'
+import { ButtonsTint, RightButtons } from './header/RightButtons'
 import { HeaderTitle } from './header/Title'
 
 const arrowLeftIcon = require('../../assets/arrow-left-white.png')
@@ -25,7 +25,7 @@ export function HomeStackNavigator() {
           height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
         headerTitle           : HeaderTitle,
-        headerRight           : props => <RightButtons {...props}/>,
+        headerRight           : props => <RightButtons {...props} tint={ButtonsTint.DARK}/>,
       }}>
       <Stack.Screen name="Home" component={HomeScreen}/>
       <Stack.Screen name='Reward' component={RewardScreen} options={{ headerShown: false }}/>
@@ -35,6 +35,7 @@ export function HomeStackNavigator() {
                       headerTitle      : (props: StackHeaderTitleProps) => <HeaderTitle
                         title={route.params['title']} {...props}/>,
                       headerTransparent: true,
+                      headerRight           : props => <RightButtons {...props} tint={ButtonsTint.LIGHT}/>
                     })}
       />
       <Stack.Screen name='Training' component={TrainingScreen} options={{ headerShown: false }}/>
