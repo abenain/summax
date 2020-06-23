@@ -17,6 +17,10 @@ interface Props {
   style?: ViewStyle
 }
 
+export interface OtpFormHandle {
+  getOtpValue: () => string
+}
+
 export const OtpForm = forwardRef(({ message, onResendCodeRequest = NoOp, onValidityChanged = NoOp, style = {} }: Props, ref) => {
   const [otp, setOtp] = useState('')
 

@@ -23,6 +23,7 @@ const fr = {
 	'Intensity - High'                      : 'Haute',
 	'Intensity - Low'                       : 'Faible',
 	'Intensity - Medium'                    : 'Moyen',
+	'Onboarding - Continue'                 : 'Continuer',
 	'Placeholder - DOB'                     : 'Date de naissance',
 	'Placeholder - Email'                   : 'Adresse e-mail',
 	'Placeholder - Firstname'               : 'Prénom',

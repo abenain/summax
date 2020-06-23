@@ -15,7 +15,7 @@ export function HeaderTitle(props: Props){
       {props.title ? (
         <Text style={styles.title}>{props.title}</Text>
       ) : (
-        <Image source={summax} style={{ height: 19.6, width: 101 }}/>
+        <Image source={summax} style={{ height: 20, width: 103 }} resizeMode={'contain'}/>
       )}
     </Layout>
   )

@@ -9,6 +9,7 @@ import { SignUpScreen } from '../screens/signup'
 import { BottomTabNavigator } from './BottomTabNavigator'
 import { ButtonsTint, RightButtons } from './header/RightButtons'
 import { HeaderTitle } from './header/Title'
+import { OnboardingStackNavigator } from './OnboardingStackNavigator'
 
 const arrowLeftIcon = require('../../assets/arrow-left-black.png')
 const arrowLeftIconWhite = require('../../assets/arrow-left-white.png')
@@ -17,15 +18,15 @@ export function MainStackNavigator() {
   const Stack = createStackNavigator()
 
   const signUpScreensHeaderConfig = {
-    headerBackImage       : () => (
-      <View style={{flexDirection: 'row'}}>
+    headerBackImage  : () => (
+      <View style={{ flexDirection: 'row' }}>
         <Image source={arrowLeftIconWhite}
                style={{ height: 24, marginHorizontal: 16, width: 24 }}/>
-        <Text style={{fontFamily: 'nexaXBold', fontSize: 18, lineHeight: 24, color: 'white'}}>Retour</Text>
+        <Text style={{ fontFamily: 'nexaXBold', fontSize: 18, lineHeight: 24, color: 'white' }}>Retour</Text>
       </View>
     ),
-    headerRight: null,
-    headerTitle: null,
+    headerRight      : null,
+    headerTitle      : null,
     headerTransparent: true
   }
 
@@ -45,6 +46,7 @@ export function MainStackNavigator() {
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='SignUp' component={SignUpScreen} options={signUpScreensHeaderConfig}/>
       <Stack.Screen name='SignUpOtp' component={SignUpOtpScreen} options={signUpScreensHeaderConfig}/>
+      <Stack.Screen name='Onboarding' component={OnboardingStackNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Profile' component={ProfileScreen}/>
     </Stack.Navigator>

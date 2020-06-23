@@ -23,6 +23,7 @@ const en = {
 	'Intensity - High'                      : 'High',
 	'Intensity - Low'                       : 'Low',
 	'Intensity - Medium'                    : 'Medium',
+	'Onboarding - Continue'                 : 'Continue',
 	'Placeholder - DOB'                     : 'Date of birth',
 	'Placeholder - Email'                   : 'E-mail address',
 	'Placeholder - Firstname'               : 'First name',

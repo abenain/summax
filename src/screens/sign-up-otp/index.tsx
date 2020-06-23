@@ -1,27 +1,38 @@
 import { Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
+import { useRef } from 'react'
 import * as React from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
 import { SummaxColors } from '../../colors'
-import { OtpForm } from '../../components/OtpForm'
+import { OtpForm, OtpFormHandle } from '../../components/OtpForm'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { useNavigation } from '@react-navigation/native'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
 export function SignUpOtpScreen() {
+
+  const otpForm = useRef<OtpFormHandle>(null)
+  const navigation = useNavigation()
+
+  function checkOtp(){
+    console.log(`checking OTP ${otpForm.current.getOtpValue()}`)
+    navigation.navigate('Onboarding')
+  }
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
 
       <StatusBar barStyle={'light-content'}/>
 
       <Layout style={styles.formContainer}>
-        <OtpForm message={i18n.t('Sign up otp - Message')} style={{flex: 1}}/>
+        <OtpForm ref={otpForm} message={i18n.t('Sign up otp - Message')} style={{flex: 1}}/>
       </Layout>
 
       <Layout style={styles.buttonContainer}>
         <SummaxButton
           buttonStyle={ButtonStyle.GREEN}
-          onPress={() => console.log('check otp')}
+          onPress={checkOtp}
           text={i18n.t('Sign up otp - Button')}
         />
       </Layout>
