@@ -1,14 +1,12 @@
-import { Datepicker, Icon, Input, Layout } from '@ui-kitten/components'
+import { Datepicker, Icon, Input, Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import moment from 'moment'
 import * as React from 'react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 
-const DEFAULT_DOB_AS_STRING = '01/01/1980'
 const MIN_DOB = moment().subtract(120, 'years').toDate()
 const MAX_DOB = moment().subtract(10, 'years').toDate()
-const DOB_FORMAT = 'DD/MM/YYYY'
 
 const summax = require('./summax.png')
 
@@ -28,7 +26,7 @@ export interface FormHandle {
 
 export const Form = forwardRef(({}: Props, ref) => {
   const [email, setEmail] = useState('')
-  const [dob, setDob] = useState(moment(DEFAULT_DOB_AS_STRING, DOB_FORMAT).toDate())
+  const [dob, setDob] = useState(null)
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
   const [password, setPassword] = useState('')
@@ -68,28 +66,31 @@ export const Form = forwardRef(({}: Props, ref) => {
         placeholder={i18n.t('Placeholder - Firstname')}
         value={firstname}
         onChangeText={setFirstname}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Lastname')}
         value={lastname}
         onChangeText={setLastname}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Email')}
         value={email}
         onChangeText={setEmail}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
       <Datepicker
         date={dob}
         max={MAX_DOB}
         min={MIN_DOB}
-        placeholder={i18n.t('Placeholder - DOB')}
-        style={styles.input}
+        placeholder={props => {
+          const {style, ...restOfProps} = props
+          return <Text {...restOfProps} style={[style, styles.inputText]}>{i18n.t('Placeholder - DOB')}</Text>
+        }}
+        style={{...styles.input, ...styles.inputText}}
         onSelect={setDob}
       />
       <Input
@@ -99,7 +100,7 @@ export const Form = forwardRef(({}: Props, ref) => {
         accessoryRight={renderShowPasswordIcon}
         secureTextEntry={secureTextEntry}
         onChangeText={setPassword}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
@@ -107,7 +108,7 @@ export const Form = forwardRef(({}: Props, ref) => {
         value={passwordConfirm}
         secureTextEntry={true}
         onChangeText={setPasswordConfirm}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
 
     </Layout>
@@ -129,5 +130,10 @@ const styles = StyleSheet.create({
   },
   input    : {
     marginBottom: 22
+  },
+  inputText    : {
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+    fontWeight: 'bold',
   },
 })

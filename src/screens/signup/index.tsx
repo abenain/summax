@@ -1,3 +1,4 @@
+import { Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useRef } from 'react'
@@ -18,11 +19,13 @@ export function SignUpScreen() {
 
       <SignUpForm ref={signUpForm}/>
 
-      <SummaxButton
-        buttonStyle={ButtonStyle.GREEN}
-        onPress={() => console.log(signUpForm.current.getValues())}
-        text={i18n.t('Sign up')}
-      />
+      <Layout style={styles.buttonContainer}>
+        <SummaxButton
+          buttonStyle={ButtonStyle.GREEN}
+          onPress={() => console.log(signUpForm.current.getValues())}
+          text={i18n.t('Sign up')}
+        />
+      </Layout>
 
     </ImageBackground>
   )
