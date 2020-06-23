@@ -1,36 +1,28 @@
 import { Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useRef } from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
 import { SummaxColors } from '../../colors'
+import { OtpForm } from '../../components/OtpForm'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
-import { Form as SignUpForm, FormHandle } from './form'
-import { useNavigation } from '@react-navigation/native'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
-export function SignUpScreen() {
-  const signUpForm = useRef<FormHandle>()
-  const navigation = useNavigation()
-
-  function doSignUp(){
-    console.log(signUpForm.current.getValues())
-    navigation.navigate('SignUpOtp')
-  }
-
+export function SignUpOtpScreen() {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
 
       <StatusBar barStyle={'light-content'}/>
 
-      <SignUpForm ref={signUpForm}/>
+      <Layout style={styles.formContainer}>
+        <OtpForm message={i18n.t('Sign up otp - Message')} style={{flex: 1}}/>
+      </Layout>
 
       <Layout style={styles.buttonContainer}>
         <SummaxButton
           buttonStyle={ButtonStyle.GREEN}
-          onPress={doSignUp}
-          text={i18n.t('Sign up')}
+          onPress={() => console.log('check otp')}
+          text={i18n.t('Sign up otp - Button')}
         />
       </Layout>
 
@@ -45,6 +37,10 @@ const styles = StyleSheet.create({
     alignItems       : 'stretch',
     paddingHorizontal: 16,
     paddingBottom    : 36,
+  },
+  formContainer  : {
+    flex      : 1,
+    marginTop: 200,
   },
   buttonContainer: {
     paddingTop     : 36,
