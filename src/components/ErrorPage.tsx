@@ -8,14 +8,18 @@ const summaxIcon = require('../../assets/icon.png')
 const dimensions = Dimensions.get('window')
 const imageSize = Math.round(dimensions.width / 3)
 
-export function ErrorPage() {
+interface Props {
+  message?: string
+}
+
+export function ErrorPage({message = i18n.t('Error Page Message')}: Props) {
   return (
     <Layout style={styles.container}>
       <Layout style={styles.iconContainer}>
         <Image source={summaxIcon} style={styles.icon}/>
       </Layout>
       <Layout style={styles.messageContainer}>
-        <Text style={styles.message}>{i18n.t('Error Page Message')}</Text>
+        <Text style={styles.message}>{message}</Text>
       </Layout>
     </Layout>
   )

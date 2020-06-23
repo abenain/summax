@@ -1,5 +1,6 @@
+import moment from 'moment'
 import { Maybe } from 'tsmonad'
-import { User } from '../../types'
+import { Sex, User } from '../../types'
 import { Action } from '../actions'
 
 export interface UserData {
@@ -7,7 +8,15 @@ export interface UserData {
 }
 
 const initialState = {
-  user: Maybe.nothing(),
+  user: Maybe.just({
+    firstname: 'Tacko',
+    lastname : 'Fall',
+    email    : 'tacko@celtics.com',
+    dob      : moment('12/03/1999', 'DD/MM/YYYY').toDate(),
+    heightCm : 220,
+    weightKg : 125,
+    sex      : Sex.MALE
+  }),
 }
 
 export default function reducer(state = initialState, action: Action) {

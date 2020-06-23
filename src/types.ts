@@ -1,7 +1,18 @@
 import { ImageSourcePropType } from 'react-native'
 
+export enum Sex {
+  FEMALE,
+  MALE,
+}
+
 export interface User {
+  dob: Date
+  email: string
   firstname: string
+  heightCm: number
+  lastname: string
+  sex: Sex
+  weightKg: number
 }
 
 export enum IntensityLevel {
