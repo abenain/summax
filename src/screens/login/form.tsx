@@ -51,7 +51,7 @@ export const Form = forwardRef(({}: Props, ref) => {
         placeholder={i18n.t('Placeholder - Email')}
         value={email}
         onChangeText={setEmail}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
@@ -60,17 +60,16 @@ export const Form = forwardRef(({}: Props, ref) => {
         accessoryRight={renderShowPasswordIcon}
         secureTextEntry={secureTextEntry}
         onChangeText={setPassword}
-        textStyle={{ fontWeight: 'bold' }}
+        textStyle={styles.inputText}
       />
 
-      <Text category='s1'
-            style={{ marginBottom: 32, textDecorationLine: 'underline' }}>{i18n.t('Sign in - Forgot password')}</Text>
+      <Text style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>
 
       <Layout style={{ height: 100 }}/>
 
       <Layout style={{ flexDirection: 'row' }}>
-        <Text category='p1' style={{ marginRight: 8 }}>{i18n.t('Sign in - No account yet')}</Text>
-        <Text category='s1' style={{ textDecorationLine: 'underline' }}>{i18n.t('Sign in - Go to sign up')}</Text>
+        <Text style={[styles.smallText, { marginRight: 8 }]}>{i18n.t('Sign in - No account yet')}</Text>
+        <Text style={styles.hyperlinkText}>{i18n.t('Sign in - Go to sign up')}</Text>
       </Layout>
 
     </Layout>
@@ -78,19 +77,35 @@ export const Form = forwardRef(({}: Props, ref) => {
 })
 
 const styles = StyleSheet.create({
-  container: {
+  container    : {
     backgroundColor  : '#ffffff',
     borderRadius     : 5,
     paddingHorizontal: 16,
     paddingVertical  : 32,
   },
-  title    : {
+  title        : {
     alignSelf   : 'center',
     marginBottom: 32,
     width       : 103,
     height      : 20,
   },
-  input    : {
+  input        : {
     marginBottom: 22
+  },
+  inputText    : {
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+    fontWeight: 'bold',
+  },
+  hyperlinkText: {
+    fontFamily        : 'nexaXBold',
+    fontSize          : 14,
+    lineHeight        : 20,
+    textDecorationLine: 'underline'
+  },
+  smallText    : {
+    fontFamily: 'nexaRegular',
+    fontSize  : 14,
+    lineHeight: 20,
   },
 })

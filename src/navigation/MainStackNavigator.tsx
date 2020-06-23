@@ -16,7 +16,7 @@ export function MainStackNavigator() {
 
   return (
     <Stack.Navigator
-      initialRouteName={'Home'}
+      initialRouteName={'Login'}
       screenOptions={{
         headerBackImage       : () => <Image source={arrowLeftIcon}
                                              style={{ height: 24, marginLeft: 16, width: 24 }}/>,
