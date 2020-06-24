@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import moment from 'moment'
@@ -27,7 +28,9 @@ function getSexString(sex: Sex) {
 }
 
 export function ProfileScreen() {
+  const navigation = useNavigation()
   const user = useSelector(({ userData: { user } }: GlobalState) => user)
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {user.caseOf({
@@ -60,7 +63,8 @@ export function ProfileScreen() {
 
             <Separator style={{ marginVertical: 16 }}/>
 
-            <Field title={i18n.t('Profile - Targets')} editable={true}/>
+            <Field title={i18n.t('Profile - Objectives')} editable={true}
+                   onEditButtonPress={() => navigation.navigate('ProfileObjectives')}/>
 
             <Separator style={{ marginVertical: 16 }}/>
 

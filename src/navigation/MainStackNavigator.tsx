@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Image, Platform, Text, View } from 'react-native'
 import { LoginScreen } from '../screens/login'
 import { ProfileScreen } from '../screens/profile'
+import { ProfileObjectivesScreen } from '../screens/profile-objectives'
 import { SignUpOtpScreen } from '../screens/sign-up-otp'
 import { SignUpScreen } from '../screens/signup'
 import { BottomTabNavigator } from './BottomTabNavigator'
@@ -48,7 +49,8 @@ export function MainStackNavigator() {
       <Stack.Screen name='SignUpOtp' component={SignUpOtpScreen} options={signUpScreensHeaderConfig}/>
       <Stack.Screen name='Onboarding' component={OnboardingStackNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
-      <Stack.Screen name='Profile' component={ProfileScreen}/>
+      <Stack.Screen name='Profile' component={ProfileScreen} options={{headerRight: null}}/>
+      <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{headerRight: null}}/>
     </Stack.Navigator>
   )
 }
