@@ -75,6 +75,8 @@ const en = {
 	'Sign up otp - Button'                        : 'Confirm',
 	'Sign up otp - Message'                       : 'Please enter the 4 digit code sent to your email so we can sign you up.',
 	'Sign up otp - Resend code'                   : 'Resend code',
+	'Tab bar - Home'                              : 'Home',
+	'Tab bar - MyWorkouts'                        : 'My Workouts',
 	'Training - Next exercise'                    : 'Next exercise',
 	'Training - Quit training'                    : 'I\'m done',
 	'Training Exit - Are you sure'                : 'Do you really want to quit this workout?',
