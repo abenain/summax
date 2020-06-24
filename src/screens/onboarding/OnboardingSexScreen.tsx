@@ -8,10 +8,10 @@ import { SummaxColors } from '../../colors'
 import { Sex } from '../../types'
 import { BaseScreen } from './BaseScreen'
 
-const manLightIcon = require('./man-light.png')
-const manDarkIcon = require('./man-dark.png')
-const womanLightIcon = require('./woman-light.png')
-const womanDarkIcon = require('./woman-dark.png')
+const manLightIcon = require('./sex/man-light.png')
+const manDarkIcon = require('./sex/man-dark.png')
+const womanLightIcon = require('./sex/woman-light.png')
+const womanDarkIcon = require('./sex/woman-dark.png')
 
 function getWomanIcon(selectedSex: Sex) {
   if (selectedSex === Sex.FEMALE) {

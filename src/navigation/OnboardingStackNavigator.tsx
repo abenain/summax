@@ -3,7 +3,7 @@ import Constants from 'expo-constants'
 import * as React from 'react'
 import { Image, Platform } from 'react-native'
 import { OnboardingSexScreen } from '../screens/onboarding/OnboardingSexScreen'
-import { OnboardingTargetScreen } from '../screens/onboarding/OnboardingTargetScreen'
+import { OnboardingObjectivesScreen } from '../screens/onboarding/OnboardingObjectivesScreen'
 import { HeaderTitle } from './header/Title'
 
 const arrowLeftIcon = require('../../assets/arrow-left-black.png')
@@ -24,7 +24,7 @@ export function OnboardingStackNavigator() {
         headerTitle           : HeaderTitle,
       }}>
       <Stack.Screen name="OnboardingSex" component={OnboardingSexScreen} options={{ headerBackImage: null }}/>
-      <Stack.Screen name="OnboardingTarget" component={OnboardingTargetScreen}/>
+      <Stack.Screen name="OnboardingTarget" component={OnboardingObjectivesScreen}/>
     </Stack.Navigator>
   )
 }
