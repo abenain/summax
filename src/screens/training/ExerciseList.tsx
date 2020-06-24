@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   exerciseContainer       : {
     borderBottomWidth: 1,
-    borderColor      : SummaxColors.lightGrey,
+    borderColor      : SummaxColors.darkerGrey,
     flexDirection    : 'row',
     paddingVertical  : 16,
   },

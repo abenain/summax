@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   resendCode               : {
     alignSelf         : 'center',
-    color             : 'rgb(34,43,69)',
+    color             : SummaxColors.dark,
     fontFamily        : 'nexaXBold',
     fontSize          : 14,
     lineHeight        : 20,

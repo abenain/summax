@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   workoutFeaturesSplitLeftContainer : {
     alignItems      : 'center',
-    borderColor     : SummaxColors.lightGrey,
+    borderColor     : SummaxColors.darkerGrey,
     borderRightWidth: 1,
     flex            : 1,
   },
