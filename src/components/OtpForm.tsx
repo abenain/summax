@@ -2,7 +2,6 @@ import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { forwardRef, useImperativeHandle, useState } from 'react'
 import { Image, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { SummaxColors } from '../colors'
 import { NoOp } from '../utils'
@@ -13,23 +12,13 @@ const summaxIcon = require('../../assets/summax.png')
 interface Props {
   message: string
   onResendCodeRequest?: () => void
-  onValidityChanged?: (valid: boolean) => void
+  onChange: (value: string) => void
   style?: ViewStyle
+  value: string
 }
 
-export interface OtpFormHandle {
-  getOtpValue: () => string
-}
 
-export const OtpForm = forwardRef(({ message, onResendCodeRequest = NoOp, onValidityChanged = NoOp, style = {} }: Props, ref) => {
-  const [otp, setOtp] = useState('')
-
-  useImperativeHandle(ref, () => ({
-    getOtpValue: function () {
-      return otp
-    }
-  }))
-
+export function OtpForm({ message, onResendCodeRequest = NoOp, onChange, style = {}, value }: Props) {
   return (
     <Layout style={[styles.container, style]}>
 
@@ -40,11 +29,8 @@ export const OtpForm = forwardRef(({ message, onResendCodeRequest = NoOp, onVali
       <OTPInputView
         style={styles.otpView}
         pinCount={OTP_DIGIT_COUNT}
-        code={otp}
-        onCodeChanged={code => {
-          setOtp(code)
-          onValidityChanged(code.length === OTP_DIGIT_COUNT)
-        }}
+        code={value}
+        onCodeChanged={onChange}
         autoFocusOnLoad={false}
         codeInputFieldStyle={styles.underlineStyleBase}
         codeInputHighlightStyle={styles.underlineStyleHighLighted}
@@ -56,7 +42,7 @@ export const OtpForm = forwardRef(({ message, onResendCodeRequest = NoOp, onVali
 
     </Layout>
   )
-})
+}
 
 const styles = StyleSheet.create({
   container                : {

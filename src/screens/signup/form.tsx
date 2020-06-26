@@ -2,7 +2,7 @@ import { Datepicker, Icon, Input, Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import moment from 'moment'
 import * as React from 'react'
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { useState } from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 
 const MIN_DOB = moment().subtract(120, 'years').toDate()
@@ -11,40 +11,22 @@ const MAX_DOB = moment().subtract(10, 'years').toDate()
 const summax = require('./summax.png')
 
 interface Props {
-
+  confirmPasswordValue?: string
+  dobValue?: Date
+  emailValue?: string
+  firstnameValue?: string
+  lastnameValue?: string
+  onConfirmPasswordChanged?: (value: string) => void
+  onDobChanged?: (value: Date) => void
+  onEmailChanged?: (value: string) => void
+  onFirstnameChanged?: (value: string) => void
+  onLastnameChanged?: (value: string) => void
+  onPasswordChanged?: (value: string) => void
+  passwordValue?: string
 }
 
-export interface FormHandle {
-  getValues: () => ({
-    email: string,
-    firstname: string,
-    lastname: string,
-    password: string,
-    passwordConfirm: string,
-  })
-}
-
-export const Form = forwardRef(({}: Props, ref) => {
-  const [email, setEmail] = useState('')
-  const [dob, setDob] = useState(null)
-  const [firstname, setFirstname] = useState('')
-  const [lastname, setLastname] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
+export function Form({ confirmPasswordValue, dobValue, emailValue, firstnameValue, lastnameValue, onConfirmPasswordChanged, onDobChanged, onEmailChanged, onFirstnameChanged, onLastnameChanged, onPasswordChanged, passwordValue }: Props) {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
-
-  useImperativeHandle(ref, () => ({
-    getValues: function () {
-      return {
-        email,
-        dob,
-        firstname,
-        lastname,
-        password,
-        passwordConfirm,
-      }
-    }
-  }))
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry)
@@ -64,56 +46,56 @@ export const Form = forwardRef(({}: Props, ref) => {
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Firstname')}
-        value={firstname}
-        onChangeText={setFirstname}
+        value={firstnameValue}
+        onChangeText={onFirstnameChanged}
         textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Lastname')}
-        value={lastname}
-        onChangeText={setLastname}
+        value={lastnameValue}
+        onChangeText={onLastnameChanged}
         textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Email')}
-        value={email}
-        onChangeText={setEmail}
+        value={emailValue}
+        onChangeText={onEmailChanged}
         textStyle={styles.inputText}
       />
       <Datepicker
-        date={dob}
+        date={dobValue}
         max={MAX_DOB}
         min={MIN_DOB}
         placeholder={props => {
-          const {style, ...restOfProps} = props
+          const { style, ...restOfProps } = props
           return <Text {...restOfProps} style={[style, styles.inputText]}>{i18n.t('Placeholder - DOB')}</Text>
         }}
-        style={{...styles.input, ...styles.inputText}}
-        onSelect={setDob}
+        style={{ ...styles.input, ...styles.inputText }}
+        onSelect={onDobChanged}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Password')}
-        value={password}
+        value={passwordValue}
         accessoryRight={renderShowPasswordIcon}
         secureTextEntry={secureTextEntry}
-        onChangeText={setPassword}
+        onChangeText={onPasswordChanged}
         textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Password confirm')}
-        value={passwordConfirm}
+        value={confirmPasswordValue}
         secureTextEntry={true}
-        onChangeText={setPasswordConfirm}
+        onChangeText={onConfirmPasswordChanged}
         textStyle={styles.inputText}
       />
 
     </Layout>
   )
-})
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -131,7 +113,7 @@ const styles = StyleSheet.create({
   input    : {
     marginBottom: 22
   },
-  inputText    : {
+  inputText: {
     fontFamily: 'nexaXBold',
     fontSize  : 14,
     fontWeight: 'bold',

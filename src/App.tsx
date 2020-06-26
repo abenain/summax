@@ -28,6 +28,9 @@ export type RootStackParamList = {
   Login: undefined
   Reward: undefined
   SignUp: undefined
+  SignUpOtp: {
+    id: string
+  }
   Training: undefined
   Workout: {
     id: string

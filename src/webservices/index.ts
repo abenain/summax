@@ -31,7 +31,7 @@ export function getApiBaseUrl(){
 }
 
 export function checkFetchResponseIsOKOrThrow(response: Response) {
-  if (response.status !== 200) {
+  if (response.status !== 200 && response.status !== 201) {
     throw {
       status: response.status,
     }
