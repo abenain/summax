@@ -11,10 +11,11 @@ interface Props {
   emailValue?: string
   onEmailChanged?: (email: string) => void
   onPasswordChanged?: (password: string) => void
+  onSignUpPressed?: () => void
   passwordValue?: string
 }
 
-export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged = NoOp, passwordValue = '' }: Props) {
+export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged = NoOp, onSignUpPressed = NoOp, passwordValue = '' }: Props) {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   const toggleSecureEntry = () => {
@@ -49,13 +50,13 @@ export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged
         textStyle={styles.inputText}
       />
 
-      <Text style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>
+      {false && <Text style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>}
 
       <Layout style={{ height: 100 }}/>
 
       <Layout style={{ flexDirection: 'row' }}>
         <Text style={[styles.smallText, { marginRight: 8 }]}>{i18n.t('Sign in - No account yet')}</Text>
-        <Text style={styles.hyperlinkText}>{i18n.t('Sign in - Go to sign up')}</Text>
+        <Text style={styles.hyperlinkText} onPress={onSignUpPressed}>{i18n.t('Sign in - Go to sign up')}</Text>
       </Layout>
 
     </Layout>

@@ -52,6 +52,10 @@ export function LoginScreen({ navigation }: Props) {
     })
   }
 
+  function goToSignUp(){
+    navigation.navigate('SignUp')
+  }
+
   return isLoading ? (
     <Loading/>
   ) : (
@@ -78,12 +82,13 @@ export function LoginScreen({ navigation }: Props) {
           setPassword(password)
           setError(Maybe.nothing())
         }}
+        onSignUpPressed={goToSignUp}
         passwordValue={password}/>
 
       <Layout style={styles.buttonContainer}>
         <SummaxButton
           buttonStyle={ButtonStyle.BLACK}
-          onPress={() => navigation.navigate('SignUp')}
+          onPress={goToSignUp}
           text={i18n.t('Sign up')}
         />
         <SummaxButton
