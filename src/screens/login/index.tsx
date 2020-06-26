@@ -1,13 +1,18 @@
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Layout } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useRef } from 'react'
+import { useState } from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
+import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
+import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
-import { Form as LoginForm, FormHandle } from './form'
+import { ActionType } from '../../redux/actions'
+import { authenticate } from '../../webservices/auth'
+import { Form as LoginForm } from './form'
+import {useDispatch} from 'react-redux'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
@@ -16,14 +21,64 @@ interface Props {
 }
 
 export function LoginScreen({ navigation }: Props) {
-  const loginForm = useRef<FormHandle>()
+  const dispatch = useDispatch()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(Maybe.nothing<string>())
+  const [isLoading, setLoading] = useState(false)
 
-  return (
+  function onSignInButtonPress() {
+    if (!email || !password) {
+      setError(Maybe.just(i18n.t('Sign in - Fill in the fields')))
+      return
+    }
+
+    setError(Maybe.nothing())
+    setLoading(true)
+
+    authenticate(email, password).then(maybeTokens => {
+      maybeTokens.caseOf({
+        just   : ({access, refresh}) => {
+          dispatch({
+            type: ActionType.GOT_TOKENS,
+            access,
+            refresh,
+          })
+          navigation.replace('Home')
+        },
+        nothing: () => setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
+      })
+      setLoading(false)
+    })
+  }
+
+  return isLoading ? (
+    <Loading/>
+  ) : (
     <ImageBackground source={backgroundImage} style={styles.background}>
 
       <StatusBar barStyle={'light-content'}/>
 
-      <LoginForm ref={loginForm}/>
+      {error.caseOf({
+        just   : errorMessage => (
+          <Layout style={styles.errorContainer}>
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          </Layout>
+        ),
+        nothing: () => null
+      })}
+
+      <LoginForm
+        emailValue={email}
+        onEmailChanged={(email: string) => {
+          setEmail(email)
+          setError(Maybe.nothing())
+        }}
+        onPasswordChanged={(password: string) => {
+          setPassword(password)
+          setError(Maybe.nothing())
+        }}
+        passwordValue={password}/>
 
       <Layout style={styles.buttonContainer}>
         <SummaxButton
@@ -33,10 +88,7 @@ export function LoginScreen({ navigation }: Props) {
         />
         <SummaxButton
           buttonStyle={ButtonStyle.GREEN}
-          onPress={() => {
-            console.log(loginForm.current.getValues())
-            navigation.replace('Home')
-          }}
+          onPress={onSignInButtonPress}
           text={i18n.t('Sign in')}
         />
       </Layout>
@@ -52,6 +104,20 @@ const styles = StyleSheet.create({
     alignItems       : 'stretch',
     paddingHorizontal: 16,
     paddingBottom    : 36,
+  },
+  errorContainer : {
+    justifyContent   : 'center',
+    backgroundColor  : SummaxColors.salmonPink,
+    borderRadius     : 5,
+    height           : 60,
+    marginBottom     : 16,
+    paddingHorizontal: 16,
+  },
+  errorMessage   : {
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+    lineHeight: 20,
   },
   buttonContainer: {
     paddingTop     : 36,

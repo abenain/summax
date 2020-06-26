@@ -1,35 +1,21 @@
 import { Icon, Input, Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { useState } from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { NoOp } from '../../utils'
 
 const summax = require('./summax.png')
 
 interface Props {
-
+  emailValue?: string
+  onEmailChanged?: (email: string) => void
+  onPasswordChanged?: (password: string) => void
+  passwordValue?: string
 }
 
-export interface FormHandle {
-  getValues: () => ({
-    email: string,
-    password: string,
-  })
-}
-
-export const Form = forwardRef(({}: Props, ref) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged = NoOp, passwordValue = '' }: Props) {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
-
-  useImperativeHandle(ref, () => ({
-    getValues: function () {
-      return {
-        email,
-        password
-      }
-    }
-  }))
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry)
@@ -49,17 +35,17 @@ export const Form = forwardRef(({}: Props, ref) => {
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Email')}
-        value={email}
-        onChangeText={setEmail}
+        value={emailValue}
+        onChangeText={onEmailChanged}
         textStyle={styles.inputText}
       />
       <Input
         style={styles.input}
         placeholder={i18n.t('Placeholder - Password')}
-        value={password}
+        value={passwordValue}
         accessoryRight={renderShowPasswordIcon}
         secureTextEntry={secureTextEntry}
-        onChangeText={setPassword}
+        onChangeText={onPasswordChanged}
         textStyle={styles.inputText}
       />
 
@@ -74,7 +60,7 @@ export const Form = forwardRef(({}: Props, ref) => {
 
     </Layout>
   )
-})
+}
 
 const styles = StyleSheet.create({
   container    : {
