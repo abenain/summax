@@ -23,6 +23,7 @@ const en = {
 	'Intensity - High'                            : 'High',
 	'Intensity - Low'                             : 'Low',
 	'Intensity - Medium'                          : 'Medium',
+	'My Workouts - Resume'                        : 'Resume',
 	'Onboarding - Continue'                       : 'Continue',
 	'Onboarding - Progress'                       : '{{current}} on {{total}}',
 	'Onboarding - Sex - Instructions'             : 'Summax needs you to answer a couple of questions in order to provide the most suited workouts.',

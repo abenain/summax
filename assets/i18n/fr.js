@@ -23,6 +23,7 @@ const fr = {
 	'Intensity - High'                        : 'Haute',
 	'Intensity - Low'                         : 'Faible',
 	'Intensity - Medium'                      : 'Moyen',
+	'My Workouts - Resume'                    : 'Reprendre',
 	'Onboarding - Continue'                   : 'Continuer',
 	'Onboarding - Progress'                   : '{{current}} sur {{total}}',
 	'Onboarding - Sex - Instructions'         : 'Summax a besoin de quelques informations pour vous fournir les meilleurs exercices possibles.',
