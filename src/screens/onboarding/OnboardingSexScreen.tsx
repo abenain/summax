@@ -4,13 +4,13 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, TextInput } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
-import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
+import { callAuthenticatedWebservice } from '../../webservices'
 import { updateUser } from '../../webservices/user'
 import { BaseScreen } from './BaseScreen'
 
@@ -46,7 +46,6 @@ function getSex(checked: boolean) {
 export function OnboardingSexScreen() {
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const accessToken = useSelector(({ userData: { accessToken } }: GlobalState) => accessToken)
   const [isMale, setIsMale] = useState(false)
   const [heightCm, setHeightCm] = useState('')
   const [heightError, setHeightError] = useState(false)
@@ -62,13 +61,12 @@ export function OnboardingSexScreen() {
     }
 
     setLoading(true)
-    updateUser({
+    callAuthenticatedWebservice(updateUser, {
       userData: {
         heightCm: Number(heightCm),
         sex     : isMale ? Sex.MALE : Sex.FEMALE,
         weightKg: Number(weightKg),
       },
-      token   : accessToken.valueOr(null)
     }).then(maybeUser => {
       setLoading(false)
       maybeUser.caseOf({

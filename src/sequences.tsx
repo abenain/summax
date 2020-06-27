@@ -1,12 +1,13 @@
 import { ActionType } from './redux/actions'
 import { getStore } from './redux/store'
+import { callAuthenticatedWebservice } from './webservices'
 import * as Homepage from './webservices/homepage'
 import * as User from './webservices/user'
 
 const store = getStore()
 
-export function fetchHomepageSequence({token}: {token: string}) {
-  return Homepage.load({token})
+export function fetchHomepageSequence(freshToken?: string) {
+  return callAuthenticatedWebservice(Homepage.load, {}, freshToken)
     .then(homepage => {
       store.dispatch({
         type: ActionType.LOADED_HOMEPAGE,
@@ -15,8 +16,8 @@ export function fetchHomepageSequence({token}: {token: string}) {
     })
 }
 
-export function fetchUserDataSequence({token}: {token: string}) {
-  return User.fetchMe({token})
+export function fetchUserDataSequence(freshToken?: string) {
+  return callAuthenticatedWebservice(User.fetchMe, {}, freshToken)
     .then(user => {
       store.dispatch({
         type: ActionType.LOADED_USERDATA,

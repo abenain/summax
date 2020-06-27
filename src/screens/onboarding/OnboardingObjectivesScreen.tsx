@@ -4,14 +4,14 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
-import { GlobalState } from '../../redux/store'
 import { fetchHomepageSequence } from '../../sequences'
 import { Objectives } from '../../types'
+import { callAuthenticatedWebservice } from '../../webservices'
 import { updateUser } from '../../webservices/user'
 import { BaseScreen } from './BaseScreen'
 import { Form } from './objectives/Form'
@@ -22,23 +22,19 @@ export function OnboardingObjectivesScreen() {
   const [isLoading, setLoading] = useState(false)
   const [error, setError] = useState(Maybe.nothing<string>())
   const [objectives, setObjectives] = useState<Objectives[]>([])
-  const accessToken = useSelector(({ userData: { accessToken } }: GlobalState) => accessToken)
 
   function goToNextScreen() {
-    const token = accessToken.valueOr(null)
-
     if (objectives.length === 0) {
       setError(Maybe.just(i18n.t('Onboarding - Objectives - Select at least one')))
       return
     }
 
     setLoading(true)
-    updateUser({
+    callAuthenticatedWebservice(updateUser, {
       userData: {
         objectives,
         onboarded: true
       },
-      token
     }).then(maybeUser => {
 
       maybeUser.caseOf({
@@ -48,7 +44,7 @@ export function OnboardingObjectivesScreen() {
             user: Maybe.just(user)
           })
 
-          fetchHomepageSequence({ token }).then(() => {
+          fetchHomepageSequence().then(() => {
             navigation.navigate('Home')
             setLoading(false)
           })

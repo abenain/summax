@@ -1,59 +1,57 @@
-import Constants from 'expo-constants'
+import { Maybe } from 'tsmonad'
+import { ActionType } from '../redux/actions'
+import { getStore } from '../redux/store'
+import { WebserviceError } from '../types'
+import { fetchTokensFromRefreshToken } from './auth'
 
-const SCHEME_HTTP = 'http'
-const BACKEND_URL_DEV = '192.168.1.18:18000'
-const BACKEND_URL_PROD = '18.158.0.93'
-
-const API_V1_PATH = 'api/v1'
-
-const CLIENT_ID = 'ayhcwZdiy5rgWreq3wN6tA2hk2HC'
-
-export function getBackendUrl(){
-  const {releaseChannel} = Constants.manifest
-
-  if (Boolean(releaseChannel) === false){
-    return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`
-  }
-
-  if (releaseChannel.indexOf('prod') !== -1){
-    return `${SCHEME_HTTP}://${BACKEND_URL_PROD}`
-  }
-
-  if (releaseChannel.indexOf('staging') !== -1){
-    return `${SCHEME_HTTP}://${BACKEND_URL_PROD}`
-  }
-
-  return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`
-}
-
-export function getApiBaseUrl(){
-  return `${getBackendUrl()}/${API_V1_PATH}`
-}
-
-export function checkFetchResponseIsOKOrThrow(response: Response) {
-  if (response.status !== 200 && response.status !== 201) {
-    throw {
-      status: response.status,
-    }
-  }
-
+function refreshTokenAndRetry(webservice: (params: Object) => Promise<Maybe<any>>, config?: Object) {
+  const store = getStore()
+  const { userData: { refreshToken } } = store.getState()
   return Promise.resolve()
+    .then(() => {
+      const token = refreshToken.valueOrThrow({ error: new Error('no refresh token available') } as any)
+
+      return fetchTokensFromRefreshToken(token)
+    }).then(fetchTokenResult => {
+      const {access, refresh} = fetchTokenResult.valueOrThrow(new Error('couldnt get new token from refresh token'))
+
+      store.dispatch({
+        access,
+        refresh,
+        type   : ActionType.GOT_TOKENS,
+      })
+
+      return webservice({
+        ...config,
+        token: access
+      })
+    }).catch((error: Error) => {
+      console.log(error)
+      getStore().dispatch({ type: ActionType.LOGOUT })
+      return Maybe.nothing()
+    })
 }
 
-export function getClientIdHeader(){
-  return {
-    'client-id': CLIENT_ID
-  }
-}
+export function callAuthenticatedWebservice(webservice: (params: Object) => Promise<Maybe<any>>, config = {}, freshToken?: string) {
+  const store = getStore()
+  const { userData: { accessToken } } = store.getState()
+  const token = freshToken ? Maybe.just(freshToken) : accessToken
 
-export function getJsonPayloadHeaders(){
-  return {
-    'Content-Type': 'application/json'
-  }
-}
+  return token.caseOf({
+    just   : token => {
+      return webservice({
+        ...config,
+        token
+      }).catch((error: WebserviceError) => {
+        console.log(error)
 
-export function getAuthorizationHeaders(token: string){
-  return {
-    'Authorization': `Bearer ${token}`
-  }
+        if (error.status === 401) {
+          return refreshTokenAndRetry(webservice, config)
+        }
+
+        return Maybe.nothing()
+      })
+    },
+    nothing: () => Promise.resolve(Maybe.nothing())
+  })
 }

@@ -46,8 +46,8 @@ export function LoginScreen({ navigation }: Props) {
             refresh,
           })
           Promise.all([
-            fetchHomepageSequence({ token: access }),
-            fetchUserDataSequence({ token: access })
+            fetchHomepageSequence(access),
+            fetchUserDataSequence(access)
           ]).then(() => {
             navigation.replace('Home')
             setLoading(false)

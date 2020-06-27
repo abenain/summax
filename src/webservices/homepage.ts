@@ -1,6 +1,6 @@
 import { Maybe } from 'tsmonad'
 import { Homepage } from '../types'
-import { checkFetchResponseIsOKOrThrow, getApiBaseUrl, getAuthorizationHeaders } from './index'
+import { checkFetchResponseIsOKOrThrow, getApiBaseUrl, getAuthorizationHeaders } from './utils'
 
 const defaultPoster = require('../../assets/login_background.png')
 
@@ -33,9 +33,5 @@ export function load({ token }: { token: string }) {
           poster: defaultPoster
         })),
       })
-    })
-    .catch(error => {
-      console.log(error)
-      return Maybe.nothing<Homepage>()
     })
 }

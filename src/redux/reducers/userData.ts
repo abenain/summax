@@ -29,6 +29,12 @@ export default function reducer(state = initialState, action: Action) {
         ...state,
         user
       }
+    case ActionType.LOGOUT:
+      return {
+        ...this.state,
+        accessToken : Maybe.nothing(),
+        refreshToken: Maybe.nothing(),
+      }
     default:
       return state
   }

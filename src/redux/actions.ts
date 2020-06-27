@@ -7,6 +7,7 @@ export enum ActionType {
   GOT_TOKENS,
   LOADED_HOMEPAGE,
   LOADED_USERDATA,
+  LOGOUT,
   SELECTED_WORKOUT,
 }
 

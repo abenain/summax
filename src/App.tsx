@@ -11,6 +11,7 @@ import { Image, View } from 'react-native'
 import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
+import useLogoutListener from './hooks/logout-listener'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
 import { getHydrationPromise, getStore } from './redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from './sequences'
@@ -43,6 +44,11 @@ export default () => {
   const [assetsLoaded, setAssetsLoaded] = useState(false)
   const [homePageLoaded, setHomePageLoaded] = useState(false)
   const [userDataLoaded, setUserDataLoaded] = useState(false)
+  const [logoutKey, setLogoutKey] = useState(new Date().toISOString())
+
+  useLogoutListener(function onLogout(){
+    setLogoutKey(new Date().toISOString())
+  })
 
   useEffect(function componentDidMount() {
     SplashScreen.preventAutoHideAsync()
@@ -64,7 +70,7 @@ export default () => {
     const maybeToken = store.getState().userData.accessToken
 
     return maybeToken.caseOf({
-      just   : token => fetchHomepageSequence({ token }),
+      just   : () => fetchHomepageSequence(),
       nothing: () => Promise.resolve()
     })
   }
@@ -73,7 +79,7 @@ export default () => {
     const maybeToken = store.getState().userData.accessToken
 
     return maybeToken.caseOf({
-      just   : token => fetchUserDataSequence({ token }),
+      just   : () => fetchUserDataSequence(),
       nothing: () => Promise.resolve()
     })
   }
@@ -117,7 +123,7 @@ export default () => {
     <Provider store={store}>
       <IconRegistry icons={EvaIconsPack}/>
 
-      <ApplicationProvider {...eva} theme={eva.light}>
+      <ApplicationProvider {...eva} theme={eva.light} key={logoutKey}>
         <NavigationContainer>
           <MainStackNavigator initialRouteName={getInitialRouteName()}/>
         </NavigationContainer>

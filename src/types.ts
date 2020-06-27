@@ -1,5 +1,9 @@
 import { ImageSourcePropType } from 'react-native'
 
+export interface WebserviceError {
+  status: number
+}
+
 export enum Sex {
   FEMALE = 'female',
   MALE = 'male',

@@ -21,7 +21,6 @@ interface Props {
 
 export function MainStackNavigator({ initialRouteName }: Props) {
   const Stack = createStackNavigator()
-
   const signUpScreensHeaderConfig = {
     headerBackImage  : () => (
       <View style={{ flexDirection: 'row' }}>

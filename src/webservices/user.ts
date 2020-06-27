@@ -7,7 +7,7 @@ import {
   getAuthorizationHeaders,
   getClientIdHeader,
   getJsonPayloadHeaders
-} from './index'
+} from './utils'
 
 export function createUser(userData: { dob: Date, email: string, firstname: string, lastname: string, password: string }) {
   return fetch(`${getApiBaseUrl()}/users`, {
@@ -81,10 +81,6 @@ export function updateUser({ userData, token }: { userData: Partial<User>, token
       return response.json()
     })
     .then((user: User) => Maybe.maybe(user))
-    .catch(error => {
-      console.log(error)
-      return Maybe.nothing<User>()
-    })
 }
 
 export function fetchMe({token}: {token: string}){
@@ -98,8 +94,5 @@ export function fetchMe({token}: {token: string}){
       return response.json()
     })
     .then((user: User) => Maybe.maybe(user))
-    .catch(error => {
-      console.log(error)
-      return Maybe.nothing<User>()
-    })
+
 }

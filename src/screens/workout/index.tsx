@@ -17,7 +17,8 @@ import { targetToString } from '../../components/target-filters'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
-import { load } from '../../webservices/workouts'
+import { callAuthenticatedWebservice } from '../../webservices'
+import * as WorkoutServices from '../../webservices/workouts'
 import {useDispatch, useSelector} from 'react-redux'
 
 const backgroundImage = require('../../../assets/login_background.png')
@@ -32,7 +33,7 @@ export function WorkoutScreen() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(function componentDidMount() {
-    load(workoutId)
+    callAuthenticatedWebservice(WorkoutServices.load, {workoutId})
       .then((workout: Maybe<Workout>) => {
         dispatch({
           type: ActionType.SELECTED_WORKOUT,
