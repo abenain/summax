@@ -86,3 +86,20 @@ export function updateUser({ userData, token }: { userData: Partial<User>, token
       return Maybe.nothing<User>()
     })
 }
+
+export function fetchMe({token}: {token: string}){
+  return fetch(`${getApiBaseUrl()}/users/me`, {
+    headers: {
+      ...getAuthorizationHeaders(token),
+    },
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then((user: User) => Maybe.maybe(user))
+    .catch(error => {
+      console.log(error)
+      return Maybe.nothing<User>()
+    })
+}

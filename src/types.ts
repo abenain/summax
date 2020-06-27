@@ -75,6 +75,12 @@ export interface Workout {
   title: string
 }
 
+export interface Theme {
+  posterUrl: string
+  title: string
+  workoutIds: string[]
+}
+
 export enum Target {
   UPPER_BODY,
   LOWER_BODY,
@@ -84,7 +90,7 @@ export enum Target {
 
 export interface Homepage {
   featuredWorkout: HomePageWorkout
-  selectedForYou: HomePageWorkout
-  thematicWorkouts: HomePageWorkout[]
-  popularWorkouts: HomePageWorkout[]
+  selectedForYou: Workout
+  themes: Theme[]
+  popularWorkouts: Workout[]
 }

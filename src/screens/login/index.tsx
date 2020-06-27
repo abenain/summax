@@ -4,16 +4,16 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
+import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { ActionType } from '../../redux/actions'
-import { performLoadHomepageSequence } from '../../sequences'
+import { fetchHomepageSequence, fetchUserDataSequence } from '../../sequences'
 import { authenticate } from '../../webservices/auth'
 import { Form as LoginForm } from './form'
-import {useDispatch} from 'react-redux'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
@@ -39,17 +39,19 @@ export function LoginScreen({ navigation }: Props) {
 
     authenticate(email, password).then(maybeTokens => {
       maybeTokens.caseOf({
-        just   : ({access, refresh}) => {
+        just   : ({ access, refresh }) => {
           dispatch({
             type: ActionType.GOT_TOKENS,
             access,
             refresh,
           })
-          performLoadHomepageSequence({token: access})
-            .then(() => {
-              navigation.replace('Home')
-              setLoading(false)
-            })
+          Promise.all([
+            fetchHomepageSequence({ token: access }),
+            fetchUserDataSequence({ token: access })
+          ]).then(() => {
+            navigation.replace('Home')
+            setLoading(false)
+          })
         },
         nothing: () => {
           setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
@@ -60,7 +62,7 @@ export function LoginScreen({ navigation }: Props) {
     })
   }
 
-  function goToSignUp(){
+  function goToSignUp() {
     navigation.navigate('SignUp')
   }
 

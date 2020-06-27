@@ -13,7 +13,7 @@ import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
 import { getStore } from './redux/store'
-import { performLoadHomepageSequence } from './sequences'
+import { fetchHomepageSequence, fetchUserDataSequence } from './sequences'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -42,6 +42,7 @@ export default () => {
   const [showSplashScreen, setShowSplashScreen] = useState(true)
   const [assetsLoaded, setAssetsLoaded] = useState(false)
   const [homePageLoaded, setHomePageLoaded] = useState(false)
+  const [userDataLoaded, setUserDataLoaded] = useState(false)
 
   useEffect(function componentDidMount() {
     SplashScreen.preventAutoHideAsync()
@@ -56,11 +57,20 @@ export default () => {
     })
   }
 
-  function tryToloadHomepage() {
+  function tryFetchingHomepage() {
     const maybeToken = store.getState().userData.accessToken
 
     return maybeToken.caseOf({
-      just   : token => performLoadHomepageSequence({ token }),
+      just   : token => fetchHomepageSequence({ token }),
+      nothing: () => Promise.resolve()
+    })
+  }
+
+  function tryFetchingUserData() {
+    const maybeToken = store.getState().userData.accessToken
+
+    return maybeToken.caseOf({
+      just   : token => fetchUserDataSequence({ token }),
       nothing: () => Promise.resolve()
     })
   }
@@ -72,11 +82,12 @@ export default () => {
 
     await Promise.all([
       doLoadAssets().then(() => setAssetsLoaded(true)),
-      tryToloadHomepage().then(() => setHomePageLoaded(true)),
+      tryFetchingHomepage().then(() => setHomePageLoaded(true)),
+      tryFetchingUserData().then(() => setUserDataLoaded(true)),
     ])
   }
 
-  if (!assetsLoaded || !homePageLoaded || showSplashScreen) {
+  if (!assetsLoaded || !homePageLoaded || !userDataLoaded || showSplashScreen) {
     return (
       <View style={{ flex: 1 }}>
         <Image

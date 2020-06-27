@@ -56,10 +56,10 @@ export function HomeScreen() {
             </Layout>
 
             <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true}>
-              {homepage.thematicWorkouts.map(workout => <WorkoutCard
-                key={workout.id}
-                onPress={() => navigateToWorkout(workout)}
-                workout={workout}
+              {homepage.themes.map(theme => <WorkoutCard
+                key={theme.title}
+                onPress={() => navigateToWorkout(theme)}
+                workout={theme}
                 style={{ marginRight: 16, marginBottom: 16 }}
                 size={WorkoutCardSize.SMALL}/>)}
             </ScrollView>

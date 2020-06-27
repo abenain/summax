@@ -10,7 +10,7 @@ import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
-import { performLoadHomepageSequence } from '../../sequences'
+import { fetchHomepageSequence } from '../../sequences'
 import { Objectives } from '../../types'
 import { updateUser } from '../../webservices/user'
 import { BaseScreen } from './BaseScreen'
@@ -48,7 +48,7 @@ export function OnboardingObjectivesScreen() {
             user: Maybe.just(user)
           })
 
-          performLoadHomepageSequence({ token }).then(() => {
+          fetchHomepageSequence({ token }).then(() => {
             navigation.navigate('Home')
             setLoading(false)
           })

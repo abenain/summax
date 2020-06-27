@@ -4,7 +4,7 @@ import { checkFetchResponseIsOKOrThrow, getApiBaseUrl, getAuthorizationHeaders }
 
 const defaultPoster = require('../../assets/login_background.png')
 
-export function load({token}: {token: string}) {
+export function load({ token }: { token: string }) {
   return fetch(`${getApiBaseUrl()}/homepage`, {
     headers: {
       ...getAuthorizationHeaders(token)
@@ -16,19 +16,19 @@ export function load({token}: {token: string}) {
     })
     .then(homepage => {
       return Maybe.maybe<Homepage>({
-        featuredWorkout : {
+        featuredWorkout: {
           ...homepage.featuredWorkout,
           poster: defaultPoster
         },
-        selectedForYou  : {
+        selectedForYou : {
           ...homepage.selectedForYou,
           poster: defaultPoster
         },
-        thematicWorkouts: homepage.thematicWorkouts.map(workout => ({
+        themes         : homepage.themes.map(workout => ({
           ...workout,
           poster: defaultPoster
         })),
-        popularWorkouts : homepage.popularWorkouts.map(workout => ({
+        popularWorkouts: homepage.popularWorkouts.map(workout => ({
           ...workout,
           poster: defaultPoster
         })),
