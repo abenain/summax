@@ -1,11 +1,12 @@
 import { Maybe } from 'tsmonad'
-import { Homepage, Workout } from '../types'
+import { Homepage, User, Workout } from '../types'
 
 export enum ActionType {}
 
 export enum ActionType {
   GOT_TOKENS,
   LOADED_HOMEPAGE,
+  LOADED_USERDATA,
   SELECTED_WORKOUT,
 }
 
@@ -24,4 +25,8 @@ export interface SelectedWorkoutAction extends Action {
 export interface GotTokensAction extends Action{
   access: string
   refresh: string
+}
+
+export interface LoadedUserDataAction extends Action{
+  user: Maybe<User>
 }

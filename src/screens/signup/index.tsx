@@ -8,13 +8,16 @@ import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { ActionType } from '../../redux/actions'
 import { createUser } from '../../webservices/user'
 import { Form as SignUpForm } from './form'
+import {useDispatch} from 'react-redux'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
 export function SignUpScreen() {
   const navigation = useNavigation()
+  const dispatch = useDispatch()
   const [confirmPassword, setConfirmPassword] = useState('')
   const [dob, setDob] = useState(null)
   const [email, setEmail] = useState('')
@@ -39,10 +42,16 @@ export function SignUpScreen() {
     setLoading(true)
 
     createUser({ dob, email, firstname, lastname, password })
-      .then(maybeId => {
+      .then(maybeUser => {
         setLoading(false)
-        maybeId.caseOf({
-          just   : id => navigation.navigate('SignUpOtp', { id }),
+        maybeUser.caseOf({
+          just   : user => {
+            dispatch({
+              type: ActionType.LOADED_USERDATA,
+              user: Maybe.just(user)
+            })
+            navigation.navigate('SignUpOtp', { id: user._id })
+          },
           nothing: () => setError(Maybe.just(i18n.t('Sign up - Email already in use')))
         })
       })

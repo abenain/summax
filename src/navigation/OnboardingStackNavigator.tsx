@@ -24,7 +24,7 @@ export function OnboardingStackNavigator() {
         headerTitle           : HeaderTitle,
       }}>
       <Stack.Screen name="OnboardingSex" component={OnboardingSexScreen} options={{ headerBackImage: null }}/>
-      <Stack.Screen name="OnboardingTarget" component={OnboardingObjectivesScreen}/>
+      <Stack.Screen name="OnboardingObjectives" component={OnboardingObjectivesScreen}/>
     </Stack.Navigator>
   )
 }

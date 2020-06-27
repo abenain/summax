@@ -14,16 +14,17 @@ export enum Objectives {
 }
 
 export interface User {
+  _id: string
   dob: Date
   email: string
   favoriteWorkouts: string[]
   firstname: string
-  heightCm: number
+  heightCm?: number
   lastname: string
   objectives: Objectives[]
   onboarded: boolean
-  sex: Sex
-  weightKg: number
+  sex?: Sex
+  weightKg?: number
 }
 
 export enum IntensityLevel {

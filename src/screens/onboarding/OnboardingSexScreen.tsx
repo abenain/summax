@@ -4,9 +4,11 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, TextInput } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
+import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
 import { updateUser } from '../../webservices/user'
@@ -43,7 +45,8 @@ function getSex(checked: boolean) {
 
 export function OnboardingSexScreen() {
   const navigation = useNavigation()
-  const accessToken = useSelector(({userData: {accessToken}}: GlobalState) => accessToken)
+  const dispatch = useDispatch()
+  const accessToken = useSelector(({ userData: { accessToken } }: GlobalState) => accessToken)
   const [isMale, setIsMale] = useState(false)
   const [heightCm, setHeightCm] = useState('')
   const [heightError, setHeightError] = useState(false)
@@ -52,7 +55,7 @@ export function OnboardingSexScreen() {
   const [isLoading, setLoading] = useState(false)
 
   function goToNextPage() {
-    if(!heightCm || !weightKg){
+    if (!heightCm || !weightKg) {
       setHeightError(Boolean(heightCm) === false)
       setWeightError(Boolean(weightKg) === false)
       return
@@ -62,24 +65,29 @@ export function OnboardingSexScreen() {
     updateUser({
       userData: {
         heightCm: Number(heightCm),
-        sex: isMale ? Sex.MALE : Sex.FEMALE,
+        sex     : isMale ? Sex.MALE : Sex.FEMALE,
         weightKg: Number(weightKg),
       },
-      token: accessToken.valueOr(null)
+      token   : accessToken.valueOr(null)
     }).then(maybeUser => {
       setLoading(false)
       maybeUser.caseOf({
-        just: () => {
-          navigation.navigate('OnboardingTarget')
+        just   : user => {
+          dispatch({
+            type: ActionType.LOADED_USERDATA,
+            user: Maybe.just(user)
+          })
+          navigation.navigate('OnboardingObjectives')
         },
-        nothing: () => {}
+        nothing: () => {
+        }
       })
     })
   }
 
   return isLoading ? (
-    <Loading />
-    ) : (
+    <Loading/>
+  ) : (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 2 }}>
 
@@ -186,6 +194,6 @@ const styles = StyleSheet.create({
     backgroundColor: SummaxColors.salmonPink,
     borderColor    : 'crimson',
     borderWidth    : 2,
-    color: 'white'
+    color          : 'white'
   },
 })

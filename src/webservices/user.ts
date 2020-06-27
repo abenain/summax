@@ -22,10 +22,10 @@ export function createUser(userData: { dob: Date, email: string, firstname: stri
       await checkFetchResponseIsOKOrThrow(response)
       return response.json()
     })
-    .then(({ _id }: { _id: string }) => Maybe.maybe(_id))
+    .then((user: User) => Maybe.maybe(user))
     .catch(error => {
       console.log(error)
-      return Maybe.nothing<string>()
+      return Maybe.nothing<User>()
     })
 }
 

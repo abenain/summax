@@ -1,8 +1,8 @@
 import { Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { forwardRef, useImperativeHandle, useState } from 'react'
 import { Image, StyleSheet } from 'react-native'
+import { Objectives } from '../../../types'
 import { ChoiceTag } from './ChoiceTag'
 
 const athleteDarkIcon = require('./athlete-dark.png')
@@ -16,34 +16,20 @@ const muscleLightIcon = require('./muscle-light.png')
 const weightDarkIcon = require('./weight-dark.png')
 const weightLightIcon = require('./weight-light.png')
 
-export interface FormHandle {
-  getValues: () => ({
-    hasWeightObjective: boolean,
-    hasMuscleObjective: boolean,
-    hasStressObjective: boolean,
-    hasShapeObjective: boolean,
-    hasAthleteObjective: boolean,
-  })
+interface Props {
+  onChange: (value: Objectives[]) => void
+  values: Objectives[]
 }
 
-export const Form = forwardRef(({}: {}, ref) => {
-  const [hasWeightObjective, setHasWeightObjective] = useState(false)
-  const [hasMuscleObjective, setHasMuscleObjective] = useState(false)
-  const [hasStressObjective, setHasStressObjective] = useState(false)
-  const [hasShapeObjective, setHasShapeObjective] = useState(false)
-  const [hasAthleteObjective, setHasAthleteObjective] = useState(false)
+function updateValues(values: Objectives[], objective: Objectives, state: boolean) {
+  if (!state) {
+    return values.filter(value => value !== objective)
+  }
 
-  useImperativeHandle(ref, () => ({
-    getValues: function () {
-      return {
-        hasWeightObjective,
-        hasMuscleObjective,
-        hasStressObjective,
-        hasShapeObjective,
-        hasAthleteObjective,
-      }
-    }
-  }))
+  return [objective].concat(values)
+}
+
+export function Form({ onChange, values }: Props) {
 
   return (
     <Layout style={styles.choiceTagContainer}>
@@ -52,44 +38,44 @@ export const Form = forwardRef(({}: {}, ref) => {
           false: (<Image source={weightDarkIcon} style={{ height: 20, marginRight: 15, width: 20.4 }}/>),
           true : (<Image source={weightLightIcon} style={{ height: 20, marginRight: 15, width: 20.4 }}/>),
         }}
-        onChange={value => setHasWeightObjective(value)}
+        onChange={selected => onChange(updateValues(values, Objectives.WEIGHT, selected))}
         text={i18n.t('Onboarding - Objectives - Weight')}
-        value={hasWeightObjective}/>
+        value={values.some(val => val === Objectives.WEIGHT)}/>
       <ChoiceTag
         icons={{
           false: (<Image source={muscleDarkIcon} style={{ height: 20.4, marginRight: 17, width: 18.5 }}/>),
           true : (<Image source={muscleLightIcon} style={{ height: 20.4, marginRight: 17, width: 18.5 }}/>),
         }}
-        onChange={value => setHasMuscleObjective(value)}
+        onChange={selected => onChange(updateValues(values, Objectives.MUSCLE, selected))}
         text={i18n.t('Onboarding - Objectives - Muscle')}
-        value={hasMuscleObjective}/>
+        value={values.some(val => val === Objectives.MUSCLE)}/>
       <ChoiceTag
         icons={{
           false: (<Image source={balanceDarkIcon} style={{ height: 20.6, marginRight: 14, width: 20.6 }}/>),
           true : (<Image source={balanceLightIcon} style={{ height: 20.6, marginRight: 14, width: 20.6 }}/>),
         }}
-        onChange={value => setHasStressObjective(value)}
+        onChange={selected => onChange(updateValues(values, Objectives.BALANCE, selected))}
         text={i18n.t('Onboarding - Objectives - Stress')}
-        value={hasStressObjective}/>
+        value={values.some(val => val === Objectives.BALANCE)}/>
       <ChoiceTag
         icons={{
           false: (<Image source={cardioDarkIcon} style={{ height: 20, marginRight: 13, width: 22 }}/>),
           true : (<Image source={cardioLightIcon} style={{ height: 20, marginRight: 13, width: 22 }}/>),
         }}
-        onChange={value => setHasShapeObjective(value)}
+        onChange={selected => onChange(updateValues(values, Objectives.SHAPE, selected))}
         text={i18n.t('Onboarding - Objectives - Shape')}
-        value={hasShapeObjective}/>
+        value={values.some(val => val === Objectives.SHAPE)}/>
       <ChoiceTag
         icons={{
           false: (<Image source={athleteDarkIcon} style={{ height: 21, marginRight: 17, width: 18.2 }}/>),
           true : (<Image source={athleteLightIcon} style={{ height: 21, marginRight: 17, width: 18.2 }}/>),
         }}
-        onChange={value => setHasAthleteObjective(value)}
+        onChange={selected => onChange(updateValues(values, Objectives.ATHLETE, selected))}
         text={i18n.t('Onboarding - Objectives - Athlete')}
-        value={hasAthleteObjective}/>
+        value={values.some(val => val === Objectives.ATHLETE)}/>
     </Layout>
   )
-})
+}
 
 const styles = StyleSheet.create({
   choiceTagContainer: {

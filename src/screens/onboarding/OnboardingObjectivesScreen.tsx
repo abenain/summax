@@ -1,25 +1,68 @@
 import { useNavigation } from '@react-navigation/native'
-import { Text } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
-import { useRef } from 'react'
 import * as React from 'react'
+import { useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
+import { Loading } from '../../components/Loading'
+import { ActionType } from '../../redux/actions'
+import { GlobalState } from '../../redux/store'
+import { Objectives } from '../../types'
+import { NoOp } from '../../utils'
+import { updateUser } from '../../webservices/user'
 import { BaseScreen } from './BaseScreen'
-import { Form, FormHandle } from './objectives/Form'
-
+import { Form } from './objectives/Form'
 
 export function OnboardingObjectivesScreen() {
   const navigation = useNavigation()
-  const form = useRef<FormHandle>()
+  const dispatch = useDispatch()
+  const [isLoading, setLoading] = useState(false)
+  const [error, setError] = useState(Maybe.nothing<string>())
+  const [objectives, setObjectives] = useState<Objectives[]>([])
+  const accessToken = useSelector(({ userData: { accessToken } }: GlobalState) => accessToken)
 
-  return (
+  function goToNextScreen() {
+    if (objectives.length === 0) {
+      setError(Maybe.just(i18n.t('Onboarding - Objectives - Select at least one')))
+      return
+    }
+
+    setLoading(true)
+    updateUser({
+      userData: {
+        objectives,
+        onboarded: true
+      },
+      token   : accessToken.valueOr(null)
+    }).then(maybeUser => {
+      setLoading(false)
+      maybeUser.caseOf({
+        just   : user => {
+          dispatch({
+            type: ActionType.LOADED_USERDATA,
+            user: Maybe.just(user)
+          })
+          navigation.navigate('Home')
+        },
+        nothing: NoOp
+      })
+    })
+  }
+
+  function onObjectivesChanged(values: Objectives[]) {
+    setError(Maybe.nothing())
+    setObjectives(values)
+  }
+
+  return isLoading ? (
+    <Loading/>
+  ) : (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <BaseScreen
-        onContinue={() => {
-          console.log(form.current.getValues())
-          navigation.navigate('Home')
-        }}
+        onContinue={goToNextScreen}
         progress={{ current: 2, total: 2 }}>
 
         <ScrollView style={{ flex: 1 }}>
@@ -28,7 +71,16 @@ export function OnboardingObjectivesScreen() {
           <Text
             style={[styles.instructions, styles.smallInstructions]}>{i18n.t('Onboarding - Objectives - Instructions Small')}</Text>
 
-          <Form ref={form}/>
+          <Form onChange={onObjectivesChanged} values={objectives}/>
+
+          {error.caseOf({
+            just   : errorMessage => (
+              <Layout style={styles.errorContainer}>
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+              </Layout>
+            ),
+            nothing: () => null
+          })}
 
         </ScrollView>
 
@@ -48,6 +100,21 @@ const styles = StyleSheet.create({
   smallInstructions: {
     color     : SummaxColors.blueGrey,
     fontSize  : 12,
+    lineHeight: 20,
+  },
+  errorContainer   : {
+    justifyContent   : 'center',
+    backgroundColor  : SummaxColors.salmonPink,
+    borderRadius     : 5,
+    height           : 60,
+    marginBottom     : 16,
+    marginTop        : 32,
+    paddingHorizontal: 16,
+  },
+  errorMessage     : {
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
     lineHeight: 20,
   },
 })
