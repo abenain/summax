@@ -1,6 +1,13 @@
 import { Maybe } from 'tsmonad'
+import { User } from '../types'
 import { Tokens } from './auth'
-import { checkFetchResponseIsOKOrThrow, getApiBaseUrl, getClientIdHeader, getJsonPayloadHeaders } from './index'
+import {
+  checkFetchResponseIsOKOrThrow,
+  getApiBaseUrl,
+  getAuthorizationHeaders,
+  getClientIdHeader,
+  getJsonPayloadHeaders
+} from './index'
 
 export function createUser(userData: { dob: Date, email: string, firstname: string, lastname: string, password: string }) {
   return fetch(`${getApiBaseUrl()}/users`, {
@@ -57,5 +64,25 @@ export function checkOtp(userId: string, otp: string) {
     .catch(error => {
       console.log(error)
       return Maybe.nothing<Tokens>()
+    })
+}
+
+export function updateUser({ userData, token }: { userData: Partial<User>, token: string }) {
+  return fetch(`${getApiBaseUrl()}/users/me`, {
+    method : 'PUT',
+    headers: {
+      ...getAuthorizationHeaders(token),
+      ...getJsonPayloadHeaders(),
+    },
+    body   : JSON.stringify(userData)
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then((user: User) => Maybe.maybe(user))
+    .catch(error => {
+      console.log(error)
+      return Maybe.nothing<User>()
     })
 }

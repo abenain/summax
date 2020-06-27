@@ -51,3 +51,9 @@ export function getJsonPayloadHeaders(){
     'Content-Type': 'application/json'
   }
 }
+
+export function getAuthorizationHeaders(token: string){
+  return {
+    'Authorization': `Bearer ${token}`
+  }
+}

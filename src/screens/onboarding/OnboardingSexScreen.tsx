@@ -4,8 +4,12 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, TextInput } from 'react-native'
+import { useSelector } from 'react-redux'
 import { SummaxColors } from '../../colors'
+import { Loading } from '../../components/Loading'
+import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
+import { updateUser } from '../../webservices/user'
 import { BaseScreen } from './BaseScreen'
 
 const manLightIcon = require('./sex/man-light.png')
@@ -39,13 +43,45 @@ function getSex(checked: boolean) {
 
 export function OnboardingSexScreen() {
   const navigation = useNavigation()
+  const accessToken = useSelector(({userData: {accessToken}}: GlobalState) => accessToken)
   const [isMale, setIsMale] = useState(false)
   const [heightCm, setHeightCm] = useState('')
+  const [heightError, setHeightError] = useState(false)
   const [weightKg, setWeightKg] = useState('')
+  const [weightError, setWeightError] = useState(false)
+  const [isLoading, setLoading] = useState(false)
 
-  return (
+  function goToNextPage() {
+    if(!heightCm || !weightKg){
+      setHeightError(Boolean(heightCm) === false)
+      setWeightError(Boolean(weightKg) === false)
+      return
+    }
+
+    setLoading(true)
+    updateUser({
+      userData: {
+        heightCm: Number(heightCm),
+        sex: isMale ? Sex.MALE : Sex.FEMALE,
+        weightKg: Number(weightKg),
+      },
+      token: accessToken.valueOr(null)
+    }).then(maybeUser => {
+      setLoading(false)
+      maybeUser.caseOf({
+        just: () => {
+          navigation.navigate('OnboardingTarget')
+        },
+        nothing: () => {}
+      })
+    })
+  }
+
+  return isLoading ? (
+    <Loading />
+    ) : (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <BaseScreen onContinue={() => navigation.navigate('OnboardingTarget')} progress={{ current: 1, total: 2 }}>
+      <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 2 }}>
 
         <ScrollView style={{ flex: 1 }}>
           <Text style={styles.instructions}>
@@ -53,8 +89,8 @@ export function OnboardingSexScreen() {
           </Text>
 
           <Layout style={styles.sexSelectionIconsContainer}>
-            <Image source={getWomanIcon(getSex(isMale))} style={styles.womanIcon} />
-            <Image source={getManIcon(getSex(isMale))} style={styles.manIcon} />
+            <Image source={getWomanIcon(getSex(isMale))} style={styles.womanIcon}/>
+            <Image source={getManIcon(getSex(isMale))} style={styles.manIcon}/>
           </Layout>
 
           <Layout style={styles.sexSelectionSwitchContainer}>
@@ -71,18 +107,24 @@ export function OnboardingSexScreen() {
           <Layout style={styles.heightAndWeightContainer}>
             <TextInput
               keyboardType={'number-pad'}
-              onChangeText={setHeightCm}
+              onChangeText={(value: string) => {
+                setHeightCm(value)
+                setHeightError(false)
+              }}
               placeholder={i18n.t('Placeholder - Height')}
-              placeholderTextColor={SummaxColors.blueGrey}
-              style={[styles.input, styles.inputText, { marginRight: 16 }]}
+              placeholderTextColor={heightError ? 'white' : SummaxColors.blueGrey}
+              style={[styles.input, styles.inputText, { marginRight: 16 }, heightError ? styles.inputError : {}]}
               value={heightCm}
             />
             <TextInput
               keyboardType={'number-pad'}
-              onChangeText={setWeightKg}
+              onChangeText={(value: string) => {
+                setWeightKg(value)
+                setWeightError(false)
+              }}
               placeholder={i18n.t('Placeholder - Weight')}
-              placeholderTextColor={SummaxColors.blueGrey}
-              style={[styles.input, styles.inputText]}
+              placeholderTextColor={weightError ? 'white' : SummaxColors.blueGrey}
+              style={[styles.input, styles.inputText, weightError ? styles.inputError : {}]}
               value={weightKg}
             />
           </Layout>
@@ -139,5 +181,11 @@ const styles = StyleSheet.create({
     flex             : 1,
     height           : 48,
     paddingHorizontal: 16,
+  },
+  inputError                 : {
+    backgroundColor: SummaxColors.salmonPink,
+    borderColor    : 'crimson',
+    borderWidth    : 2,
+    color: 'white'
   },
 })

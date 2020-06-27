@@ -1,16 +1,27 @@
 import { ImageSourcePropType } from 'react-native'
 
 export enum Sex {
-  FEMALE,
-  MALE,
+  FEMALE = 'female',
+  MALE = 'male',
+}
+
+export enum Objectives {
+  ATHLETE = 'athlete',
+  BALANCE = 'balance',
+  MUSCLE = 'muscle',
+  SHAPE = 'shape',
+  WEIGHT = 'weight',
 }
 
 export interface User {
   dob: Date
   email: string
+  favoriteWorkouts: string[]
   firstname: string
   heightCm: number
   lastname: string
+  objectives: Objectives[]
+  onboarded: boolean
   sex: Sex
   weightKg: number
 }
