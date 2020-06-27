@@ -12,7 +12,7 @@ import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
-import { getStore } from './redux/store'
+import { getHydrationPromise, getStore } from './redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from './sequences'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
@@ -49,12 +49,15 @@ export default () => {
   }, [])
 
   function doLoadAssets() {
-    return Font.loadAsync({
-      aktivGroteskXBold: require('../assets/fonts/AktivGrotesk-XBold.otf'),
-      nexaHeavy        : require('../assets/fonts/NexaHeavy.otf'),
-      nexaRegular      : require('../assets/fonts/NexaRegular.otf'),
-      nexaXBold        : require('../assets/fonts/Nexa-XBold.otf'),
-    })
+    return Promise.all([
+      Font.loadAsync({
+        aktivGroteskXBold: require('../assets/fonts/AktivGrotesk-XBold.otf'),
+        nexaHeavy        : require('../assets/fonts/NexaHeavy.otf'),
+        nexaRegular      : require('../assets/fonts/NexaRegular.otf'),
+        nexaXBold        : require('../assets/fonts/Nexa-XBold.otf'),
+      }),
+      getHydrationPromise(),
+    ])
   }
 
   function tryFetchingHomepage() {
@@ -86,7 +89,7 @@ export default () => {
       tryFetchingUserData().then(() => setUserDataLoaded(true)),
     ])
   }
-
+  
   if (!assetsLoaded || !homePageLoaded || !userDataLoaded || showSplashScreen) {
     return (
       <View style={{ flex: 1 }}>
@@ -98,13 +101,25 @@ export default () => {
     )
   }
 
+  function getInitialRouteName(){
+    return store.getState().userData.accessToken.caseOf({
+      just   : () => {
+        return store.getState().userData.user.caseOf({
+          just: user => user.onboarded ? 'Home' : 'Onboarding',
+          nothing: () => 'Login'
+        })
+      },
+      nothing: () => 'Login'
+    })
+  }
+
   return (
     <Provider store={store}>
       <IconRegistry icons={EvaIconsPack}/>
 
       <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
-          <MainStackNavigator/>
+          <MainStackNavigator initialRouteName={getInitialRouteName()}/>
         </NavigationContainer>
       </ApplicationProvider>
     </Provider>

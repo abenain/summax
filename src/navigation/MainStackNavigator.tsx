@@ -15,7 +15,11 @@ import { OnboardingStackNavigator } from './OnboardingStackNavigator'
 const arrowLeftIcon = require('../../assets/arrow-left-black.png')
 const arrowLeftIconWhite = require('../../assets/arrow-left-white.png')
 
-export function MainStackNavigator() {
+interface Props {
+  initialRouteName: string
+}
+
+export function MainStackNavigator({ initialRouteName }: Props) {
   const Stack = createStackNavigator()
 
   const signUpScreensHeaderConfig = {
@@ -33,7 +37,7 @@ export function MainStackNavigator() {
 
   return (
     <Stack.Navigator
-      initialRouteName={'Login'}
+      initialRouteName={initialRouteName}
       screenOptions={{
         headerBackImage       : () => <Image source={arrowLeftIcon}
                                              style={{ height: 24, marginLeft: 16, width: 24 }}/>,
@@ -49,8 +53,8 @@ export function MainStackNavigator() {
       <Stack.Screen name='SignUpOtp' component={SignUpOtpScreen} options={signUpScreensHeaderConfig}/>
       <Stack.Screen name='Onboarding' component={OnboardingStackNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
-      <Stack.Screen name='Profile' component={ProfileScreen} options={{headerRight: null}}/>
-      <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{headerRight: null}}/>
+      <Stack.Screen name='Profile' component={ProfileScreen} options={{ headerRight: null }}/>
+      <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{ headerRight: null }}/>
     </Stack.Navigator>
   )
 }
