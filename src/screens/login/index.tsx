@@ -10,6 +10,7 @@ import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { ActionType } from '../../redux/actions'
+import { performLoadHomepageSequence } from '../../sequences'
 import { authenticate } from '../../webservices/auth'
 import { Form as LoginForm } from './form'
 import {useDispatch} from 'react-redux'
@@ -44,11 +45,18 @@ export function LoginScreen({ navigation }: Props) {
             access,
             refresh,
           })
-          navigation.replace('Home')
+          performLoadHomepageSequence({token: access})
+            .then(() => {
+              navigation.replace('Home')
+              setLoading(false)
+            })
         },
-        nothing: () => setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
+        nothing: () => {
+          setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
+          setLoading(false)
+        }
       })
-      setLoading(false)
+
     })
   }
 

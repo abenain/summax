@@ -9,9 +9,9 @@ export interface UserData {
 }
 
 const initialState = {
-  accessToken : Maybe.nothing(),
-  refreshToken: Maybe.nothing(),
-  user        : Maybe.nothing(),
+  accessToken : Maybe.nothing<string>(),
+  refreshToken: Maybe.nothing<string>(),
+  user        : Maybe.nothing<User>(),
 }
 
 export default function reducer(state = initialState, action: Action) {

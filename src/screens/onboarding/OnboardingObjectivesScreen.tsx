@@ -10,8 +10,8 @@ import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
+import { performLoadHomepageSequence } from '../../sequences'
 import { Objectives } from '../../types'
-import { NoOp } from '../../utils'
 import { updateUser } from '../../webservices/user'
 import { BaseScreen } from './BaseScreen'
 import { Form } from './objectives/Form'
@@ -25,6 +25,8 @@ export function OnboardingObjectivesScreen() {
   const accessToken = useSelector(({ userData: { accessToken } }: GlobalState) => accessToken)
 
   function goToNextScreen() {
+    const token = accessToken.valueOr(null)
+
     if (objectives.length === 0) {
       setError(Maybe.just(i18n.t('Onboarding - Objectives - Select at least one')))
       return
@@ -36,18 +38,23 @@ export function OnboardingObjectivesScreen() {
         objectives,
         onboarded: true
       },
-      token   : accessToken.valueOr(null)
+      token
     }).then(maybeUser => {
-      setLoading(false)
+
       maybeUser.caseOf({
         just   : user => {
           dispatch({
             type: ActionType.LOADED_USERDATA,
             user: Maybe.just(user)
           })
-          navigation.navigate('Home')
+
+          performLoadHomepageSequence({ token }).then(() => {
+            navigation.navigate('Home')
+            setLoading(false)
+          })
+
         },
-        nothing: NoOp
+        nothing: () => setLoading(false)
       })
     })
   }

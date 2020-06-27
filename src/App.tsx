@@ -12,9 +12,8 @@ import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
-import { ActionType } from './redux/actions'
 import { getStore } from './redux/store'
-import * as Homepage from './webservices/homepage'
+import { performLoadHomepageSequence } from './sequences'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -57,12 +56,13 @@ export default () => {
     })
   }
 
-  function loadHomepage() {
-    return Homepage.load()
-      .then(homepage => store.dispatch({
-        type: ActionType.LOADED_HOMEPAGE,
-        homepage,
-      }))
+  function tryToloadHomepage() {
+    const maybeToken = store.getState().userData.accessToken
+
+    return maybeToken.caseOf({
+      just   : token => performLoadHomepageSequence({ token }),
+      nothing: () => Promise.resolve()
+    })
   }
 
   async function startLoadingAssets() {
@@ -72,7 +72,7 @@ export default () => {
 
     await Promise.all([
       doLoadAssets().then(() => setAssetsLoaded(true)),
-      loadHomepage().then(() => setHomePageLoaded(true)),
+      tryToloadHomepage().then(() => setHomePageLoaded(true)),
     ])
   }
 
@@ -93,7 +93,7 @@ export default () => {
 
       <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
-          <MainStackNavigator />
+          <MainStackNavigator/>
         </NavigationContainer>
       </ApplicationProvider>
     </Provider>

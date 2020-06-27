@@ -1,16 +1,21 @@
 import { Maybe } from 'tsmonad'
-import { checkFetchResponseIsOKOrThrow, getBackendUrl } from './index'
+import { Homepage } from '../types'
+import { checkFetchResponseIsOKOrThrow, getApiBaseUrl, getAuthorizationHeaders } from './index'
 
 const defaultPoster = require('../../assets/login_background.png')
 
-export function load() {
-  return fetch(`${getBackendUrl()}/homepage`)
+export function load({token}: {token: string}) {
+  return fetch(`${getApiBaseUrl()}/homepage`, {
+    headers: {
+      ...getAuthorizationHeaders(token)
+    }
+  })
     .then(async response => {
       await checkFetchResponseIsOKOrThrow(response)
       return response.json()
     })
     .then(homepage => {
-      return Maybe.maybe({
+      return Maybe.maybe<Homepage>({
         featuredWorkout : {
           ...homepage.featuredWorkout,
           poster: defaultPoster
@@ -31,6 +36,6 @@ export function load() {
     })
     .catch(error => {
       console.log(error)
-      return Maybe.nothing()
+      return Maybe.nothing<Homepage>()
     })
 }
