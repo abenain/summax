@@ -47,8 +47,7 @@ export interface HomePageWorkout {
   durationMin: number
   id: string
   intensity: IntensityLevel
-  poster: ImageSourcePropType
-  subtitle?: string
+  posterUrl: string
   title: string
 }
 

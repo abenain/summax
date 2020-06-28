@@ -1,11 +1,11 @@
 import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
-import { Image, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, Image, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import { SummaxColors } from '../../colors'
 import { Duration, Size as DurationSize } from '../../components/duration'
 import { Intensity, Size as IntensitySize } from '../../components/intensity'
 import { HomePageWorkout } from '../../types'
-import { NoOp } from '../../utils'
+import { NoOp, PosterAspectRatio } from '../../utils'
 
 const play = require('./play.png')
 
@@ -14,18 +14,19 @@ interface Props {
   workout: HomePageWorkout
 }
 
+const {width: screenWidth} = Dimensions.get('window')
+
 export function FeaturedWorkout({ onPress = NoOp, workout }: Props) {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={.8} onPress={onPress}>
 
       <Layout style={styles.background}/>
 
-      <ImageBackground source={workout.poster} style={styles.poster}
+      <ImageBackground source={{uri: workout.posterUrl}} style={styles.poster}
                        imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
           <Text style={[styles.posterText, styles.posterTitle, { marginBottom: 16 }]}>{workout.title}</Text>
-          <Text style={[styles.posterText, styles.posterSubTitle]}>{workout.subtitle}</Text>
 
           <Layout style={styles.posterFiller}>
             <Image source={play} style={styles.play}/>
@@ -43,6 +44,9 @@ export function FeaturedWorkout({ onPress = NoOp, workout }: Props) {
   )
 }
 
+const posterWidth = screenWidth - 32
+const posterHeight = posterWidth * PosterAspectRatio.homepageFeatured
+
 const styles = StyleSheet.create({
   container     : {
     alignItems       : 'center',
@@ -58,8 +62,8 @@ const styles = StyleSheet.create({
     backgroundColor: SummaxColors.lightishGreen,
   },
   poster        : {
-    height      : 487,
-    width       : '100%',
+    height      : posterHeight,
+    width       : posterWidth,
     borderRadius: 5,
   },
   posterContents: {
@@ -76,10 +80,6 @@ const styles = StyleSheet.create({
   posterTitle   : {
     fontFamily: 'nexaHeavy',
     fontSize  : 24,
-  },
-  posterSubTitle: {
-    fontFamily: 'nexaRegular',
-    fontSize  : 12,
   },
   posterFiller  : {
     flex           : 1,
