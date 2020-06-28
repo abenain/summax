@@ -20,6 +20,19 @@ export function load({ token, workoutId }: { token: string, workoutId: string })
     .then(workout => Maybe.maybe(workout))
 }
 
+export function loadFavorites({ token }: { token: string, workoutId: string }) {
+  return fetch(`${getApiBaseUrl()}/workouts/favorites`, {
+    headers: {
+      ...getAuthorizationHeaders(token)
+    }
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then(workouts => Maybe.maybe(workouts))
+}
+
 export function addToFavorites({ token, workoutId }: { token: string, workoutId: string }) {
   return fetch(`${getApiBaseUrl()}/users/me/favorites`, {
     method : 'PUT',

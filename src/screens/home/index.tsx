@@ -29,10 +29,10 @@ export function HomeScreen() {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })
   }
 
-  function toggleFavorite(workout: HomePageWorkout, favorite: boolean){
+  function toggleFavorite(workoutId: string, favorite: boolean){
     const webservice = favorite ? WorkoutService.addToFavorites : WorkoutService.removeFromFavorites
 
-    return callAuthenticatedWebservice(webservice, {workoutId: workout.id})
+    return callAuthenticatedWebservice(webservice, {workoutId})
       .then(user => {
         dispatch({
           type: ActionType.LOADED_USERDATA,
@@ -79,7 +79,7 @@ export function HomeScreen() {
                       }
                     })
                   })
-                  toggleFavorite(homepage.selectedForYou, favorite)
+                  toggleFavorite(homepage.selectedForYou.id, favorite)
                     .then(user => user.caseOf({
                       just: () => {},
                       nothing: () => {
@@ -126,7 +126,7 @@ export function HomeScreen() {
                   }))
                 })
               })
-              toggleFavorite(homepage.selectedForYou, favorite)
+              toggleFavorite(workoutId, favorite)
                 .then(user => user.caseOf({
                   just: () => {},
                   nothing: () => {
