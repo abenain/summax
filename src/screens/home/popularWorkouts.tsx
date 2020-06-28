@@ -2,7 +2,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
-import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
+import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { HomePageWorkout } from '../../types'
 
 const x = require('./x.png')
@@ -22,9 +22,9 @@ export function PopularWorkouts({ workouts }: Props) {
 
       {limitedWorkouts.map((workout, index, allWorkouts) => <WorkoutCard
         key={workout.id}
-        workout={workout}
+        themeOrWorkout={workout}
         style={{ marginBottom: index < allWorkouts.length - 1 ? 40 : 0 }}
-        size={WorkoutCardSize.LARGE}/>)}
+        cardStyle={WorkoutCardSize.WORKOUT_LARGE}/>)}
     </Layout>
   )
 }

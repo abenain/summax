@@ -6,28 +6,31 @@ import { NoOp, PosterAspectRatio } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
 
-export enum Size {
-  SMALL,
-  LARGE,
+export enum Style {
+  THEME,
+  WORKOUT_LARGE,
+  WORKOUT_SMALL,
 }
 
 interface Props {
   onPress?: () => void
   onToggleFavorite?: () => void
-  size: Size
+  cardStyle: Style
   style?: ViewStyle
-  workout: HomePageWorkout
+  themeOrWorkout: Partial<HomePageWorkout>
 }
 
-const {width: screenWidth} = Dimensions.get('window')
-function getCardSize(size: Size) {
-  switch (size) {
-    case Size.SMALL:
+const { width: screenWidth } = Dimensions.get('window')
+
+function getCardSize(style: Style) {
+  switch (style) {
+    case Style.WORKOUT_SMALL:
+    case Style.THEME:
       return {
         height: Math.round(275 * PosterAspectRatio.workoutCard),
         width : 275,
       }
-    case Size.LARGE:
+    case Style.WORKOUT_LARGE:
       return {
         height: Math.round((screenWidth - 32) * PosterAspectRatio.workoutCard),
         width : screenWidth - 32,
@@ -37,23 +40,25 @@ function getCardSize(size: Size) {
   }
 }
 
-export function WorkoutCard({ onPress = NoOp, onToggleFavorite = NoOp, size, style = {}, workout }: Props) {
+export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp, style = {}, themeOrWorkout }: Props) {
   return (
-    <TouchableOpacity style={[getCardSize(size), style]} activeOpacity={.8} onPress={onPress}>
-      <ImageBackground source={{uri: workout.posterUrl}} style={[styles.poster, getCardSize(size)]}
+    <TouchableOpacity style={[getCardSize(cardStyle), style]} activeOpacity={.8} onPress={onPress}>
+      <ImageBackground source={{ uri: themeOrWorkout.posterUrl }} style={[styles.poster, getCardSize(cardStyle)]}
                        imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
           <Layout style={styles.posterFiller}/>
 
-          <Layout style={styles.featuresContainer}>
-            <Intensity level={workout.intensity} size={IntensitySize.SMALL} style={{ marginRight: 24 }}/>
-            <Duration durationMin={workout.durationMin} size={DurationSize.SMALL}/>
-          </Layout>
+          {cardStyle !== Style.THEME && (
+            <Layout style={styles.featuresContainer}>
+              <Intensity level={themeOrWorkout.intensity} size={IntensitySize.SMALL} style={{ marginRight: 24 }}/>
+              <Duration durationMin={themeOrWorkout.durationMin} size={DurationSize.SMALL}/>
+            </Layout>
+          )}
 
           <Layout style={styles.footerContainer}>
-            <Text style={styles.title}>{workout.title}</Text>
-            {false && (
+            <Text style={styles.title}>{themeOrWorkout.title}</Text>
+            {cardStyle !== Style.THEME && (
               <TouchableOpacity onPress={onToggleFavorite} activeOpacity={.5}>
                 <Icon name={'plus-circle-outline'} style={styles.plusIcon} fill={'white'}/>
               </TouchableOpacity>

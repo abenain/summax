@@ -5,7 +5,7 @@ import * as React from 'react'
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Separator } from '../../components/separator'
-import { Size as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
+import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { GlobalState } from '../../redux/store'
 import { HomePageWorkout } from '../../types'
 import { DurationFilters } from '../../components/duration-filters'
@@ -45,8 +45,10 @@ export function HomeScreen() {
             </Layout>
 
             <Layout style={{ paddingHorizontal: 16, marginBottom: 32 }}>
-              <WorkoutCard workout={homepage.selectedForYou} size={WorkoutCardSize.LARGE}
-                           onPress={() => navigateToWorkout(homepage.selectedForYou)}/>
+              <WorkoutCard
+                themeOrWorkout={homepage.selectedForYou}
+                cardStyle={WorkoutCardSize.WORKOUT_LARGE}
+                onPress={() => navigateToWorkout(homepage.selectedForYou)}/>
             </Layout>
 
             <Separator style={styles.separator}/>
@@ -59,9 +61,9 @@ export function HomeScreen() {
               {homepage.themes.map(theme => <WorkoutCard
                 key={theme.title}
                 onPress={() => navigateToWorkout(theme)}
-                workout={theme}
+                themeOrWorkout={theme}
                 style={{ marginRight: 16, marginBottom: 16 }}
-                size={WorkoutCardSize.SMALL}/>)}
+                cardStyle={WorkoutCardSize.THEME}/>)}
             </ScrollView>
 
             <PopularWorkouts workouts={homepage.popularWorkouts}/>
