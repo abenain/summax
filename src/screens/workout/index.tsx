@@ -4,7 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native'
+import { Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
@@ -17,11 +18,10 @@ import { targetToString } from '../../components/target-filters'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
+import { PosterAspectRatio } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
-import {useDispatch, useSelector} from 'react-redux'
 
-const backgroundImage = require('../../../assets/login_background.png')
 const plusIcon = require('./plus.png')
 
 export function WorkoutScreen() {
@@ -29,11 +29,11 @@ export function WorkoutScreen() {
   const { id: workoutId } = route.params
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const selectedWorkout = useSelector(({uiState: {selectedWorkout}}: GlobalState) => selectedWorkout)
+  const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(function componentDidMount() {
-    callAuthenticatedWebservice(WorkoutServices.load, {workoutId})
+    callAuthenticatedWebservice(WorkoutServices.load, { workoutId })
       .then((workout: Maybe<Workout>) => {
         dispatch({
           type: ActionType.SELECTED_WORKOUT,
@@ -52,7 +52,7 @@ export function WorkoutScreen() {
       <View style={{ flex: 1, width: '100%' }}>
         <StatusBar barStyle={'light-content'} translucent={true}/>
 
-        <Image source={backgroundImage} style={styles.backgroundImage}/>
+        <Image source={{ uri: workout.backgroundPosterUrl }} style={styles.backgroundImage}/>
 
         <LinearGradient colors={['rgba(1,1,17,0)', 'rgba(0,0,0,1)', 'rgb(0,0,0)']}
                         start={[.5, 0]}
@@ -126,11 +126,13 @@ export function WorkoutScreen() {
   })
 }
 
+const { width: screenWidth } = Dimensions.get('window')
+
 const styles = StyleSheet.create({
   backgroundImage                   : {
-    width     : '100%',
-    height    : 750,
-    resizeMode: 'stretch',
+    width     : screenWidth,
+    height    : Math.round(screenWidth * PosterAspectRatio.workoutBackground),
+    resizeMode: 'contain',
     position  : 'absolute',
   },
   colorGradient                     : {
@@ -212,6 +214,7 @@ const styles = StyleSheet.create({
     justifyContent   : 'space-between',
     backgroundColor  : 'black',
     flexDirection    : 'row',
+    paddingBottom    : 23,
     paddingHorizontal: 16,
     paddingTop       : 30,
   },

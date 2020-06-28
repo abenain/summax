@@ -66,7 +66,7 @@ export interface Exercise {
 }
 
 export interface Workout {
-  backgroundImage?: ImageSourcePropType
+  backgroundPosterUrl: string
   description: string
   details: string
   durationMin: number
@@ -74,9 +74,9 @@ export interface Workout {
   favorite: boolean
   id: string
   intensity: IntensityLevel
+  posterUrl: string
   target: Target
   techniques: string[]
-  thumbnailImage?: ImageSourcePropType
   title: string
 }
 
