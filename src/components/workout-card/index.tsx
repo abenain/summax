@@ -1,15 +1,14 @@
 import { Icon, Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
-import { ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
+import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { HomePageWorkout } from '../../types'
-import { NoOp } from '../../utils'
+import { NoOp, PosterAspectRatio } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
 
 export enum Size {
   SMALL,
   LARGE,
-  WIDE,
 }
 
 interface Props {
@@ -20,22 +19,18 @@ interface Props {
   workout: HomePageWorkout
 }
 
+const {width: screenWidth} = Dimensions.get('window')
 function getCardSize(size: Size) {
   switch (size) {
     case Size.SMALL:
       return {
-        height: 160,
+        height: Math.round(275 * PosterAspectRatio.workoutCard),
         width : 275,
       }
     case Size.LARGE:
       return {
-        height: 200,
-        width : '100%',
-      }
-    case Size.WIDE:
-      return {
-        height: 168,
-        width : '100%',
+        height: Math.round((screenWidth - 32) * PosterAspectRatio.workoutCard),
+        width : screenWidth - 32,
       }
     default:
       return {}
@@ -45,7 +40,7 @@ function getCardSize(size: Size) {
 export function WorkoutCard({ onPress = NoOp, onToggleFavorite = NoOp, size, style = {}, workout }: Props) {
   return (
     <TouchableOpacity style={[getCardSize(size), style]} activeOpacity={.8} onPress={onPress}>
-      <ImageBackground source={workout.poster} style={[styles.poster, getCardSize(size)]}
+      <ImageBackground source={{uri: workout.posterUrl}} style={[styles.poster, getCardSize(size)]}
                        imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 

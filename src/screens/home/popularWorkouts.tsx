@@ -24,7 +24,7 @@ export function PopularWorkouts({ workouts }: Props) {
         key={workout.id}
         workout={workout}
         style={{ marginBottom: index < allWorkouts.length - 1 ? 40 : 0 }}
-        size={WorkoutCardSize.WIDE}/>)}
+        size={WorkoutCardSize.LARGE}/>)}
     </Layout>
   )
 }

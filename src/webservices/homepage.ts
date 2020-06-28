@@ -18,7 +18,6 @@ export function load({ token }: { token: string }) {
       return Maybe.maybe<Homepage>({
         featuredWorkout: {
           ...homepage.featuredWorkout,
-          poster: defaultPoster
         },
         selectedForYou : {
           ...homepage.selectedForYou,
