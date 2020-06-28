@@ -1,10 +1,13 @@
-import { Icon, Layout, Text } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
-import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
+import { Dimensions, Image, ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { HomePageWorkout } from '../../types'
 import { NoOp, PosterAspectRatio } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
+
+const plusIcon = require('../../../assets/plus-circle.png')
+const checkIcon = require('../../../assets/check-circle.png')
 
 export enum Style {
   THEME,
@@ -14,7 +17,7 @@ export enum Style {
 
 interface Props {
   onPress?: () => void
-  onToggleFavorite?: () => void
+  onToggleFavorite?: (favorite: boolean) => void
   cardStyle: Style
   style?: ViewStyle
   themeOrWorkout: Partial<HomePageWorkout>
@@ -59,8 +62,8 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
           <Layout style={styles.footerContainer}>
             <Text style={styles.title}>{themeOrWorkout.title}</Text>
             {cardStyle !== Style.THEME && (
-              <TouchableOpacity onPress={onToggleFavorite} activeOpacity={.5}>
-                <Icon name={'plus-circle-outline'} style={styles.plusIcon} fill={'white'}/>
+              <TouchableOpacity onPress={() => onToggleFavorite(!themeOrWorkout.favorite)} activeOpacity={.5}>
+                <Image source={themeOrWorkout.favorite ? checkIcon : plusIcon} style={styles.plusIcon} />
               </TouchableOpacity>
             )}
           </Layout>
@@ -94,8 +97,8 @@ const styles = StyleSheet.create({
     fontSize  : 24,
   },
   plusIcon         : {
-    height: 40,
-    width : 40,
+    height: 30,
+    width : 30,
   },
   featuresContainer: {
     flexDirection  : 'row',

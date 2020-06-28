@@ -10,7 +10,7 @@ export function fetchHomepageSequence(freshToken?: string) {
   return callAuthenticatedWebservice(Homepage.load, {}, freshToken)
     .then(homepage => {
       store.dispatch({
-        type: ActionType.LOADED_HOMEPAGE,
+        type: ActionType.UPDATED_HOMEPAGE,
         homepage,
       })
     })

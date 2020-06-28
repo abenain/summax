@@ -45,6 +45,7 @@ export enum WorkoutDuration {
 
 export interface HomePageWorkout {
   durationMin: number
+  favorite: boolean
   id: string
   intensity: IntensityLevel
   posterUrl: string
@@ -70,6 +71,7 @@ export interface Workout {
   details: string
   durationMin: number
   exercises: Exercise[]
+  favorite: boolean
   id: string
   intensity: IntensityLevel
   target: Target

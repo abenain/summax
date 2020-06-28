@@ -12,7 +12,7 @@ const initialState = {
 
 export default function reducer(state = initialState, action: Action) {
   switch (action.type) {
-    case ActionType.LOADED_HOMEPAGE:
+    case ActionType.UPDATED_HOMEPAGE:
       const {homepage} = action as LoadedHomepageAction
       return {
         ...state,

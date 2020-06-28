@@ -8,10 +8,11 @@ import { HomePageWorkout } from '../../types'
 const x = require('./x.png')
 
 interface Props {
+  onToggleFavorite: (workoutId: string, favorite: boolean) => void
   workouts: HomePageWorkout[]
 }
 
-export function PopularWorkouts({ workouts }: Props) {
+export function PopularWorkouts({ onToggleFavorite, workouts }: Props) {
   const limitedWorkouts = workouts.slice(0, 3)
   return (
     <Layout style={styles.container}>
@@ -22,9 +23,11 @@ export function PopularWorkouts({ workouts }: Props) {
 
       {limitedWorkouts.map((workout, index, allWorkouts) => <WorkoutCard
         key={workout.id}
-        themeOrWorkout={workout}
+        cardStyle={WorkoutCardSize.WORKOUT_LARGE}
+        onToggleFavorite={(favorite: boolean) => onToggleFavorite(workout.id, favorite)}
         style={{ marginBottom: index < allWorkouts.length - 1 ? 40 : 0 }}
-        cardStyle={WorkoutCardSize.WORKOUT_LARGE}/>)}
+        themeOrWorkout={workout}
+        />)}
     </Layout>
   )
 }

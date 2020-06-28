@@ -4,23 +4,42 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
+import { Maybe } from 'tsmonad'
 import { Separator } from '../../components/separator'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
+import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { HomePageWorkout } from '../../types'
 import { DurationFilters } from '../../components/duration-filters'
+import { callAuthenticatedWebservice } from '../../webservices'
 import { FeaturedWorkout } from './featuredWorkout'
 import { IntensityFilters } from '../../components/intensity-filters'
 import { PopularWorkouts } from './popularWorkouts'
 import { TargetFilters } from '../../components/target-filters'
+import * as WorkoutService from '../../webservices/workouts'
+import { useDispatch } from 'react-redux'
 
 export function HomeScreen() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const homepage = useSelector(({ contents: { homepage } }: GlobalState) => homepage)
   const navigation = useNavigation()
+  const dispatch = useDispatch()
 
   function navigateToWorkout(workout: HomePageWorkout) {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })
+  }
+
+  function toggleFavorite(workout: HomePageWorkout, favorite: boolean){
+    const webservice = favorite ? WorkoutService.addToFavorites : WorkoutService.removeFromFavorites
+
+    return callAuthenticatedWebservice(webservice, {workoutId: workout.id})
+      .then(user => {
+        dispatch({
+          type: ActionType.LOADED_USERDATA,
+          user,
+        })
+        return user
+      })
   }
 
   return (
@@ -48,7 +67,35 @@ export function HomeScreen() {
               <WorkoutCard
                 themeOrWorkout={homepage.selectedForYou}
                 cardStyle={WorkoutCardSize.WORKOUT_LARGE}
-                onPress={() => navigateToWorkout(homepage.selectedForYou)}/>
+                onPress={() => navigateToWorkout(homepage.selectedForYou)}
+                onToggleFavorite={(favorite: boolean) => {
+                  dispatch({
+                    type: ActionType.UPDATED_HOMEPAGE,
+                    homepage: Maybe.just({
+                      ...homepage,
+                      selectedForYou: {
+                        ...homepage.selectedForYou,
+                        favorite
+                      }
+                    })
+                  })
+                  toggleFavorite(homepage.selectedForYou, favorite)
+                    .then(user => user.caseOf({
+                      just: () => {},
+                      nothing: () => {
+                        dispatch({
+                          type: ActionType.UPDATED_HOMEPAGE,
+                          homepage: Maybe.just({
+                            ...homepage,
+                            selectedForYou: {
+                              ...homepage.selectedForYou,
+                              favorite: !favorite
+                            }
+                          })
+                        })
+                      }
+                    }))
+                }}/>
             </Layout>
 
             <Separator style={styles.separator}/>
@@ -66,7 +113,36 @@ export function HomeScreen() {
                 cardStyle={WorkoutCardSize.THEME}/>)}
             </ScrollView>
 
-            <PopularWorkouts workouts={homepage.popularWorkouts}/>
+            <PopularWorkouts
+              workouts={homepage.popularWorkouts}
+              onToggleFavorite={(workoutId: string, favorite: boolean) => {
+              dispatch({
+                type: ActionType.UPDATED_HOMEPAGE,
+                homepage: Maybe.just({
+                  ...homepage,
+                  popularWorkouts: homepage.popularWorkouts.map(workout => ({
+                    ...workout,
+                    favorite: workout.id === workoutId ? favorite : workout.favorite
+                  }))
+                })
+              })
+              toggleFavorite(homepage.selectedForYou, favorite)
+                .then(user => user.caseOf({
+                  just: () => {},
+                  nothing: () => {
+                    dispatch({
+                      type: ActionType.UPDATED_HOMEPAGE,
+                      homepage: Maybe.just({
+                        ...homepage,
+                        popularWorkouts: homepage.popularWorkouts.map(workout => ({
+                          ...workout,
+                          favorite: workout.id === workoutId ? !favorite : workout.favorite
+                        }))
+                      })
+                    })
+                  }
+                }))
+            }}/>
 
             <TargetFilters/>
 
