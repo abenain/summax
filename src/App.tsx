@@ -108,7 +108,6 @@ export default () => {
   }
 
   function getInitialRouteName(){
-
     return store.getState().userData.accessToken.caseOf({
       just   : () => {
         return store.getState().userData.user.caseOf({

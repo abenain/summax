@@ -2,16 +2,18 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { ActionType } from '../../redux/actions'
+import { GlobalState } from '../../redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from '../../sequences'
+import { NoOp } from '../../utils'
 import { authenticate } from '../../webservices/auth'
 import { Form as LoginForm } from './form'
 
@@ -27,6 +29,21 @@ export function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(Maybe.nothing<string>())
   const [isLoading, setLoading] = useState(false)
+  const user = useSelector(({userData: {user}}: GlobalState) => user)
+
+  useEffect(() => {
+    user.caseOf({
+      just: user => {
+        if(user.onboarded){
+          navigation.replace('Home')
+        }else{
+          navigation.replace('Onboarding')
+        }
+        setLoading(false)
+      },
+      nothing: NoOp
+    })
+  }, [user.valueOr(null)])
 
   function onSignInButtonPress() {
     if (!email || !password) {
@@ -48,10 +65,7 @@ export function LoginScreen({ navigation }: Props) {
           Promise.all([
             fetchHomepageSequence(access),
             fetchUserDataSequence(access)
-          ]).then(() => {
-            navigation.replace('Home')
-            setLoading(false)
-          })
+          ])
         },
         nothing: () => {
           setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
