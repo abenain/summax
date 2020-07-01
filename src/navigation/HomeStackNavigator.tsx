@@ -1,7 +1,7 @@
 import { createStackNavigator, StackHeaderTitleProps } from '@react-navigation/stack'
 import Constants from 'expo-constants'
 import * as React from 'react'
-import { Image, Platform } from 'react-native'
+import { Image, Platform, View } from 'react-native'
 import { HomeScreen } from '../screens/home'
 import { RewardScreen } from '../screens/reward'
 import { TrainingScreen } from '../screens/training'
@@ -24,6 +24,7 @@ export function HomeStackNavigator() {
         headerStyle           : {
           height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
+        headerLeft            : () => <View style={{ padding: 6 }}/>,
         headerTitle           : HeaderTitle,
         headerRight           : props => <RightButtons {...props} tint={ButtonsTint.DARK}/>,
       }}>
