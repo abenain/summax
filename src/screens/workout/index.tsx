@@ -110,7 +110,7 @@ export function WorkoutScreen() {
 
           <Layout style={styles.buttonContainer}>
             <SummaxButton
-              buttonStyle={ButtonStyle.BLACK}
+              buttonStyle={ButtonStyle.TRANSPARENT}
               text={i18n.t('Workout Description - Warm up')}
             />
             <SummaxButton

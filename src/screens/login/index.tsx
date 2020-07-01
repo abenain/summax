@@ -111,7 +111,7 @@ export function LoginScreen({ navigation }: Props) {
 
       <Layout style={styles.buttonContainer}>
         <SummaxButton
-          buttonStyle={ButtonStyle.BLACK}
+          buttonStyle={ButtonStyle.TRANSPARENT}
           onPress={goToSignUp}
           text={i18n.t('Sign up')}
         />

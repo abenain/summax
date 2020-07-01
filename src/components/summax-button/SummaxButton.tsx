@@ -5,7 +5,7 @@ import { SummaxColors } from '../../colors'
 import { NoOp } from '../../utils'
 
 export enum ButtonStyle {
-  BLACK,
+  TRANSPARENT,
   GREEN,
   WHITE,
   WHITE_GREEN_TEXT,
@@ -21,7 +21,7 @@ interface Props {
 
 function getStylesForButton(buttonStyle: ButtonStyle) {
   switch (buttonStyle) {
-    case ButtonStyle.BLACK:
+    case ButtonStyle.TRANSPARENT:
       return [styles.baseButton, styles.blackButton]
     case ButtonStyle.GREEN:
       return [styles.baseButton, styles.greenButton]
@@ -35,7 +35,7 @@ function getStylesForButton(buttonStyle: ButtonStyle) {
 
 function getStylesForText(buttonStyle: ButtonStyle) {
   switch (buttonStyle) {
-    case ButtonStyle.BLACK:
+    case ButtonStyle.TRANSPARENT:
       return [styles.text, styles.blackButtonText]
     case ButtonStyle.GREEN:
       return [styles.text, styles.greenButtonText]
@@ -50,7 +50,7 @@ function getStylesForText(buttonStyle: ButtonStyle) {
 
 function getPropsForButton(buttonStyle: ButtonStyle) {
   switch (buttonStyle) {
-    case ButtonStyle.BLACK:
+    case ButtonStyle.TRANSPARENT:
       return {
         status    : 'control',
         appearance: 'outline'
@@ -71,7 +71,7 @@ function getPropsForButton(buttonStyle: ButtonStyle) {
   }
 }
 
-export function SummaxButton({ buttonStyle = ButtonStyle.BLACK, children, onPress = NoOp, style = {}, text }: Props) {
+export function SummaxButton({ buttonStyle = ButtonStyle.TRANSPARENT, children, onPress = NoOp, style = {}, text }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={.9}
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     height        : 56,
   },
   blackButton    : {
-    backgroundColor: 'black',
+    backgroundColor: 'transparent',
     borderWidth    : 2,
     borderColor    : SummaxColors.lightishGreen,
     marginRight    : 11,
