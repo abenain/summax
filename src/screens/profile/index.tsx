@@ -4,10 +4,11 @@ import i18n from 'i18n-js'
 import moment from 'moment'
 import * as React from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Separator } from '../../components/separator'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
 import { Field } from './Field'
@@ -29,6 +30,7 @@ function getSexString(sex: Sex) {
 
 export function ProfileScreen() {
   const navigation = useNavigation()
+  const dispatch = useDispatch()
   const user = useSelector(({ userData: { user } }: GlobalState) => user)
 
   return (
@@ -105,7 +107,8 @@ export function ProfileScreen() {
               <Text style={[styles.subtitle, { marginBottom: 31 }]}>{i18n.t('Profile - Legal - Liability')}</Text>
             </TouchableOpacity>
 
-            <SummaxButton buttonStyle={ButtonStyle.GREEN} text={i18n.t('Sign out')}/>
+            <SummaxButton buttonStyle={ButtonStyle.GREEN} text={i18n.t('Sign out')}
+                          onPress={() => dispatch({ type: ActionType.LOGOUT })}/>
 
             <Image source={summaxIcon} style={styles.summaxIcon}/>
 

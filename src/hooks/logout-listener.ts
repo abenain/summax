@@ -1,19 +1,25 @@
-import { useEffect } from 'react'
+import { useRef } from 'react'
 import { getStore } from '../redux/store'
 
 export default function useLogoutListener(logoutListener: () => void) {
   const store = getStore()
-  const accessToken = store.getState().userData.accessToken
+  const accessToken = useRef(store.getState().userData.accessToken)
 
-  useEffect(() => {
-    const shouldNavigateToLoginScreen = accessToken.caseOf({
+  store.subscribe(function stateChanged(){
+    const newAccessToken = store.getState().userData.accessToken
+
+    const shouldNavigateToLoginScreen = newAccessToken.caseOf({
       just   : () => false,
-      nothing: () => true
+      nothing: () => accessToken.current.caseOf({
+        just: () => true,
+        nothing: () => false
+      })
     })
+
+    accessToken.current = newAccessToken
 
     if (shouldNavigateToLoginScreen) {
       logoutListener()
     }
-  }, [accessToken.valueOr(false)])
-
+  })
 }
