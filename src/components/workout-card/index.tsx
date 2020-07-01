@@ -47,7 +47,7 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
   return (
     <TouchableOpacity style={[getCardSize(cardStyle), style]} activeOpacity={.8} onPress={onPress}>
       <ImageBackground source={{ uri: themeOrWorkout.posterUrl }} style={[styles.poster, getCardSize(cardStyle)]}
-                       imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
+                       imageStyle={{ borderRadius: 4, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
           <Layout style={styles.posterFiller}/>
@@ -63,7 +63,7 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
             <Text style={styles.title}>{themeOrWorkout.title}</Text>
             {cardStyle !== Style.THEME && (
               <TouchableOpacity onPress={() => onToggleFavorite(!themeOrWorkout.favorite)} activeOpacity={.5}>
-                <Image source={themeOrWorkout.favorite ? checkIcon : plusIcon} style={styles.plusIcon} />
+                <Image source={themeOrWorkout.favorite ? checkIcon : plusIcon} style={styles.plusIcon}/>
               </TouchableOpacity>
             )}
           </Layout>
@@ -76,7 +76,7 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
 
 const styles = StyleSheet.create({
   poster           : {
-    borderRadius: 5,
+    borderRadius: 4,
   },
   posterContents   : {
     position       : 'absolute',

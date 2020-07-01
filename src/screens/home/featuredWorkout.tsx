@@ -23,7 +23,7 @@ export function FeaturedWorkout({ onPress = NoOp, workout }: Props) {
       <Layout style={styles.background}/>
 
       <ImageBackground source={{uri: workout.posterUrl}} style={styles.poster}
-                       imageStyle={{ borderRadius: 5, resizeMode: 'stretch' }}>
+                       imageStyle={{ borderRadius: 4, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
           <Text style={[styles.posterText, styles.posterTitle, { marginBottom: 16 }]}>{workout.title}</Text>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   poster        : {
     height      : posterHeight,
     width       : posterWidth,
-    borderRadius: 5,
+    borderRadius: 4,
   },
   posterContents: {
     position       : 'absolute',
