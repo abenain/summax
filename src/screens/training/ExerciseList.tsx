@@ -30,7 +30,7 @@ function getFormattedDuration(exercise: Exercise) {
 
 export function ExerciseList({ activeIndex, exercises }: Props) {
   return (
-    <Layout style={styles.container}>
+    <Layout>
       {exercises.map((exercise, index) => (
         <Layout
           key={`${exercise.title}${index}`}
@@ -66,9 +66,6 @@ export function ExerciseList({ activeIndex, exercises }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container               : {
-    paddingVertical: 33,
-  },
   exerciseContainer       : {
     borderBottomWidth: 1,
     borderColor      : SummaxColors.darkerGrey,

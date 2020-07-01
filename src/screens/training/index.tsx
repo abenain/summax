@@ -47,15 +47,15 @@ export function TrainingScreen() {
 
   useEffect(() => {
     const isTimedExercise = currentExercise.caseOf({
-      just: exercise => exercise.modality === ExerciseModality.TIME,
+      just   : exercise => exercise.modality === ExerciseModality.TIME,
       nothing: () => false
     })
 
-    if(isTimedExercise && isPlaying){
+    if (isTimedExercise && isPlaying) {
       startTimer()
     }
 
-    if(isTimedExercise && isPlaying === false){
+    if (isTimedExercise && isPlaying === false) {
       stopTimer()
     }
   }, [isPlaying])
@@ -99,7 +99,8 @@ export function TrainingScreen() {
 
     selectedWorkout.caseOf({
       just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0),
-      nothing: () => {}
+      nothing: () => {
+      }
     })
 
 
@@ -121,7 +122,7 @@ export function TrainingScreen() {
   function nextExercise() {
     const exerciseCount = selectedWorkout.valueOr({ exercises: [] }).exercises.length
 
-    if(selectedExerciseIndex < 0){
+    if (selectedExerciseIndex < 0) {
       return
     }
 
@@ -133,17 +134,17 @@ export function TrainingScreen() {
     navigation.navigate('Reward')
   }
 
-  if(isLeaving){
+  if (isLeaving) {
     return <TrainingExit
       onResume={() => {
         const isTimedExercise = currentExercise.caseOf({
-          just: exercise => exercise.modality === ExerciseModality.TIME,
+          just   : exercise => exercise.modality === ExerciseModality.TIME,
           nothing: () => false
         })
 
         setIsLeaving(false)
 
-        if(isTimedExercise){
+        if (isTimedExercise) {
           startTimer()
         }
       }}
@@ -238,11 +239,11 @@ export function TrainingScreen() {
                   text={i18n.t('Training - Quit training')}
                   onPress={() => {
                     const isTimedExercise = currentExercise.caseOf({
-                      just: exercise => exercise.modality === ExerciseModality.TIME,
+                      just   : exercise => exercise.modality === ExerciseModality.TIME,
                       nothing: () => false
                     })
 
-                    if(isTimedExercise){
+                    if (isTimedExercise) {
                       stopTimer()
                     }
 
@@ -284,7 +285,8 @@ const styles = StyleSheet.create({
     lineHeight: 27,
   },
   controlsContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginBottom : 33,
   },
   chronoRepControl : {
     borderBottomRightRadius: 0,
