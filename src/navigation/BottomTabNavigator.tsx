@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import i18n from 'i18n-js'
 import * as React from 'react'
+import { Image } from 'react-native'
 import { SummaxColors } from '../colors'
 import { MyWorkoutsScreen } from '../screens/my-workouts'
-import { Image } from 'react-native'
 import { HomeStackNavigator } from './HomeStackNavigator'
-import i18n from 'i18n-js'
 
 const Tab = createBottomTabNavigator()
 const homeLightIcon = require('./home-light.png')
@@ -23,6 +23,16 @@ function getTabIcon(routeName: string, focused: boolean) {
 }
 
 export function BottomTabNavigator() {
+
+  function getTabBarVisible(route: any){
+    if(!route || !route.state || !route.state.routes || !route.state.routes.length){
+      return true
+    }
+
+    if(route.state.routes[route.state.routes.length-1].name === 'Reward'){
+      return false
+    }
+  }
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -40,7 +50,7 @@ export function BottomTabNavigator() {
         }
       }}
     >
-      <Tab.Screen name="Home" options={{tabBarLabel: i18n.t('Tab bar - Home')}} component={HomeStackNavigator}/>
+      <Tab.Screen name="Home" options={({route}) => ({tabBarLabel: i18n.t('Tab bar - Home'), tabBarVisible: getTabBarVisible(route)})} component={HomeStackNavigator}/>
       <Tab.Screen name="MyWorkouts" options={{tabBarLabel: i18n.t('Tab bar - MyWorkouts')}} component={MyWorkoutsScreen}/>
     </Tab.Navigator>
   )
