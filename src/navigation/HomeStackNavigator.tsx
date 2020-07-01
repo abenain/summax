@@ -24,11 +24,10 @@ export function HomeStackNavigator() {
         headerStyle           : {
           height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
-        headerLeft            : () => <View style={{ padding: 6 }}/>,
         headerTitle           : HeaderTitle,
         headerRight           : props => <RightButtons {...props} tint={ButtonsTint.DARK}/>,
       }}>
-      <Stack.Screen name="Home" component={HomeScreen}/>
+      <Stack.Screen name="Home" component={HomeScreen} options={{ headerLeft: () => <View style={{ padding: 6 }}/>, }}/>
       <Stack.Screen name='Reward' component={RewardScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='Workout'
                     component={WorkoutScreen}
@@ -36,7 +35,7 @@ export function HomeStackNavigator() {
                       headerTitle      : (props: StackHeaderTitleProps) => <HeaderTitle
                         title={route.params['title']} {...props}/>,
                       headerTransparent: true,
-                      headerRight           : props => <RightButtons {...props} tint={ButtonsTint.LIGHT}/>
+                      headerRight      : props => <RightButtons {...props} tint={ButtonsTint.LIGHT}/>
                     })}
       />
       <Stack.Screen name='Training' component={TrainingScreen} options={{ headerShown: false }}/>

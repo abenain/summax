@@ -52,7 +52,7 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <Stack.Screen name='SignUpOtp' component={SignUpOtpScreen} options={signUpScreensHeaderConfig}/>
       <Stack.Screen name='Onboarding' component={OnboardingStackNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
-      <Stack.Screen name='Profile' component={ProfileScreen} options={{ headerRight: null }}/>
+      <Stack.Screen name='Profile' component={ProfileScreen} options={{ headerRight: () => <View style={{padding: 6}}/> }}/>
       <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{ headerRight: null }}/>
     </Stack.Navigator>
   )
