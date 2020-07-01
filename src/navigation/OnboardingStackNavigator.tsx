@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants'
 import * as React from 'react'
-import { Image, Platform } from 'react-native'
+import { Image, Platform, View } from 'react-native'
 import { OnboardingSexScreen } from '../screens/onboarding/OnboardingSexScreen'
 import { OnboardingObjectivesScreen } from '../screens/onboarding/OnboardingObjectivesScreen'
 import { HeaderTitle } from './header/Title'
@@ -24,7 +24,7 @@ export function OnboardingStackNavigator() {
         headerTitle           : HeaderTitle,
       }}>
       <Stack.Screen name="OnboardingSex" component={OnboardingSexScreen} options={{ headerBackImage: null }}/>
-      <Stack.Screen name="OnboardingObjectives" component={OnboardingObjectivesScreen}/>
+      <Stack.Screen name="OnboardingObjectives" component={OnboardingObjectivesScreen} options={{headerRight:() => <View style={{padding:6}}/>}}/>
     </Stack.Navigator>
   )
 }
