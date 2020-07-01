@@ -9,7 +9,7 @@ import { AsyncStorage } from 'react-native'
 const persistedUserDataReducer = persistReducer({
   key       : '@summax/userData',
   storage   : AsyncStorage,
-  transforms: [createMonadTransform(['accessToken', 'refreshToken'])]
+  transforms: [createMonadTransform(['accessToken', 'refreshToken', 'user'])]
 }, userData)
 
 const appReducer = combineReducers({
