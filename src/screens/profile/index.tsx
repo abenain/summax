@@ -35,6 +35,7 @@ export function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+
       {user.caseOf({
         just   : user => (
           <ScrollView style={styles.mainContainer}>

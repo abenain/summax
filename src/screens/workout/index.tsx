@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
+import Constants from 'expo-constants'
 import { LinearGradient } from 'expo-linear-gradient'
 import i18n from 'i18n-js'
 import * as React from 'react'
@@ -33,6 +34,9 @@ export function WorkoutScreen() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(function componentDidMount() {
+
+    navigation.setOptions({headerStyle: { height: Constants.statusBarHeight + 56 }})
+
     callAuthenticatedWebservice(WorkoutServices.load, { workoutId })
       .then((workout: Maybe<Workout>) => {
         dispatch({

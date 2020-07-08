@@ -45,7 +45,7 @@ export function HomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
 
-      <StatusBar barStyle={'dark-content'}/>
+      <StatusBar barStyle={'light-content'} backgroundColor={'black'}/>
 
       {homepage.caseOf({
         just   : homepage => (

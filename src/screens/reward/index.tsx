@@ -1,19 +1,21 @@
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
+import Constants from 'expo-constants'
 import { LinearGradient } from 'expo-linear-gradient'
+import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
+import { Image, StatusBar, StyleSheet } from 'react-native'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
-import i18n from 'i18n-js'
 
 const summax = require('./summax.png')
 const boltCirle = require('./bolt-circle.png')
 
 export function RewardScreen() {
   const navigation: StackNavigationProp<RootStackParamList, 'Reward'> = useNavigation()
+
   return (
     <LinearGradient style={styles.gradientBackground}
                     colors={[SummaxColors.fadedYellow, 'rgb(142,233, 116)', SummaxColors.lightishGreen]}
@@ -21,9 +23,9 @@ export function RewardScreen() {
                     end={[0, 1]}
                     locations={[0, .35, 1]}>
 
-      <StatusBar barStyle={'dark-content'}/>
+      <StatusBar barStyle={'light-content'} translucent={true}/>
 
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <Layout style={{ flex: 1, backgroundColor: 'transparent' }}>
         <Layout style={styles.summaxContainer}>
           <Image source={summax} style={styles.summaxIcon}/>
         </Layout>
@@ -35,9 +37,10 @@ export function RewardScreen() {
         </Layout>
 
         <Layout style={styles.buttonContainer}>
-          <SummaxButton buttonStyle={ButtonStyle.WHITE} text={i18n.t('Reward - Back home')} onPress={navigation.popToTop}/>
+          <SummaxButton buttonStyle={ButtonStyle.WHITE} text={i18n.t('Reward - Back home')}
+                        onPress={navigation.popToTop}/>
         </Layout>
-      </SafeAreaView>
+      </Layout>
 
 
     </LinearGradient>
@@ -46,23 +49,27 @@ export function RewardScreen() {
 
 const styles = StyleSheet.create({
   gradientBackground: {
-    flex: 1
+    flex : 1,
+    width: '100%',
   },
   summaxContainer   : {
     alignItems     : 'center',
+    justifyContent : 'center',
     backgroundColor: 'transparent',
-    height         : 20,
-    marginTop      : 15,
+    height         : 50,
+    marginTop      : Constants.statusBarHeight,
   },
   summaxIcon        : {
     height: 20,
     width : 103,
   },
   contents          : {
-    alignItems     : 'center',
-    backgroundColor: 'transparent',
-    flex           : 1,
-    justifyContent : 'center',
+    alignItems       : 'center',
+    backgroundColor  : 'transparent',
+    flex             : 1,
+    flexWrap         : 'nowrap',
+    justifyContent   : 'center',
+    paddingHorizontal: 36,
   },
   boltIcon          : {
     height      : 130,
@@ -75,13 +82,15 @@ const styles = StyleSheet.create({
     fontSize  : 59,
   },
   smallText         : {
-    color     : 'white',
-    fontFamily: 'aktivGroteskXBold',
-    fontSize  : 38,
+    color      : 'white',
+    fontFamily : 'aktivGroteskXBold',
+    fontSize   : 38,
+    textAlign  : 'center',
   },
   buttonContainer   : {
     backgroundColor  : 'transparent',
     height           : 56,
+    marginBottom     : 32,
     paddingHorizontal: 16,
   }
 })
