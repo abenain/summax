@@ -24,6 +24,12 @@ i18n.translations = { fr, en }
 i18n.locale = Localization.locale
 
 export type RootStackParamList = {
+  Filter: {
+    title: string
+    type: string
+    value: number
+    subfilter: string
+  }
   Home: undefined
   Login: undefined
   Reward: undefined

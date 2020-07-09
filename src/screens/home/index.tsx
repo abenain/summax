@@ -9,7 +9,7 @@ import { Separator } from '../../components/separator'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
-import { HomePageWorkout } from '../../types'
+import { HomePageWorkout, Target } from '../../types'
 import { DurationFilters } from '../../components/duration-filters'
 import { callAuthenticatedWebservice } from '../../webservices'
 import { FeaturedWorkout } from './featuredWorkout'
@@ -149,7 +149,12 @@ export function HomeScreen() {
                   }))
               }}/>
 
-            <TargetFilters/>
+            <TargetFilters onFilter={(target: Target) => navigation.navigate('Filter', {
+              title: 'Haut du corps',
+              type: 'target',
+              value: target,
+              subfilter: 'duration',
+            })}/>
 
             <IntensityFilters/>
 
