@@ -22,6 +22,9 @@ export function HomeStackNavigator() {
                                              style={{ height: 24, marginLeft: 16, width: 24 }}/>,
         headerBackTitleVisible: false,
         headerStyle           : {
+          borderBottomWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
           height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
         headerTitle           : HeaderTitle,

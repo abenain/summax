@@ -1,9 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants'
 import * as React from 'react'
-import { Image, Platform, View } from 'react-native'
-import { OnboardingSexScreen } from '../screens/onboarding/OnboardingSexScreen'
+import { Image, View } from 'react-native'
 import { OnboardingObjectivesScreen } from '../screens/onboarding/OnboardingObjectivesScreen'
+import { OnboardingSexScreen } from '../screens/onboarding/OnboardingSexScreen'
 import { HeaderTitle } from './header/Title'
 
 const arrowLeftIcon = require('../../assets/arrow-left-black.png')
@@ -19,7 +19,10 @@ export function OnboardingStackNavigator() {
                                              style={{ height: 24, marginLeft: 16, width: 24 }}/>,
         headerBackTitleVisible: false,
         headerStyle           : {
-          height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
+          borderBottomWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
+          height: Constants.statusBarHeight + 56,
         },
         headerTitle           : HeaderTitle,
       }}>
