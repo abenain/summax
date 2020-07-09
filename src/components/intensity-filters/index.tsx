@@ -13,6 +13,19 @@ interface Props {
   onFilter?: (intensity: IntensityLevel) => void
 }
 
+export function getTitleForIntensity(intensity: IntensityLevel){
+  switch(intensity){
+    case IntensityLevel.LOW:
+      return i18n.t('Filter - Intensity - Low')
+    case IntensityLevel.MEDIUM:
+      return i18n.t('Filter - Intensity - Medium')
+    case IntensityLevel.HIGH:
+      return i18n.t('Filter - Intensity - High')
+    default:
+      return ''
+  }
+}
+
 export function IntensityFilters({ onFilter = NoOp }: Props) {
   return (
     <Layout style={styles.container}>
@@ -26,7 +39,7 @@ export function IntensityFilters({ onFilter = NoOp }: Props) {
           onPress={() => onFilter(IntensityLevel.LOW)}
           activeOpacity={.5}>
           <Image source={low} style={styles.image}/>
-          <Text style={styles.text}>{i18n.t('Filter - Intensity - Low')}</Text>
+          <Text style={styles.text}>{getTitleForIntensity(IntensityLevel.LOW)}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -34,7 +47,7 @@ export function IntensityFilters({ onFilter = NoOp }: Props) {
           onPress={() => onFilter(IntensityLevel.MEDIUM)}
           activeOpacity={.5}>
           <Image source={medium} style={styles.image}/>
-          <Text style={styles.text}>{i18n.t('Filter - Intensity - Medium')}</Text>
+          <Text style={styles.text}>{getTitleForIntensity(IntensityLevel.MEDIUM)}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -42,7 +55,7 @@ export function IntensityFilters({ onFilter = NoOp }: Props) {
           onPress={() => onFilter(IntensityLevel.HIGH)}
           activeOpacity={.5}>
           <Image source={high} style={styles.image}/>
-          <Text style={styles.text}>{i18n.t('Filter - Intensity - High')}</Text>
+          <Text style={styles.text}>{getTitleForIntensity(IntensityLevel.HIGH)}</Text>
         </TouchableOpacity>
 
       </Layout>

@@ -16,7 +16,7 @@ interface Props {
   onFilter?: (target: Target) => void
 }
 
-export function targetToString(target: Target){
+export function getTitleForTarget(target: Target){
   switch(target){
     case Target.CORE:
       return i18n.t('Filter - Target - Core')
@@ -46,12 +46,12 @@ export function TargetFilters({ onFilter = NoOp }: Props) {
           image={upperBody}
           onPress={() => onFilter(Target.UPPER_BODY)}
           style={styles.leftFilter}
-          title={targetToString(Target.UPPER_BODY)}/>
+          title={getTitleForTarget(Target.UPPER_BODY)}/>
         <Filter
           image={lowerBody}
           onPress={() => onFilter(Target.LOWER_BODY)}
           style={styles.rightFilter}
-          title={targetToString(Target.LOWER_BODY)}/>
+          title={getTitleForTarget(Target.LOWER_BODY)}/>
       </Layout>
 
       <Layout style={[styles.filterRow]}>
@@ -59,12 +59,12 @@ export function TargetFilters({ onFilter = NoOp }: Props) {
           image={core}
           onPress={() => onFilter(Target.CORE)}
           style={styles.leftFilter}
-          title={targetToString(Target.CORE)}/>
+          title={getTitleForTarget(Target.CORE)}/>
         <Filter
           image={wholeBody}
           onPress={() => onFilter(Target.WHOLE_BODY)}
           style={styles.rightFilter}
-          title={targetToString(Target.WHOLE_BODY)}/>
+          title={getTitleForTarget(Target.WHOLE_BODY)}/>
       </Layout>
 
     </Layout>

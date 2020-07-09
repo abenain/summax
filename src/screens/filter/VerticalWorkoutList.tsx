@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1
   },
-  workoutCard: {
+  workoutCard  : {
     marginBottom: 16,
   },
 })

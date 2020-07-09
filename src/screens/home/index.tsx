@@ -29,6 +29,10 @@ export function HomeScreen() {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })
   }
 
+  function navigateToFilterScreen(filterValues: { subfilter?: string, title?: string, type: string, value: string | number }) {
+    navigation.navigate('Filter', filterValues)
+  }
+
   function toggleFavorite(workoutId: string, favorite: boolean) {
     const webservice = favorite ? WorkoutService.addToFavorites : WorkoutService.removeFromFavorites
 
@@ -109,7 +113,7 @@ export function HomeScreen() {
                         showsHorizontalScrollIndicator={false}>
               {homepage.themes.map(theme => <WorkoutCard
                 key={theme.title}
-                onPress={() => navigation.navigate('Filter', {
+                onPress={() => navigateToFilterScreen({
                   title: theme.title,
                   type : 'id',
                   value: theme.workoutIds.join(','),
@@ -153,18 +157,25 @@ export function HomeScreen() {
                   }))
               }}/>
 
-            <TargetFilters onFilter={(target: Target) => navigation.navigate('Filter', {
-              title    : 'Haut du corps',
+            <TargetFilters onFilter={(target: Target) => navigateToFilterScreen({
+              subfilter: 'duration',
               type     : 'target',
               value    : target,
-              subfilter: 'duration',
             })}/>
 
-            <IntensityFilters/>
+            <IntensityFilters onFilter={intensity => navigateToFilterScreen({
+              subfilter: 'duration',
+              type     : 'intensity',
+              value    : intensity,
+            })}/>
 
             <Separator style={{ ...styles.separator, marginBottom: 0 }}/>
 
-            <DurationFilters/>
+            <DurationFilters onFilter={duration => navigateToFilterScreen({
+              subfilter: 'intensity',
+              type     : 'duration',
+              value    : duration,
+            })}/>
           </ScrollView>
         ),
         nothing: () => (

@@ -16,6 +16,19 @@ interface Props {
   onFilter?: (duration: WorkoutDuration) => void
 }
 
+export function getTitleForDuration(duration: WorkoutDuration){
+  switch(duration){
+    case WorkoutDuration.SHORT:
+      return i18n.t('Filter - Duration - Short')
+    case WorkoutDuration.MEDIUM:
+      return i18n.t('Filter - Duration - Medium')
+    case WorkoutDuration.LONG:
+      return i18n.t('Filter - Duration - Long')
+    default:
+      return ''
+  }
+}
+
 export function durationFrom(durationMin: number){
   if(durationMin <= SHORT_DURATION_MAX_MINS){
     return WorkoutDuration.SHORT
@@ -41,7 +54,7 @@ export function DurationFilters({ onFilter = NoOp }: Props) {
           onPress={() => onFilter(WorkoutDuration.SHORT)}
           activeOpacity={.5}>
           <Image source={short} style={styles.image}/>
-          <Text style={styles.text}>{i18n.t('Filter - Duration - Short')}</Text>
+          <Text style={styles.text}>{getTitleForDuration(WorkoutDuration.SHORT)}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -49,7 +62,7 @@ export function DurationFilters({ onFilter = NoOp }: Props) {
           onPress={() => onFilter(WorkoutDuration.MEDIUM)}
           activeOpacity={.5}>
           <Image source={medium} style={styles.image}/>
-          <Text style={styles.text}>{i18n.t('Filter - Duration - Medium')}</Text>
+          <Text style={styles.text}>{getTitleForDuration(WorkoutDuration.MEDIUM)}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -57,7 +70,7 @@ export function DurationFilters({ onFilter = NoOp }: Props) {
           onPress={() => onFilter(WorkoutDuration.LONG)}
           activeOpacity={.5}>
           <Image source={long} style={styles.image}/>
-          <Text style={styles.text}>{i18n.t('Filter - Duration - Long')}</Text>
+          <Text style={styles.text}>{getTitleForDuration(WorkoutDuration.LONG)}</Text>
         </TouchableOpacity>
 
       </Layout>

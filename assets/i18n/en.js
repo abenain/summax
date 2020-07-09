@@ -10,6 +10,7 @@ const en = {
 	'Filter - Intensity - High'                    : 'High',
 	'Filter - Intensity - Low'                     : 'Low',
 	'Filter - Intensity - Medium'                  : 'Medium',
+	'Filter - No Workout in this category'         : 'There\'s no workout available for this category yet',
 	'Filter - Target - Upper body'                 : 'Upper body',
 	'Filter - Target - Lower body'                 : 'Lower body',
 	'Filter - Target - Core'                       : 'Core',

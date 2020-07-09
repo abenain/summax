@@ -26,6 +26,7 @@ export function HorizontalWorkoutList({ onPress = NoOp, onToggleFavorite = NoOp,
             key={workout.id}
             onPress={() => onPress(workout)}
             onToggleFavorite={() => onToggleFavorite(workout)}
+            style={styles.workoutCard}
             themeOrWorkout={workout}
           />
         ))}
@@ -45,9 +46,11 @@ const styles = StyleSheet.create({
     lineHeight: 27
   },
   workoutList   : {
-    //flex        : undefined,
     height      : 160,
     marginBottom: 15,
     marginTop   : 19,
+  },
+  workoutCard: {
+    marginRight: 16,
   },
 })

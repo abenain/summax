@@ -28,7 +28,7 @@ export type RootStackParamList = {
     subfilter?: string
     title?: string
     type: string
-    value: string
+    value: string | number
   }
   Home: undefined
   Login: undefined

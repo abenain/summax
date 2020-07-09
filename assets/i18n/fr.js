@@ -7,6 +7,7 @@ const fr = {
 	'Filter - Duration - Long'                     : '15 à 20 min.',
 	'Filter - Duration - Medium'                   : '8 à 14 min.',
 	'Filter - Duration - Short'                    : '4 à 7 min.',
+	'Filter - No Workout in this category'         : 'Il n\'y a aucun entraînement dans cette catégorie pour l\instant',
 	'Filter - Intensity - High'                    : 'Haute',
 	'Filter - Intensity - Low'                     : 'Faible',
 	'Filter - Intensity - Medium'                  : 'Moyenne',

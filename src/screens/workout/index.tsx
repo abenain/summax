@@ -15,7 +15,7 @@ import { ErrorPage } from '../../components/ErrorPage'
 import { IconMode as IntensityIconMode, Intensity, Size as IntensitySize } from '../../components/intensity'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
-import { targetToString } from '../../components/target-filters'
+import { getTitleForTarget } from '../../components/target-filters'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
@@ -84,7 +84,7 @@ export function WorkoutScreen() {
                     <Text style={styles.workoutFeaturesText}>{workout.techniques.join(' ')}</Text>
                   </Layout>
                   <Layout style={styles.workoutFeaturesSplitRightContainer}>
-                    <Text style={styles.workoutFeaturesText}>{targetToString(workout.target)}</Text>
+                    <Text style={styles.workoutFeaturesText}>{getTitleForTarget(workout.target)}</Text>
                   </Layout>
                 </Layout>
 
