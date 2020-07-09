@@ -1,22 +1,25 @@
+import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
-import { useEffect, useState } from 'react'
-import * as React from 'react'
-import { Image, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { Image, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { SummaxColors } from '../../colors'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
+import { Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
-import { useDispatch, useSelector } from 'react-redux'
 
 const minusCircleIcon = require('./minus-circle.png')
 
 export function MyWorkoutsScreen() {
   const [isLoading, setLoading] = useState(false)
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const favoriteWorkouts = useSelector(({ contents: { favoriteWorkouts } }: GlobalState) => favoriteWorkouts)
 
   function loadFavorites(){
@@ -34,6 +37,10 @@ export function MyWorkoutsScreen() {
 
     loadFavorites().then(() => setLoading(false))
   }, [])
+
+  function navigateToWorkout(workout: Workout) {
+    navigation.navigate('Workout', { id: workout.id, title: workout.title })
+  }
 
   function remove(workoutId){
     setLoading(true)
@@ -61,11 +68,15 @@ export function MyWorkoutsScreen() {
             workouts.map((workout, index, allWorkouts) => (
               <Layout style={[styles.workoutContainer, (allWorkouts.length === 1 || index === allWorkouts.length - 1) ? {} : {borderBottomWidth: 1, borderColor: SummaxColors.darkGrey}]}>
 
-                <Image source={{ uri: workout.posterUrl }} style={styles.workoutImage}/>
+                <TouchableOpacity activeOpacity={.8} onPress={() => navigateToWorkout(workout)}>
+                  <Image source={{ uri: workout.posterUrl }} style={styles.workoutImage}/>
+                </TouchableOpacity>
 
-                <Layout style={styles.workoutTitleContainer}>
-                  <Text style={styles.workoutTitle}>{workout.title}</Text>
-                </Layout>
+                <TouchableOpacity activeOpacity={.8} style={styles.workoutTitleContainer} onPress={() => navigateToWorkout(workout)}>
+                  <Layout style={styles.workoutTitleContainer}>
+                    <Text style={styles.workoutTitle}>{workout.title}</Text>
+                  </Layout>
+                </TouchableOpacity>
 
                 <Layout style={styles.buttonContainer}>
                   <TouchableOpacity activeOpacity={.8} onPress={() => remove(workout.id)}>
