@@ -104,13 +104,14 @@ export function HomeScreen() {
               <Text style={styles.title}>{i18n.t('Home - Featured themes')}</Text>
             </Layout>
 
-            <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true}>
+            <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true} showsHorizontalScrollIndicator={false}>
               {homepage.themes.map(theme => <WorkoutCard
                 key={theme.title}
                 onPress={() => navigateToWorkout(theme)}
                 themeOrWorkout={theme}
                 style={{ marginRight: 16, marginBottom: 16 }}
                 cardStyle={WorkoutCardSize.THEME}/>)}
+                <Layout style={{width: 16}}/>
             </ScrollView>
 
             <PopularWorkouts
