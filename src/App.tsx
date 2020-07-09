@@ -25,10 +25,10 @@ i18n.locale = Localization.locale
 
 export type RootStackParamList = {
   Filter: {
-    title: string
+    subfilter?: string
+    title?: string
     type: string
-    value: number
-    subfilter: string
+    value: string
   }
   Home: undefined
   Login: undefined

@@ -109,7 +109,11 @@ export function HomeScreen() {
                         showsHorizontalScrollIndicator={false}>
               {homepage.themes.map(theme => <WorkoutCard
                 key={theme.title}
-                onPress={() => navigateToWorkout(theme)}
+                onPress={() => navigation.navigate('Filter', {
+                  title: theme.title,
+                  type : 'id',
+                  value: theme.workoutIds.join(','),
+                })}
                 themeOrWorkout={theme}
                 style={{ marginRight: 16, marginBottom: 16 }}
                 cardStyle={WorkoutCardSize.THEME}/>)}
@@ -150,9 +154,9 @@ export function HomeScreen() {
               }}/>
 
             <TargetFilters onFilter={(target: Target) => navigation.navigate('Filter', {
-              title: 'Haut du corps',
-              type: 'target',
-              value: target,
+              title    : 'Haut du corps',
+              type     : 'target',
+              value    : target,
               subfilter: 'duration',
             })}/>
 

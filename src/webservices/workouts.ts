@@ -58,3 +58,18 @@ export function removeFromFavorites({ token, workoutId }: { token: string, worko
     })
     .then(user => Maybe.maybe(user))
 }
+
+export function fetchWorkouts({ token, filter }: { token: string, filter?: {type: string, value: string} }) {
+  const queryParams = filter ? `?${filter.type}=${filter.value}` : ''
+
+  return fetch(`${getApiBaseUrl()}/workouts${queryParams}`, {
+    method: 'GET',
+    headers: {
+      ...getAuthorizationHeaders(token),
+    },
+  }).then(async response => {
+    await checkFetchResponseIsOKOrThrow(response)
+    return response.json()
+  })
+    .then(workouts => Maybe.maybe(workouts))
+}

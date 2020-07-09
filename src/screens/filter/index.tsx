@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Layout, Text } from '@ui-kitten/components'
+import { Layout } from '@ui-kitten/components'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
@@ -9,10 +9,12 @@ import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
 import { Separator } from '../../components/separator'
-import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
+import * as WorkoutService from '../../webservices/workouts'
 import * as WorkoutServices from '../../webservices/workouts'
+import { HorizontalWorkoutList } from './HorizontalWorkoutList'
+import { VerticalWorkoutList } from './VerticalWorkoutList'
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList, 'Filter'>
@@ -20,48 +22,77 @@ interface Props {
 
 export function FilterScreen({}: Props) {
   const route = useRoute<RouteProp<RootStackParamList, 'Filter'>>()
-  const { type: filterType, value: filterValue, subfilter, title } = route.params
+  const { subfilter, title, type: filterType, value: filterValue } = route.params
   const [isLoading, setIsLoading] = useState(true)
   const [workouts, setWorkouts] = useState(Maybe.nothing<Workout[]>())
   const navigation = useNavigation()
+
+  function loadWorkouts(){
+    return callAuthenticatedWebservice(WorkoutServices.fetchWorkouts, {
+      filter: {
+        type: filterType,
+        value: filterValue
+      }
+    })
+      .then((workouts: Maybe<Workout[]>) => {
+        setWorkouts(workouts)
+      })
+  }
 
   useEffect(function componentDidMount() {
 
     navigation.setOptions({ headerTitle: title })
 
-    callAuthenticatedWebservice(WorkoutServices.loadFavorites, {})
-      .then((workouts: Maybe<Workout[]>) => {
-        setWorkouts(workouts)
-        setIsLoading(false)
-      })
+    loadWorkouts().then(() => setIsLoading(false))
   }, [])
 
   if (isLoading) {
     return <Loading/>
   }
 
+  function navigateToWorkout(workout: Workout) {
+    navigation.navigate('Workout', {
+      id   : workout.id,
+      title: workout.title,
+    })
+  }
+
+  function toggleFavorite(workout: Workout) {
+    const webservice = workout.favorite ? WorkoutService.removeFromFavorites : WorkoutService.addToFavorites
+
+    return callAuthenticatedWebservice(webservice, { workoutId: workout.id })
+      .then(() => {
+        const updatedWorkouts = workouts.map(workouts => workouts.map(workoutInState => {
+          if(workoutInState.id !== workout.id){
+            return workoutInState
+          }
+
+          return {
+            ...workoutInState,
+            favorite: !workoutInState.favorite
+          }
+        }))
+
+        setWorkouts(updatedWorkouts)
+      })
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {workouts.caseOf({
-        just   : workouts => (
+        just   : workouts => Boolean(subfilter) ? (
           <ScrollView style={styles.mainContainer}>
-
-            <Layout style={styles.titleContainer}>
-              <Text style={styles.title}>Haut du corps</Text>
-            </Layout>
-
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.workoutList}>
-              {workouts.map(workout => (
-                <WorkoutCard
-                  key={workout.id}
-                  themeOrWorkout={workout}
-                  cardStyle={WorkoutCardSize.WORKOUT_SMALL}
-                />
-              ))}
-            </ScrollView>
-
+            <HorizontalWorkoutList title={'Ho du kor'} workouts={workouts}/>
             <Separator style={styles.separator}/>
           </ScrollView>
+        ) : (
+          <Layout style={styles.mainContainer}>
+            <VerticalWorkoutList
+              onPress={navigateToWorkout}
+              onToggleFavorite={toggleFavorite}
+              workouts={workouts}
+            />
+          </Layout>
         ),
         nothing: () => <ErrorPage/>
       })}
@@ -70,29 +101,14 @@ export function FilterScreen({}: Props) {
 }
 
 const styles = StyleSheet.create({
-  mainContainer : {
+  mainContainer: {
     backgroundColor  : 'white',
     flex             : 1,
     paddingBottom    : 35,
     paddingHorizontal: 16,
     paddingTop       : 12,
   },
-  titleContainer: {
-    justifyContent: 'center',
-    height        : 56,
-  },
-  title         : {
-    fontFamily: 'aktivGroteskXBold',
-    fontSize  : 30,
-    lineHeight: 27
-  },
-  workoutList   : {
-    flex        : undefined,
-    height      : 160,
-    marginBottom: 15,
-    marginTop   : 19,
-  },
-  separator     : {
+  separator    : {
     marginVertical: 18
   },
 })
