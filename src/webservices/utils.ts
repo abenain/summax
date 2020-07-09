@@ -1,6 +1,8 @@
 import Constants from 'expo-constants'
+import { Exercise } from '../types'
 
 const SCHEME_HTTP = 'http'
+const SCHEME_HTTPS = 'https'
 const BACKEND_URL_DEV = '10.0.0.6:18000'
 const BACKEND_URL_PROD = 'summax.fr'
 
@@ -56,4 +58,18 @@ export function getAuthorizationHeaders(token: string) {
   return {
     'Authorization': `Bearer ${token}`
   }
+}
+
+const BASE_JWPLAYER_URL = 'content.jwplatform.com'
+const JWPLAYER_THUMBS_FOLDER = 'thumbs'
+const JWPLAYER_VIDEO_FOLDER = 'videos'
+const JWPLAYER_THUMB_WIDTH = '1920'
+const JWPLAYER_1080P_CODEC_ID_PROD = 'XbWGWCTK'
+
+export function getExerciseVideoUrl(exercise: Exercise){
+  return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_VIDEO_FOLDER}/${exercise.mediaId}-${JWPLAYER_1080P_CODEC_ID_PROD}.mp4`
+}
+
+export function getExerciseThumbnail(exercise: Exercise){
+  return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_THUMBS_FOLDER}/${exercise.mediaId}-${JWPLAYER_THUMB_WIDTH}.jpg`
 }

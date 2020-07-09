@@ -1,5 +1,3 @@
-import { ImageSourcePropType } from 'react-native'
-
 export interface WebserviceError {
   status: number
 }
@@ -60,9 +58,8 @@ export enum ExerciseModality {
 export interface Exercise {
   duration: number
   modality: ExerciseModality
-  thumbnailImage: ImageSourcePropType
   title: string
-  videoUrl: string
+  mediaId: string
 }
 
 export interface Workout {

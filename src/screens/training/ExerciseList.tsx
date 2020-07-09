@@ -5,6 +5,7 @@ import { Image, StyleSheet } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Exercise, ExerciseModality } from '../../types'
+import { getExerciseThumbnail } from '../../webservices/utils'
 
 const playIcon = require('./play-green.png')
 
@@ -42,7 +43,7 @@ export function ExerciseList({ activeIndex, exercises }: Props) {
 
           <Image
             resizeMode={'contain'}
-            source={exercise.thumbnailImage}
+            source={{uri: getExerciseThumbnail(exercise)}}
             style={styles.exerciseThumbnail}/>
 
             <Layout style={styles.exerciseDetailsContainer}>

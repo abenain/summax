@@ -19,6 +19,7 @@ import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
 import { Exercise, ExerciseModality } from '../../types'
 import { NoOp } from '../../utils'
+import { getExerciseVideoUrl } from '../../webservices/utils'
 import { ExerciseList } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
 
@@ -163,7 +164,7 @@ export function TrainingScreen() {
                 shouldPlay: true,
                 resizeMode: Video.RESIZE_MODE_CONTAIN,
                 source    : {
-                  uri: exercise.videoUrl
+                  uri: getExerciseVideoUrl(exercise)
                 },
               }}
               inFullscreen={isFullScreen}
