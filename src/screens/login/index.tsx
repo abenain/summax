@@ -3,7 +3,8 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, Platform, StatusBar, StyleSheet } from 'react-native'
+import { ShowWithKeyboard } from 'react-native-hide-with-keyboard'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
@@ -29,14 +30,14 @@ export function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(Maybe.nothing<string>())
   const [isLoading, setLoading] = useState(false)
-  const user = useSelector(({userData: {user}}: GlobalState) => user)
+  const user = useSelector(({ userData: { user } }: GlobalState) => user)
 
   useEffect(() => {
     user.caseOf({
-      just: user => {
-        if(user.onboarded){
+      just   : user => {
+        if (user.onboarded) {
           navigation.replace('Home')
-        }else{
+        } else {
           navigation.replace('Onboarding')
         }
         setLoading(false)
@@ -87,40 +88,54 @@ export function LoginScreen({ navigation }: Props) {
 
       <StatusBar barStyle={'light-content'}/>
 
-      {error.caseOf({
-        just   : errorMessage => (
-          <Layout style={styles.errorContainer}>
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          </Layout>
-        ),
-        nothing: () => null
-      })}
-
-      <LoginForm
-        emailValue={email}
-        onEmailChanged={(email: string) => {
-          setEmail(email)
-          setError(Maybe.nothing())
+      <KeyboardAvoidingView
+        style={{
+          flex          : 1,
+          justifyContent: 'flex-end',
+          alignItems    : 'stretch',
         }}
-        onPasswordChanged={(password: string) => {
-          setPassword(password)
-          setError(Maybe.nothing())
-        }}
-        onSignUpPressed={goToSignUp}
-        passwordValue={password}/>
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      >
+        {error.caseOf({
+          just   : errorMessage => (
+            <Layout style={styles.errorContainer}>
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            </Layout>
+          ),
+          nothing: () => null
+        })}
 
-      <Layout style={styles.buttonContainer}>
-        <SummaxButton
-          buttonStyle={ButtonStyle.TRANSPARENT}
-          onPress={goToSignUp}
-          text={i18n.t('Sign up')}
-        />
-        <SummaxButton
-          buttonStyle={ButtonStyle.GREEN}
-          onPress={onSignInButtonPress}
-          text={i18n.t('Sign in')}
-        />
-      </Layout>
+        <LoginForm
+          emailValue={email}
+          onEmailChanged={(email: string) => {
+            setEmail(email)
+            setError(Maybe.nothing())
+          }}
+          onPasswordChanged={(password: string) => {
+            setPassword(password)
+            setError(Maybe.nothing())
+          }}
+          onSignUpPressed={goToSignUp}
+          passwordValue={password}/>
+
+        <Layout style={styles.buttonContainer}>
+          <SummaxButton
+            buttonStyle={ButtonStyle.TRANSPARENT}
+            onPress={goToSignUp}
+            text={i18n.t('Sign up')}
+          />
+          <SummaxButton
+            buttonStyle={ButtonStyle.GREEN}
+            onPress={onSignInButtonPress}
+            text={i18n.t('Sign in')}
+          />
+        </Layout>
+
+        <ShowWithKeyboard>
+          <Layout style={{ height: 36, backgroundColor: 'transparent' }}/>
+        </ShowWithKeyboard>
+      </KeyboardAvoidingView>
+
 
     </ImageBackground>
   )
@@ -129,8 +144,6 @@ export function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   background     : {
     flex             : 1,
-    justifyContent   : 'flex-end',
-    alignItems       : 'stretch',
     paddingHorizontal: 16,
     paddingBottom    : 36,
   },

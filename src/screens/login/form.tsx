@@ -3,6 +3,7 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import HideWithKeyboard from 'react-native-hide-with-keyboard'
 import { NoOp } from '../../utils'
 
 const summax = require('./summax.png')
@@ -52,7 +53,9 @@ export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged
 
       {false && <Text style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>}
 
-      <Layout style={{ height: 100 }}/>
+      <HideWithKeyboard>
+        <Layout style={{ height: 100 }}/>
+      </HideWithKeyboard>
 
       <Layout style={{ flexDirection: 'row' }}>
         <Text style={[styles.smallText, { marginRight: 8 }]}>{i18n.t('Sign in - No account yet')}</Text>
