@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants'
+import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, Platform, Text, View } from 'react-native'
 import { LoginScreen } from '../screens/login'
@@ -26,7 +27,7 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <View style={{ flexDirection: 'row' }}>
         <Image source={arrowLeftIconWhite}
                style={{ height: 24, marginHorizontal: 16, width: 24 }}/>
-        <Text style={{ fontFamily: 'nexaXBold', fontSize: 18, lineHeight: 24, color: 'white' }}>Retour</Text>
+        <Text style={{ fontFamily: 'nexaXBold', fontSize: 18, lineHeight: 24, color: 'white' }}>{i18n.t('Back')}</Text>
       </View>
     ),
     headerRight      : null,
@@ -52,7 +53,8 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <Stack.Screen name='SignUpOtp' component={SignUpOtpScreen} options={signUpScreensHeaderConfig}/>
       <Stack.Screen name='Onboarding' component={OnboardingStackNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
-      <Stack.Screen name='Profile' component={ProfileScreen} options={{ headerRight: () => <View style={{padding: 6}}/> }}/>
+      <Stack.Screen name='Profile' component={ProfileScreen}
+                    options={{ headerRight: () => <View style={{ padding: 6 }}/> }}/>
       <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{ headerRight: null }}/>
     </Stack.Navigator>
   )

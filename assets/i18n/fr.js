@@ -1,4 +1,5 @@
 const fr = {
+	'Back'                                         : 'Retour',
 	'Error Page Message'                           : 'Impossible de récupérer les exercices\n Etes-vous connecté à internet?',
 	'Exercise - Repetitions'                       : 'répétitions',
 	'Exercise - Seconds'                           : 'secondes',
