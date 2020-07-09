@@ -29,10 +29,10 @@ export function HomeScreen() {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })
   }
 
-  function toggleFavorite(workoutId: string, favorite: boolean){
+  function toggleFavorite(workoutId: string, favorite: boolean) {
     const webservice = favorite ? WorkoutService.addToFavorites : WorkoutService.removeFromFavorites
 
-    return callAuthenticatedWebservice(webservice, {workoutId})
+    return callAuthenticatedWebservice(webservice, { workoutId })
       .then(user => {
         dispatch({
           type: ActionType.LOADED_USERDATA,
@@ -70,7 +70,7 @@ export function HomeScreen() {
                 onPress={() => navigateToWorkout(homepage.selectedForYou)}
                 onToggleFavorite={(favorite: boolean) => {
                   dispatch({
-                    type: ActionType.UPDATED_HOMEPAGE,
+                    type    : ActionType.UPDATED_HOMEPAGE,
                     homepage: Maybe.just({
                       ...homepage,
                       selectedForYou: {
@@ -81,10 +81,11 @@ export function HomeScreen() {
                   })
                   toggleFavorite(homepage.selectedForYou.id, favorite)
                     .then(user => user.caseOf({
-                      just: () => {},
+                      just   : () => {
+                      },
                       nothing: () => {
                         dispatch({
-                          type: ActionType.UPDATED_HOMEPAGE,
+                          type    : ActionType.UPDATED_HOMEPAGE,
                           homepage: Maybe.just({
                             ...homepage,
                             selectedForYou: {
@@ -104,46 +105,49 @@ export function HomeScreen() {
               <Text style={styles.title}>{i18n.t('Home - Featured themes')}</Text>
             </Layout>
 
-            <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true} showsHorizontalScrollIndicator={false}>
+            <ScrollView style={{ paddingHorizontal: 16, marginBottom: 16 }} horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
               {homepage.themes.map(theme => <WorkoutCard
                 key={theme.title}
                 onPress={() => navigateToWorkout(theme)}
                 themeOrWorkout={theme}
                 style={{ marginRight: 16, marginBottom: 16 }}
                 cardStyle={WorkoutCardSize.THEME}/>)}
-                <Layout style={{width: 16}}/>
+              <Layout style={{ width: 16 }}/>
             </ScrollView>
 
             <PopularWorkouts
               workouts={homepage.popularWorkouts}
+              onPress={navigateToWorkout}
               onToggleFavorite={(workoutId: string, favorite: boolean) => {
-              dispatch({
-                type: ActionType.UPDATED_HOMEPAGE,
-                homepage: Maybe.just({
-                  ...homepage,
-                  popularWorkouts: homepage.popularWorkouts.map(workout => ({
-                    ...workout,
-                    favorite: workout.id === workoutId ? favorite : workout.favorite
-                  }))
+                dispatch({
+                  type    : ActionType.UPDATED_HOMEPAGE,
+                  homepage: Maybe.just({
+                    ...homepage,
+                    popularWorkouts: homepage.popularWorkouts.map(workout => ({
+                      ...workout,
+                      favorite: workout.id === workoutId ? favorite : workout.favorite
+                    }))
+                  })
                 })
-              })
-              toggleFavorite(workoutId, favorite)
-                .then(user => user.caseOf({
-                  just: () => {},
-                  nothing: () => {
-                    dispatch({
-                      type: ActionType.UPDATED_HOMEPAGE,
-                      homepage: Maybe.just({
-                        ...homepage,
-                        popularWorkouts: homepage.popularWorkouts.map(workout => ({
-                          ...workout,
-                          favorite: workout.id === workoutId ? !favorite : workout.favorite
-                        }))
+                toggleFavorite(workoutId, favorite)
+                  .then(user => user.caseOf({
+                    just   : () => {
+                    },
+                    nothing: () => {
+                      dispatch({
+                        type    : ActionType.UPDATED_HOMEPAGE,
+                        homepage: Maybe.just({
+                          ...homepage,
+                          popularWorkouts: homepage.popularWorkouts.map(workout => ({
+                            ...workout,
+                            favorite: workout.id === workoutId ? !favorite : workout.favorite
+                          }))
+                        })
                       })
-                    })
-                  }
-                }))
-            }}/>
+                    }
+                  }))
+              }}/>
 
             <TargetFilters/>
 
