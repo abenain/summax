@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native'
+import { HeaderHeightContext } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
-import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet } from 'react-native'
+import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
@@ -11,7 +13,6 @@ import { ButtonStyle, SummaxButton } from '../../components/summax-button/Summax
 import { ActionType } from '../../redux/actions'
 import { createUser } from '../../webservices/user'
 import { Form as SignUpForm } from './form'
-import {useDispatch} from 'react-redux'
 
 const backgroundImage = require('../../../assets/login_background.png')
 
@@ -61,58 +62,77 @@ export function SignUpScreen() {
   return isLoading ? (
     <Loading/>
   ) : (
+
     <ImageBackground source={backgroundImage} style={styles.background}>
 
       <StatusBar barStyle={'light-content'}/>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+        }}
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      >
+        <HeaderHeightContext.Consumer>
+          {headerHeight => (
+            <Layout style={{ marginTop: headerHeight, backgroundColor: 'transparent', flex: 1 }}>
 
-      {error.caseOf({
-        just   : errorMessage => (
-          <Layout style={styles.errorContainer}>
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          </Layout>
-        ),
-        nothing: () => null
-      })}
+              <Layout style={{ flex: 100, backgroundColor: 'transparent' }}/>
 
-      <SignUpForm confirmPasswordValue={confirmPassword}
-                  dobValue={dob}
-                  emailValue={email}
-                  firstnameValue={firstname}
-                  lastnameValue={lastname}
-                  onConfirmPasswordChanged={(value: string) => {
-                    setConfirmPassword(value)
-                    setError(Maybe.nothing())
-                  }}
-                  onDobChanged={(value: Date) => {
-                    setDob(value)
-                    setError(Maybe.nothing())
-                  }}
-                  onEmailChanged={(value: string) => {
-                    setEmail(value)
-                    setError(Maybe.nothing())
-                  }}
-                  onFirstnameChanged={(value: string) => {
-                    setFirstname(value)
-                    setError(Maybe.nothing())
-                  }}
-                  onLastnameChanged={(value: string) => {
-                    setLastname(value)
-                    setError(Maybe.nothing())
-                  }}
-                  onPasswordChanged={(value: string) => {
-                    setPassword(value)
-                    setError(Maybe.nothing())
-                  }}
-                  passwordValue={password}/>
+              <ScrollView>
+                {error.caseOf({
+                  just   : errorMessage => (
+                    <Layout style={styles.errorContainer}>
+                      <Text style={styles.errorMessage}>{errorMessage}</Text>
+                    </Layout>
+                  ),
+                  nothing: () => null
+                })}
 
-      <Layout style={styles.buttonContainer}>
-        <SummaxButton
-          buttonStyle={ButtonStyle.GREEN}
-          onPress={doSignUp}
-          text={i18n.t('Sign up')}
-        />
-      </Layout>
+                <SignUpForm confirmPasswordValue={confirmPassword}
+                            dobValue={dob}
+                            emailValue={email}
+                            firstnameValue={firstname}
+                            lastnameValue={lastname}
+                            onConfirmPasswordChanged={(value: string) => {
+                              setConfirmPassword(value)
+                              setError(Maybe.nothing())
+                            }}
+                            onDobChanged={(value: Date) => {
+                              setDob(value)
+                              setError(Maybe.nothing())
+                            }}
+                            onEmailChanged={(value: string) => {
+                              setEmail(value)
+                              setError(Maybe.nothing())
+                            }}
+                            onFirstnameChanged={(value: string) => {
+                              setFirstname(value)
+                              setError(Maybe.nothing())
+                            }}
+                            onLastnameChanged={(value: string) => {
+                              setLastname(value)
+                              setError(Maybe.nothing())
+                            }}
+                            onPasswordChanged={(value: string) => {
+                              setPassword(value)
+                              setError(Maybe.nothing())
+                            }}
+                            passwordValue={password}/>
+              </ScrollView>
 
+              <Layout style={styles.buttonContainer}>
+                <SummaxButton
+                  buttonStyle={ButtonStyle.GREEN}
+                  onPress={doSignUp}
+                  text={i18n.t('Sign up')}
+                />
+              </Layout>
+
+            </Layout>
+          )}
+        </HeaderHeightContext.Consumer>
+
+      </KeyboardAvoidingView>
     </ImageBackground>
   )
 }
@@ -120,7 +140,6 @@ export function SignUpScreen() {
 const styles = StyleSheet.create({
   background     : {
     flex             : 1,
-    justifyContent   : 'flex-end',
     alignItems       : 'stretch',
     paddingHorizontal: 16,
     paddingBottom    : 36,
