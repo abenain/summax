@@ -87,9 +87,8 @@ export function OnboardingSexScreen() {
     <Loading/>
   ) : (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 2 }}>
-
-        <ScrollView style={{ flex: 1 }}>
+      <ScrollView>
+        <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 2 }}>
           <Text style={styles.instructions}>
             {i18n.t('Onboarding - Sex - Instructions')}
           </Text>
@@ -134,9 +133,9 @@ export function OnboardingSexScreen() {
               value={weightKg}
             />
           </Layout>
-        </ScrollView>
 
-      </BaseScreen>
+        </BaseScreen>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -156,13 +155,13 @@ const styles = StyleSheet.create({
     marginBottom  : 53,
   },
   womanIcon                  : {
-    height     : 246,
+    height     : 220,
     marginRight: 30,
-    width      : 63,
+    width      : 56,
   },
   manIcon                    : {
-    height: 246,
-    width : 85,
+    height: 220,
+    width : 76,
   },
   sexSelectionSwitchContainer: {
     alignItems    : 'center',
@@ -180,6 +179,7 @@ const styles = StyleSheet.create({
     alignItems    : 'center',
     flexDirection : 'row',
     justifyContent: 'space-between',
+    marginBottom: 32,
   },
   input                      : {
     backgroundColor  : SummaxColors.lightGrey,

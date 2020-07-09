@@ -36,7 +36,7 @@ export function BaseScreen({ children = null, onContinue = NoOp, progress: {curr
 
       </Layout>
 
-      <Layout style={{ alignSelf: 'stretch', height: 56 }}>
+      <Layout style={{ alignSelf: 'stretch', height: 56, marginBottom: 16, }}>
         <SummaxButton
           buttonStyle={ButtonStyle.GREEN}
           onPress={onContinue}
