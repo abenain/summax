@@ -3,7 +3,8 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
-import { ImageBackground, StatusBar, StyleSheet } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, Platform, StatusBar, StyleSheet } from 'react-native'
+import HideWithKeyboard from 'react-native-hide-with-keyboard'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
@@ -65,37 +66,51 @@ export function SignUpOtpScreen() {
     <Loading/>
   ) : (
     <ImageBackground source={backgroundImage} style={styles.background}>
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+        }}
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      >
+        <StatusBar barStyle={'light-content'}/>
 
-      <StatusBar barStyle={'light-content'}/>
+        <Layout style={{ backgroundColor: 'transparent', flex: 1 }}/>
 
-      {error.caseOf({
-        just   : errorMessage => (
-          <Layout style={styles.errorContainer}>
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          </Layout>
-        ),
-        nothing: () => null
-      })}
+        {error.caseOf({
+          just   : errorMessage => (
+            <HideWithKeyboard>
+              <Layout style={styles.errorContainer}>
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+              </Layout>
+            </HideWithKeyboard>
+          ),
+          nothing: () => null
+        })}
 
-      <Layout style={styles.formContainer}>
-        <OtpForm
-          message={i18n.t('Sign up otp - Message')}
-          onChange={(value: string) => {
-            setOtp(value)
-            setError(Maybe.nothing())
-          }}
-          onResendCodeRequest={resendOtpEmail}
-          style={{ flex: 1 }}
-          value={otp}/>
-      </Layout>
 
-      <Layout style={styles.buttonContainer}>
-        <SummaxButton
-          buttonStyle={ButtonStyle.GREEN}
-          onPress={doCheckOtp}
-          text={i18n.t('Sign up otp - Button')}
-        />
-      </Layout>
+        <Layout style={styles.formContainer}>
+          <OtpForm
+            message={i18n.t('Sign up otp - Message')}
+            onChange={(value: string) => {
+              setOtp(value)
+              setError(Maybe.nothing())
+            }}
+            onResendCodeRequest={resendOtpEmail}
+            value={otp}/>
+
+          <HideWithKeyboard>
+            <Layout style={{ backgroundColor: 'transparent', height: 40 }}/>
+          </HideWithKeyboard>
+        </Layout>
+
+        <Layout style={styles.buttonContainer}>
+          <SummaxButton
+            buttonStyle={ButtonStyle.GREEN}
+            onPress={doCheckOtp}
+            text={i18n.t('Sign up otp - Button')}
+          />
+        </Layout>
+      </KeyboardAvoidingView>
 
     </ImageBackground>
   )
@@ -104,16 +119,11 @@ export function SignUpOtpScreen() {
 const styles = StyleSheet.create({
   background     : {
     flex             : 1,
-    justifyContent   : 'flex-end',
     alignItems       : 'stretch',
     paddingHorizontal: 16,
     paddingBottom    : 36,
   },
   errorContainer : {
-    position         : 'absolute',
-    top              : 100,
-    left             : 16,
-    right            : 16,
     justifyContent   : 'center',
     backgroundColor  : SummaxColors.salmonPink,
     borderRadius     : 5,
@@ -128,8 +138,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   formContainer  : {
-    flex     : 1,
-    marginTop: 200,
+    borderRadius: 5,
   },
   buttonContainer: {
     paddingTop     : 36,
