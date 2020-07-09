@@ -7,34 +7,18 @@ import { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
-import { getTitleForDuration } from '../../components/duration-filters'
 import { ErrorPage } from '../../components/ErrorPage'
-import { getTitleForIntensity } from '../../components/intensity-filters'
 import { Loading } from '../../components/Loading'
-import { Separator } from '../../components/separator'
-import { getTitleForTarget } from '../../components/target-filters'
-import { IntensityLevel, Target, Workout, WorkoutDuration } from '../../types'
+import { Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutService from '../../webservices/workouts'
 import * as WorkoutServices from '../../webservices/workouts'
-import { HorizontalWorkoutList } from './HorizontalWorkoutList'
+import { getTitleForFilter } from './utils'
 import { VerticalWorkoutList } from './VerticalWorkoutList'
+import { WorkoutListWithSubfilter } from './WorkoutListWithSubfilter'
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList, 'Filter'>
-}
-
-function getTitleForFilter(filterType: string, filterValue: string | number) {
-  switch (filterType) {
-    case 'duration':
-      return getTitleForDuration(filterValue as WorkoutDuration)
-    case 'intensity':
-      return getTitleForIntensity(filterValue as IntensityLevel)
-    case 'target':
-      return getTitleForTarget(filterValue as Target)
-    default:
-      return ''
-  }
 }
 
 export function FilterScreen({}: Props) {
@@ -104,8 +88,12 @@ export function FilterScreen({}: Props) {
 
           return Boolean(subfilter) ? (
             <ScrollView style={styles.mainContainer}>
-              <HorizontalWorkoutList title={'Ho du kor'} workouts={workouts}/>
-              <Separator style={styles.separator}/>
+              <WorkoutListWithSubfilter
+                onPress={navigateToWorkout}
+                onToggleFavorite={toggleFavorite}
+                subfilter={subfilter}
+                workouts={workouts}
+              />
             </ScrollView>
           ) : (
             <Layout style={styles.mainContainer}>
@@ -130,8 +118,5 @@ const styles = StyleSheet.create({
     paddingBottom    : 35,
     paddingHorizontal: 16,
     paddingTop       : 12,
-  },
-  separator    : {
-    marginVertical: 18
   },
 })
