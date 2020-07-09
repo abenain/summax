@@ -41,7 +41,6 @@ export function addToFavorites({ token, workoutId }: { token: string, workoutId:
       return response.json()
     })
     .then(user => Maybe.maybe(user))
-    .then(workout => Maybe.maybe(workout))
 }
 
 export function removeFromFavorites({ token, workoutId }: { token: string, workoutId: string }) {
@@ -58,5 +57,4 @@ export function removeFromFavorites({ token, workoutId }: { token: string, worko
       return response.json()
     })
     .then(user => Maybe.maybe(user))
-    .then(workout => Maybe.maybe(workout))
 }
