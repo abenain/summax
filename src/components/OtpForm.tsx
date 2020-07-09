@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     borderRadius   : 5,
     borderWidth    : 0,
     color          : SummaxColors.blueGrey,
+    fontFamily: 'nexaXBold',
     fontSize       : 14,
     height         : 48,
     width          : 71,

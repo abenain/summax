@@ -116,6 +116,5 @@ const styles = StyleSheet.create({
   inputText: {
     fontFamily: 'nexaXBold',
     fontSize  : 14,
-    fontWeight: 'bold',
   },
 })
