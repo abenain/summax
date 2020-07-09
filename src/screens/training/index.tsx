@@ -41,6 +41,7 @@ export function TrainingScreen() {
   })
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
+  const scrollView = useRef<ScrollView>()
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -80,6 +81,7 @@ export function TrainingScreen() {
 
 
   const selectExerciseAt = (index: number) => {
+    scrollView.current.scrollTo({x: 0, y: index * 106, animated: true})
     setSelectedExerciseIndex(index)
     setIsPlaying(true)
   }
@@ -228,10 +230,12 @@ export function TrainingScreen() {
                 </SummaxButton>
               </Layout>
 
-              <ScrollView style={{ flex: 1 }}>
+              <ScrollView style={{ flex: 1 }} ref={scrollView}>
                 <ExerciseList
                   activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
-                  exercises={workout.exercises}/>
+                  exercises={workout.exercises}
+                  onPress={selectExerciseAt}
+                />
               </ScrollView>
 
               <Layout style={styles.buttonContainer}>

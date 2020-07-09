@@ -1,10 +1,11 @@
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Exercise, ExerciseModality } from '../../types'
+import { NoOp } from '../../utils'
 import { getExerciseThumbnail } from '../../webservices/utils'
 
 const playIcon = require('./play-green.png')
@@ -12,6 +13,7 @@ const playIcon = require('./play-green.png')
 interface Props {
   activeIndex: Maybe<number>
   exercises: Exercise[]
+  onPress?: (exerciseIndex: number) => void
 }
 
 function getDurationUnitsAsString(modality: ExerciseModality) {
@@ -29,12 +31,14 @@ function getFormattedDuration(exercise: Exercise) {
   return `${exercise.duration} ${getDurationUnitsAsString(exercise.modality)}`
 }
 
-export function ExerciseList({ activeIndex, exercises }: Props) {
+export function ExerciseList({ activeIndex, exercises, onPress = NoOp }: Props) {
   return (
     <Layout>
       {exercises.map((exercise, index) => (
-        <Layout
+        <TouchableOpacity
+          activeOpacity={.8}
           key={`${exercise.title}${index}`}
+          onPress={() => onPress(index)}
           style={[
             styles.exerciseContainer,
             index === 0 ? styles.firstExercise : {},
@@ -60,7 +64,7 @@ export function ExerciseList({ activeIndex, exercises }: Props) {
             })}
           </Layout>
 
-        </Layout>
+        </TouchableOpacity>
       ))}
     </Layout>
   )
