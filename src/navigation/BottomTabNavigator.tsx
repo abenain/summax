@@ -22,6 +22,8 @@ function getTabIcon(routeName: string, focused: boolean) {
   }
 }
 
+const screensWithNoTabs = ['Reward', 'Training']
+
 export function BottomTabNavigator() {
 
   function getTabBarVisible(route: any){
@@ -29,9 +31,8 @@ export function BottomTabNavigator() {
       return true
     }
 
-    if(route.state.routes[route.state.routes.length-1].name === 'Reward'){
-      return false
-    }
+    const routeName = route.state.routes[route.state.routes.length-1].name
+    return screensWithNoTabs.some(screenName => screenName === routeName) === false
   }
   return (
     <Tab.Navigator
