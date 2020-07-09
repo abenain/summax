@@ -1,7 +1,7 @@
 import Constants from 'expo-constants'
 
 const SCHEME_HTTP = 'http'
-const BACKEND_URL_DEV = '192.168.1.36:18000'
+const BACKEND_URL_DEV = '10.0.0.6:18000'
 const BACKEND_URL_PROD = '18.158.0.93'
 
 const API_V1_PATH = 'api/v1'
