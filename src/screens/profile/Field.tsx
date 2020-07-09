@@ -1,6 +1,8 @@
-import { Button, Layout, Text } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
+import i18n from 'i18n-js'
 import * as React from 'react'
-import { StyleSheet, ViewStyle } from 'react-native'
+import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
+import { SummaxColors } from '../../colors'
 import { NoOp } from '../../utils'
 
 interface Props {
@@ -17,11 +19,11 @@ export function Field({ editable = false, onEditButtonPress = NoOp, style = {}, 
       <Text style={styles.title}>{title}</Text>
       {editable ? (
         <Layout style={styles.editButtonContainer}>
-          <Button
-            appearance={'outline'}
+          <TouchableOpacity
             onPress={onEditButtonPress}
-            status={'success'}
-            style={styles.editButton}>Edit</Button>
+            style={styles.editButton}>
+            <Text style={styles.editButtonText}>{i18n.t('Edit')}</Text>
+          </TouchableOpacity>
         </Layout>
       ) : (
         <Text style={styles.value}>{value}</Text>
@@ -54,7 +56,17 @@ const styles = StyleSheet.create({
     flex      : 1,
   },
   editButton         : {
-    backgroundColor: 'white',
+    backgroundColor  : 'white',
+    borderColor      : SummaxColors.lightishGreen,
+    borderRadius     : 4,
+    borderWidth      : 1,
+    paddingVertical  : 8,
+    paddingHorizontal: 24,
   },
-
+  editButtonText     : {
+    color     : SummaxColors.lightishGreen,
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+    lineHeight: 24
+  },
 })

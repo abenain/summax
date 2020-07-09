@@ -1,5 +1,6 @@
 const en = {
 	'Back'                                         : 'Back',
+	'Edit'                                         : 'Edit',
 	'Error Page Message'                           : 'Couldn\'t fetch workouts\n Please check your internet connection',
 	'Exercise - Repetitions'                       : 'repetitions',
 	'Exercise - Seconds'                           : 'seconds',
