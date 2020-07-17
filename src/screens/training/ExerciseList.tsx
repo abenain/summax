@@ -1,7 +1,8 @@
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Exercise, ExerciseModality } from '../../types'
@@ -14,6 +15,10 @@ interface Props {
   activeIndex: Maybe<number>
   exercises: Exercise[]
   onPress?: (exerciseIndex: number) => void
+}
+
+export interface ExerciseListHandle {
+  scrollToExercise: (index: number) => void
 }
 
 function getDurationUnitsAsString(modality: ExerciseModality) {
@@ -31,13 +36,24 @@ function getFormattedDuration(exercise: Exercise) {
   return `${exercise.duration} ${getDurationUnitsAsString(exercise.modality)}`
 }
 
-export function ExerciseList({ activeIndex, exercises, onPress = NoOp }: Props) {
+export const ExerciseList = forwardRef<ExerciseListHandle, Props>(({ activeIndex, exercises, onPress = NoOp }, ref) => {
+  const flatList = useRef<FlatList>()
+
+  useImperativeHandle(ref, () => ({
+    scrollToExercise: (index: number) => {
+      flatList.current.scrollToOffset({ offset: index * 106 })
+    }
+  }))
+
   return (
-    <Layout>
-      {exercises.map((exercise, index) => (
+    <FlatList
+      data={exercises}
+      keyExtractor={(exercise, index) => `${exercise.title}${index}`}
+      ref={flatList}
+      removeClippedSubviews={true}
+      renderItem={({ item: exercise, index }) => (
         <TouchableOpacity
           activeOpacity={.8}
-          key={`${exercise.title}${index}`}
           onPress={() => onPress(index)}
           style={[
             styles.exerciseContainer,
@@ -47,15 +63,15 @@ export function ExerciseList({ activeIndex, exercises, onPress = NoOp }: Props) 
 
           <Image
             resizeMode={'contain'}
-            source={{uri: getExerciseThumbnail(exercise)}}
+            source={{ uri: getExerciseThumbnail(exercise) }}
             style={styles.exerciseThumbnail}/>
 
-            <Layout style={styles.exerciseDetailsContainer}>
+          <Layout style={styles.exerciseDetailsContainer}>
             <Text style={styles.exerciseTitle}>{exercise.title}</Text>
             <Text style={styles.exerciseDuration}>{getFormattedDuration(exercise)}</Text>
           </Layout>
 
-          <Layout style={{justifyContent: 'center'}}>
+          <Layout style={{ justifyContent: 'center' }}>
             {activeIndex.caseOf({
               just   : activeIndex => index === activeIndex && (
                 <Image source={playIcon} style={styles.playIcon} resizeMode={'contain'}/>
@@ -65,10 +81,10 @@ export function ExerciseList({ activeIndex, exercises, onPress = NoOp }: Props) 
           </Layout>
 
         </TouchableOpacity>
-      ))}
-    </Layout>
+      )}
+    />
   )
-}
+})
 
 const styles = StyleSheet.create({
   exerciseContainer       : {

@@ -9,7 +9,7 @@ import VideoPlayer from 'expo-video-player'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
+import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
@@ -20,7 +20,7 @@ import { GlobalState } from '../../redux/store'
 import { Exercise, ExerciseModality } from '../../types'
 import { NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
-import { ExerciseList } from './ExerciseList'
+import { ExerciseList, ExerciseListHandle } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
 
 const greenClockIcon = require('../../../assets/clock-green.png')
@@ -41,7 +41,7 @@ export function TrainingScreen() {
   })
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
-  const scrollView = useRef<ScrollView>()
+  const exerciseList = useRef<ExerciseListHandle>()
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -81,7 +81,7 @@ export function TrainingScreen() {
 
 
   const selectExerciseAt = (index: number) => {
-    scrollView.current.scrollTo({x: 0, y: index * 106, animated: true})
+    exerciseList.current.scrollToExercise(index)
     setSelectedExerciseIndex(index)
     setIsPlaying(true)
   }
@@ -230,13 +230,14 @@ export function TrainingScreen() {
                 </SummaxButton>
               </Layout>
 
-              <ScrollView style={{ flex: 1 }} ref={scrollView}>
+              <Layout style={{ flex: 1 }}>
                 <ExerciseList
                   activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
                   exercises={workout.exercises}
                   onPress={selectExerciseAt}
+                  ref={exerciseList}
                 />
-              </ScrollView>
+              </Layout>
 
               <Layout style={styles.buttonContainer}>
                 <SummaxButton
