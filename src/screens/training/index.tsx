@@ -161,8 +161,9 @@ export function TrainingScreen() {
         {currentExercise.caseOf({
           just   : exercise => (
             <VideoPlayer
+              key={`${exercise.title}-${selectedExerciseIndex}`}
               videoProps={{
-                isLooping : true,
+                isLooping : exercise.modality === ExerciseModality.REPETITIONS,
                 shouldPlay: true,
                 resizeMode: Video.RESIZE_MODE_CONTAIN,
                 source    : {
