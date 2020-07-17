@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import { Subscription } from '@unimodules/core'
-import { AVPlaybackStatus, Video } from 'expo-av'
+import { Video } from 'expo-av'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
 import VideoPlayer from 'expo-video-player'
@@ -79,9 +79,20 @@ export function TrainingScreen() {
     })
   }, [selectedExerciseIndex])
 
+  useEffect(() => {
+    if(isFullScreen === false){
+      exerciseList.current.scrollToExercise(selectedExerciseIndex)
+    }
+  }, [isFullScreen])
+
 
   const selectExerciseAt = (index: number) => {
-    exerciseList.current.scrollToExercise(index)
+    ScreenOrientation.getOrientationAsync()
+      .then(orientation => {
+        if(orientation === Orientation.PORTRAIT_UP){
+          exerciseList.current.scrollToExercise(index)
+        }
+      })
     setSelectedExerciseIndex(index)
     setIsPlaying(true)
   }
@@ -105,7 +116,6 @@ export function TrainingScreen() {
       nothing: () => {
       }
     })
-
 
     return function componentWillUnmount() {
       orientationChangedSubscription.current.caseOf({
@@ -173,7 +183,6 @@ export function TrainingScreen() {
               inFullscreen={isFullScreen}
               height={isFullScreen ? Dimensions.get('window').height : 233}
               width={Dimensions.get('window').width}
-              playbackCallback={(status: AVPlaybackStatus) => setIsPlaying(status.isLoaded && status.isPlaying)}
             />
           ),
           nothing: () => (
