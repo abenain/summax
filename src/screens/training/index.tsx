@@ -5,7 +5,6 @@ import { Subscription } from '@unimodules/core'
 import { Video } from 'expo-av'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
-import VideoPlayer from 'expo-video-player'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
@@ -42,6 +41,7 @@ export function TrainingScreen() {
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
   const exerciseList = useRef<ExerciseListHandle>()
+  const videoPlayer = useRef<Video>()
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -80,21 +80,24 @@ export function TrainingScreen() {
   }, [selectedExerciseIndex])
 
   useEffect(() => {
-    if(isFullScreen === false){
+    if (isFullScreen === false) {
       exerciseList.current.scrollToExercise(selectedExerciseIndex)
     }
   }, [isFullScreen])
 
 
-  const selectExerciseAt = (index: number) => {
+  const selectExerciseAt = async (index: number) => {
     ScreenOrientation.getOrientationAsync()
       .then(orientation => {
-        if(orientation === Orientation.PORTRAIT_UP){
+        if (orientation === Orientation.PORTRAIT_UP) {
           exerciseList.current.scrollToExercise(index)
         }
       })
     setSelectedExerciseIndex(index)
     setIsPlaying(true)
+    if(videoPlayer.current){
+      await videoPlayer.current.setPositionAsync(0)
+    }
   }
 
   useEffect(function componentDidMount() {
@@ -104,9 +107,11 @@ export function TrainingScreen() {
       ScreenOrientation.addOrientationChangeListener(({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
         if (orientation === Orientation.PORTRAIT_UP) {
           setIsFullScreen(false)
+          videoPlayer.current.dismissFullscreenPlayer()
           return
         }
 
+        videoPlayer.current.presentFullscreenPlayer()
         setIsFullScreen(true)
       })
     )
@@ -170,25 +175,28 @@ export function TrainingScreen() {
 
         {currentExercise.caseOf({
           just   : exercise => (
-            <VideoPlayer
-              key={`${exercise.title}-${selectedExerciseIndex}`}
-              videoProps={{
-                isLooping : exercise.modality === ExerciseModality.REPETITIONS,
-                shouldPlay: true,
-                resizeMode: Video.RESIZE_MODE_CONTAIN,
-                source    : {
-                  uri: getExerciseVideoUrl(exercise)
-                },
+            <Video
+              isLooping={true}
+              isMuted={false}
+              rate={1.0}
+              ref={videoPlayer}
+              resizeMode={Video.RESIZE_MODE_CONTAIN}
+              shouldPlay={true}
+              source={{
+                uri: getExerciseVideoUrl(exercise)
               }}
-              inFullscreen={isFullScreen}
-              height={isFullScreen ? Dimensions.get('window').height : 233}
-              width={Dimensions.get('window').width}
+              style={{
+                height: 233,
+                width : Dimensions.get('window').width
+              }}
+              useNativeControls={true}
+              volume={1.0}
             />
           ),
           nothing: () => (
             <Layout style={{
               backgroundColor: 'black',
-              height         : isFullScreen ? Dimensions.get('window').height : 233,
+              height         : 233,
               width          : Dimensions.get('window').width,
             }}/>
           )
