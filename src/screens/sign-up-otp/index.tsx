@@ -45,7 +45,7 @@ export function SignUpOtpScreen() {
               access,
               refresh,
             })
-            navigation.navigate('Onboarding')
+            navigation.navigate('OnboardingSex')
           },
           nothing: () => {
             setError(Maybe.just(i18n.t('Sign up otp - wrong OTP')))

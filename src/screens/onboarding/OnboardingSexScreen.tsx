@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
@@ -8,6 +9,7 @@ import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
+import { OnboardingStackParamList } from '../../navigation/OnboardingStackNavigator'
 import { ActionType } from '../../redux/actions'
 import { Sex } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
@@ -44,7 +46,7 @@ function getSex(checked: boolean) {
 }
 
 export function OnboardingSexScreen() {
-  const navigation = useNavigation()
+  const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
   const dispatch = useDispatch()
   const [isMale, setIsMale] = useState(false)
   const [heightCm, setHeightCm] = useState('')
@@ -75,7 +77,7 @@ export function OnboardingSexScreen() {
             type: ActionType.LOADED_USERDATA,
             user: Maybe.just(user)
           })
-          navigation.navigate('OnboardingObjectives')
+          navigation.push('OnboardingObjectives')
         },
         nothing: () => {
         }

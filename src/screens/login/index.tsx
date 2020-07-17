@@ -30,21 +30,31 @@ export function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(Maybe.nothing<string>())
   const [isLoading, setLoading] = useState(false)
-  const user = useSelector(({ userData: { user } }: GlobalState) => user)
+  const {accessToken, user} = useSelector(({ userData: { accessToken, user } }: GlobalState) => ({accessToken, user}))
 
   useEffect(() => {
-    user.caseOf({
-      just   : user => {
-        if (user.onboarded) {
-          navigation.replace('Home')
-        } else {
-          navigation.replace('Onboarding')
-        }
-        setLoading(false)
+    accessToken.caseOf({
+      just: () => {
+        user.caseOf({
+          just   : user => {
+            if (user.onboarded) {
+              navigation.replace('Home')
+            } else {
+              if(user.heightCm && user.weightKg){
+                navigation.replace('OnboardingObjectives')
+              }else{
+                navigation.replace('OnboardingSex')
+              }
+            }
+            setLoading(false)
+          },
+          nothing: NoOp
+        })
       },
-      nothing: NoOp
+      nothing: () => NoOp
     })
-  }, [user.valueOr(null)])
+
+  }, [accessToken.valueOr(null), user.valueOr(null)])
 
   function onSignInButtonPress() {
     if (!email || !password) {

@@ -32,6 +32,8 @@ export type RootStackParamList = {
   }
   Home: undefined
   Login: undefined
+  OnboardingSex: undefined
+  OnboardingObjectives: undefined
   Reward: undefined
   SignUp: undefined
   SignUpOtp: {
@@ -52,7 +54,7 @@ export default () => {
   const [userDataLoaded, setUserDataLoaded] = useState(false)
   const [logoutKey, setLogoutKey] = useState(new Date().toISOString())
 
-  useLogoutListener(function onLogout(){
+  useLogoutListener(function onLogout() {
     setLogoutKey(new Date().toISOString())
   })
 
@@ -101,7 +103,7 @@ export default () => {
       tryFetchingUserData().then(() => setUserDataLoaded(true)),
     ])
   }
-  
+
   if (!assetsLoaded || !homePageLoaded || !userDataLoaded || showSplashScreen) {
     return (
       <View style={{ flex: 1 }}>
@@ -113,11 +115,17 @@ export default () => {
     )
   }
 
-  function getInitialRouteName(){
+  function getInitialRouteName() {
     return store.getState().userData.accessToken.caseOf({
       just   : () => {
         return store.getState().userData.user.caseOf({
-          just: user => user.onboarded ? 'Home' : 'Onboarding',
+          just   : user => {
+            if(user.onboarded){
+              return 'Home'
+            }
+
+            return user.weightKg && user.heightCm ? 'OnboardingObjectives' : 'OnboardingSex'
+          },
           nothing: () => 'Login'
         })
       },
