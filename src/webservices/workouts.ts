@@ -14,6 +14,19 @@ export function load({ token, workoutId }: { token: string, workoutId: string })
     .then(workout => Maybe.maybe(workout))
 }
 
+export function fetchWarmup({ token }: { token: string, workoutId: string }) {
+  return fetch(`${getApiBaseUrl()}/workouts/warmup`, {
+    headers: {
+      ...getAuthorizationHeaders(token)
+    }
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then(workout => Maybe.maybe(workout))
+}
+
 export function loadFavorites({ token }: { token: string, workoutId: string }) {
   return fetch(`${getApiBaseUrl()}/workouts/favorites`, {
     headers: {

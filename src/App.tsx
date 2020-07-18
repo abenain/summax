@@ -39,7 +39,9 @@ export type RootStackParamList = {
   SignUpOtp: {
     id: string
   }
-  Training: undefined
+  Training: {
+    warmup?: boolean
+  }
   Workout: {
     id: string
     title: string

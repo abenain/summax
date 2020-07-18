@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import { Subscription } from '@unimodules/core'
@@ -13,12 +13,15 @@ import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
+import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
-import { Exercise, ExerciseModality } from '../../types'
+import { Exercise, ExerciseModality, Workout } from '../../types'
 import { NoOp } from '../../utils'
+import { callAuthenticatedWebservice } from '../../webservices'
 import { getExerciseVideoUrl } from '../../webservices/utils'
+import { fetchWarmup } from '../../webservices/workouts'
 import { ExerciseList, ExerciseListHandle } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
 
@@ -27,9 +30,13 @@ const repsIcon = require('./reps.png')
 const nextIcon = require('./next.png')
 
 export function TrainingScreen() {
+  const route = useRoute<RouteProp<RootStackParamList, 'Training'>>()
+  const { warmup = false } = route.params
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
   const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
+  const [warmupWorkout, setWarmupWorkout] = useState(Maybe.nothing<Workout>())
   const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
+  const [isLoading, setIsLoading] = useState(true)
   const isFullScreen = useRef(false)
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
   const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
@@ -46,6 +53,14 @@ export function TrainingScreen() {
     just   : exercise => getExerciseVideoUrl(exercise),
     nothing: () => null
   }), [currentExercise.valueOr(null)])
+
+  function getWorkout() {
+    if (warmup) {
+      return warmupWorkout
+    }
+
+    return selectedWorkout
+  }
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -67,7 +82,7 @@ export function TrainingScreen() {
   }, [isPlaying])
 
   useEffect(() => {
-    selectedWorkout.caseOf({
+    getWorkout().caseOf({
       just   : workout => {
         if (selectedExerciseIndex >= 0 && selectedExerciseIndex < workout.exercises.length) {
           const selectedExercise = workout.exercises[selectedExerciseIndex]
@@ -117,11 +132,27 @@ export function TrainingScreen() {
       })
     )
 
-    selectedWorkout.caseOf({
-      just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0),
-      nothing: () => {
-      }
-    })
+    Promise.resolve()
+      .then(() => {
+        if (warmup) {
+          return callAuthenticatedWebservice(fetchWarmup, {})
+            .then(warmup => {
+              setWarmupWorkout(warmup)
+              return warmup
+            })
+        }
+
+        return selectedWorkout
+      })
+      .then(workout => {
+        setIsLoading(false)
+
+        workout.caseOf({
+          just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0),
+          nothing: () => {
+          }
+        })
+      })
 
     return function componentWillUnmount() {
       orientationChangedSubscription.current.caseOf({
@@ -139,7 +170,7 @@ export function TrainingScreen() {
   }, [])
 
   function nextExercise() {
-    const exerciseCount = selectedWorkout.valueOr({ exercises: [] }).exercises.length
+    const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
 
     if (selectedExerciseIndex < 0) {
       return
@@ -150,7 +181,15 @@ export function TrainingScreen() {
       return
     }
 
-    navigation.navigate('Reward')
+    if (warmup) {
+      navigation.replace('Training', {})
+    } else {
+      navigation.navigate('Reward')
+    }
+  }
+
+  if (isLoading) {
+    return <Loading/>
   }
 
   if (isLeaving) {
@@ -170,7 +209,7 @@ export function TrainingScreen() {
       onQuit={navigation.popToTop}/>
   }
 
-  return selectedWorkout.caseOf({
+  return getWorkout().caseOf({
     just   : workout => (
       <Layout style={styles.mainContainer}>
 
@@ -275,18 +314,22 @@ export function TrainingScreen() {
             <Layout style={styles.buttonContainer}>
               <SummaxButton
                 buttonStyle={ButtonStyle.GREEN}
-                text={i18n.t('Training - Quit training')}
+                text={warmup ? i18n.t('Training - Quit warmup') : i18n.t('Training - Quit training')}
                 onPress={() => {
-                  const isTimedExercise = currentExercise.caseOf({
-                    just   : exercise => exercise.modality === ExerciseModality.TIME,
-                    nothing: () => false
-                  })
+                  if (warmup) {
+                    navigation.replace('Training', {})
+                  } else {
+                    const isTimedExercise = currentExercise.caseOf({
+                      just   : exercise => exercise.modality === ExerciseModality.TIME,
+                      nothing: () => false
+                    })
 
-                  if (isTimedExercise) {
-                    stopTimer()
+                    if (isTimedExercise) {
+                      stopTimer()
+                    }
+
+                    setIsLeaving(true)
                   }
-
-                  setIsLeaving(true)
                 }}
               />
             </Layout>

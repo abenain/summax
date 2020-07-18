@@ -115,6 +115,7 @@ export function WorkoutScreen() {
           <Layout style={styles.buttonContainer}>
             <SummaxButton
               buttonStyle={ButtonStyle.TRANSPARENT}
+              onPress={() => navigation.navigate('Training', {warmup: true})}
               text={i18n.t('Workout Description - Warm up')}
             />
             <SummaxButton

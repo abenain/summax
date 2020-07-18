@@ -94,6 +94,7 @@ const fr = {
 	'Tab bar - MyWorkouts'                         : 'Mes entraînements',
 	'Training - Next exercise'                     : 'Exercice suivant',
 	'Training - Quit training'                     : 'J\'ai fini l\'entraînement',
+	'Training - Quit warmup'                       : 'Aller à l\'entraînement',
 	'Training Exit - Are you sure'                 : 'Êtes-vous sûr de vouloir quitter l\'entraînement?',
 	'Training Exit - Quit'                         : 'Quitter l\'entraînement',
 	'Training Exit - Resume'                       : 'Retourner à l\'entraînement',
