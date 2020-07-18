@@ -7,7 +7,7 @@ import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
@@ -30,18 +30,22 @@ export function TrainingScreen() {
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
   const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
   const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
-  const [isFullScreen, setIsFullScreen] = useState(false)
+  const isFullScreen = useRef(false)
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
   const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
   const [isPlaying, setIsPlaying] = useState(false)
   const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({
     countdown         : true,
-    onCountdownExpired: () => nextExercise()
+    onCountdownExpired: useCallback(nextExercise, [selectedExerciseIndex])
   })
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
   const exerciseList = useRef<ExerciseListHandle>()
   const videoPlayer = useRef<Video>()
+  const videoUrl = useMemo(() => currentExercise.caseOf({
+    just   : exercise => getExerciseVideoUrl(exercise),
+    nothing: () => null
+  }), [currentExercise.valueOr(null)])
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -71,7 +75,6 @@ export function TrainingScreen() {
 
           if (selectedExercise.modality === ExerciseModality.TIME) {
             setTimerValue(selectedExercise.duration * 1000)
-            startTimer()
           }
         }
       },
@@ -79,40 +82,38 @@ export function TrainingScreen() {
     })
   }, [selectedExerciseIndex])
 
-  useEffect(() => {
-    if (isFullScreen === false) {
-      exerciseList.current.scrollToExercise(selectedExerciseIndex)
-    }
-  }, [isFullScreen])
-
-
   const selectExerciseAt = async (index: number) => {
-    ScreenOrientation.getOrientationAsync()
-      .then(orientation => {
-        if (orientation === Orientation.PORTRAIT_UP) {
-          exerciseList.current.scrollToExercise(index)
-        }
-      })
+    if (videoPlayer.current) {
+      try {
+        await videoPlayer.current.setPositionAsync(0)
+        await videoPlayer.current.dismissFullscreenPlayer()
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    exerciseList.current.scrollToExercise(index)
     setSelectedExerciseIndex(index)
     setIsPlaying(true)
-    if(videoPlayer.current){
-      await videoPlayer.current.setPositionAsync(0)
-    }
   }
 
   useEffect(function componentDidMount() {
     ScreenOrientation.unlockAsync()
 
     orientationChangedSubscription.current = Maybe.maybe(
-      ScreenOrientation.addOrientationChangeListener(({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
+      ScreenOrientation.addOrientationChangeListener(async ({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
         if (orientation === Orientation.PORTRAIT_UP) {
-          setIsFullScreen(false)
-          videoPlayer.current.dismissFullscreenPlayer()
+          isFullScreen.current = false
+          if (videoPlayer.current) {
+            await videoPlayer.current.dismissFullscreenPlayer()
+          }
           return
         }
 
-        videoPlayer.current.presentFullscreenPlayer()
-        setIsFullScreen(true)
+        if (videoPlayer.current) {
+          await videoPlayer.current.presentFullscreenPlayer()
+        }
+
+        isFullScreen.current = true
       })
     )
 
@@ -174,16 +175,31 @@ export function TrainingScreen() {
       <Layout style={styles.mainContainer}>
 
         {currentExercise.caseOf({
-          just   : exercise => (
+          just   : () => (
             <Video
               isLooping={true}
               isMuted={false}
+              onLoad={async () => {
+                if (isFullScreen.current) {
+                  await videoPlayer.current.presentFullscreenPlayer()
+                }
+
+                const isTimedExercise = currentExercise.caseOf({
+                  just   : exercise => exercise.modality === ExerciseModality.TIME,
+                  nothing: () => false
+                })
+
+                if (isTimedExercise) {
+                  startTimer()
+                }
+
+              }}
               rate={1.0}
               ref={videoPlayer}
               resizeMode={Video.RESIZE_MODE_CONTAIN}
               shouldPlay={true}
               source={{
-                uri: getExerciseVideoUrl(exercise)
+                uri: videoUrl
               }}
               style={{
                 height: 233,
@@ -202,83 +218,81 @@ export function TrainingScreen() {
           )
         })}
 
-        {isFullScreen === false && (
-          <SafeAreaView style={styles.safeContentsArea}>
-            <Layout style={styles.contents}>
+        <SafeAreaView style={styles.safeContentsArea}>
+          <Layout style={styles.contents}>
 
-              <Layout style={styles.titleContainer}>
-                <Text style={styles.title}>{workout.title}</Text>
-              </Layout>
-
-              <Layout style={styles.controlsContainer}>
-
-                <SummaxButton
-                  buttonStyle={ButtonStyle.WHITE}
-                  style={styles.chronoRepControl}>
-                  {
-                    currentExercise.caseOf({
-                      just   : exercise => {
-                        const icon = currentExercise && exercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
-                        const text = currentExercise && exercise.modality === ExerciseModality.TIME ? timerText : `${exercise.duration} reps`
-
-                        return (
-                          <>
-                            <Image
-                              source={icon}
-                              style={styles.clockIcon}
-                              resizeMode={'contain'}/>
-                            <Text style={[styles.controlsText, styles.timerText]}>{text}</Text>
-                          </>
-                        )
-                      },
-                      nothing: () => null
-                    })
-                  }
-                </SummaxButton>
-
-                <SummaxButton
-                  buttonStyle={ButtonStyle.GREEN}
-                  style={styles.nextControl}
-                  onPress={nextExercise}>
-                  <Image
-                    source={nextIcon}
-                    style={styles.nextIcon}
-                    resizeMode={'contain'}/>
-                  <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
-                </SummaxButton>
-              </Layout>
-
-              <Layout style={{ flex: 1 }}>
-                <ExerciseList
-                  activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
-                  exercises={workout.exercises}
-                  onPress={selectExerciseAt}
-                  ref={exerciseList}
-                />
-              </Layout>
-
-              <Layout style={styles.buttonContainer}>
-                <SummaxButton
-                  buttonStyle={ButtonStyle.GREEN}
-                  text={i18n.t('Training - Quit training')}
-                  onPress={() => {
-                    const isTimedExercise = currentExercise.caseOf({
-                      just   : exercise => exercise.modality === ExerciseModality.TIME,
-                      nothing: () => false
-                    })
-
-                    if (isTimedExercise) {
-                      stopTimer()
-                    }
-
-                    setIsLeaving(true)
-                  }}
-                />
-              </Layout>
-
+            <Layout style={styles.titleContainer}>
+              <Text style={styles.title}>{workout.title}</Text>
             </Layout>
-          </SafeAreaView>
-        )}
+
+            <Layout style={styles.controlsContainer}>
+
+              <SummaxButton
+                buttonStyle={ButtonStyle.WHITE}
+                style={styles.chronoRepControl}>
+                {
+                  currentExercise.caseOf({
+                    just   : exercise => {
+                      const icon = currentExercise && exercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
+                      const text = currentExercise && exercise.modality === ExerciseModality.TIME ? timerText : `${exercise.duration} reps`
+
+                      return (
+                        <>
+                          <Image
+                            source={icon}
+                            style={styles.clockIcon}
+                            resizeMode={'contain'}/>
+                          <Text style={[styles.controlsText, styles.timerText]}>{text}</Text>
+                        </>
+                      )
+                    },
+                    nothing: () => null
+                  })
+                }
+              </SummaxButton>
+
+              <SummaxButton
+                buttonStyle={ButtonStyle.GREEN}
+                style={styles.nextControl}
+                onPress={nextExercise}>
+                <Image
+                  source={nextIcon}
+                  style={styles.nextIcon}
+                  resizeMode={'contain'}/>
+                <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
+              </SummaxButton>
+            </Layout>
+
+            <Layout style={{ flex: 1 }}>
+              <ExerciseList
+                activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
+                exercises={workout.exercises}
+                onPress={selectExerciseAt}
+                ref={exerciseList}
+              />
+            </Layout>
+
+            <Layout style={styles.buttonContainer}>
+              <SummaxButton
+                buttonStyle={ButtonStyle.GREEN}
+                text={i18n.t('Training - Quit training')}
+                onPress={() => {
+                  const isTimedExercise = currentExercise.caseOf({
+                    just   : exercise => exercise.modality === ExerciseModality.TIME,
+                    nothing: () => false
+                  })
+
+                  if (isTimedExercise) {
+                    stopTimer()
+                  }
+
+                  setIsLeaving(true)
+                }}
+              />
+            </Layout>
+
+          </Layout>
+        </SafeAreaView>
       </Layout>
     ),
     nothing: () => <ErrorPage/>

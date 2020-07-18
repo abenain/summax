@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Maybe } from 'tsmonad'
 import { NoOp } from '../utils'
 
@@ -33,6 +33,10 @@ export function useTimer({ countdown, countdownFromMs, onCountdownExpired = NoOp
   const internalValue = useRef(countdownFromMs ? countdownFromMs : 0)
   const [timerValue, setTimerValue] = useState(internalValue.current)
 
+  const notifyTimerExpired = useCallback(() => {
+    onCountdownExpired()
+  }, [onCountdownExpired])
+
   function updateTimerValue() {
     const now = moment()
     const previousCapture = latestTimeCapture.current.valueOr(now)
@@ -42,7 +46,7 @@ export function useTimer({ countdown, countdownFromMs, onCountdownExpired = NoOp
       internalValue.current = Math.max(internalValue.current - timeDelta, 0)
       if (internalValue.current === 0) {
         isRunning.current = false
-        onCountdownExpired()
+        notifyTimerExpired()
       }
     } else {
       internalValue.current = internalValue.current + timeDelta
