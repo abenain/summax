@@ -30,19 +30,22 @@ export function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(Maybe.nothing<string>())
   const [isLoading, setLoading] = useState(false)
-  const {accessToken, user} = useSelector(({ userData: { accessToken, user } }: GlobalState) => ({accessToken, user}))
+  const { accessToken, user } = useSelector(({ userData: { accessToken, user } }: GlobalState) => ({
+    accessToken,
+    user
+  }))
 
   useEffect(() => {
     accessToken.caseOf({
-      just: () => {
+      just   : () => {
         user.caseOf({
           just   : user => {
             if (user.onboarded) {
               navigation.replace('Home')
             } else {
-              if(user.heightCm && user.weightKg){
+              if (user.heightCm && user.weightKg) {
                 navigation.replace('OnboardingObjectives')
-              }else{
+              } else {
                 navigation.replace('OnboardingSex')
               }
             }
@@ -120,6 +123,9 @@ export function LoginScreen({ navigation }: Props) {
           onEmailChanged={(email: string) => {
             setEmail(email)
             setError(Maybe.nothing())
+          }}
+          onForgotPassword={(email?: string) => {
+            navigation.navigate('ForgotPassword', { email })
           }}
           onPasswordChanged={(password: string) => {
             setPassword(password)

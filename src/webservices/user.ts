@@ -29,6 +29,25 @@ export function createUser(userData: { dob: Date, email: string, firstname: stri
     })
 }
 
+export function sendOtp(email: string) {
+  const queryParams = email ? `?email=${encodeURIComponent(email)}` : ''
+
+  return fetch(`${getApiBaseUrl()}/users/send-otp${queryParams}`, {
+    method : 'GET',
+    headers: {
+      ...getClientIdHeader(),
+    },
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return Maybe.just(true)
+    })
+    .catch(error => {
+      console.log(error)
+      return Maybe.nothing<boolean>()
+    })
+}
+
 export function resendOtp(userId: string) {
   return fetch(`${getApiBaseUrl()}/users/${userId}/resend-otp`, {
     method : 'GET',
@@ -67,6 +86,25 @@ export function checkOtp(userId: string, otp: string) {
     })
 }
 
+export function checkOtpByMail(email: string, otp: string) {
+  const queryParams = (email && otp) ? `?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}` : ''
+  return fetch(`${getApiBaseUrl()}/users/check-otp${queryParams}`, {
+    method : 'GET',
+    headers: {
+      ...getClientIdHeader(),
+    },
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then((tokens: Tokens) => Maybe.maybe(tokens))
+    .catch(error => {
+      console.log(error)
+      return Maybe.nothing<Tokens>()
+    })
+}
+
 export function updateUser({ userData, token }: { userData: Partial<User>, token: string }) {
   return fetch(`${getApiBaseUrl()}/users/me`, {
     method : 'PUT',
@@ -83,7 +121,7 @@ export function updateUser({ userData, token }: { userData: Partial<User>, token
     .then((user: User) => Maybe.maybe(user))
 }
 
-export function fetchMe({token}: {token: string}){
+export function fetchMe({ token }: { token: string }) {
   return fetch(`${getApiBaseUrl()}/users/me`, {
     headers: {
       ...getAuthorizationHeaders(token),

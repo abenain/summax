@@ -30,6 +30,12 @@ export type RootStackParamList = {
     type: string
     value: string | number
   }
+  ForgotPassword: {
+    email?: string
+  }
+  ForgotPasswordOtp: {
+    email?: string
+  }
   Home: undefined
   Login: undefined
   OnboardingSex: undefined

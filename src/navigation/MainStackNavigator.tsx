@@ -3,6 +3,8 @@ import Constants from 'expo-constants'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, Platform, Text, View } from 'react-native'
+import { ForgotPasswordScreen } from '../screens/forgot-password'
+import { ForgotPasswordOtpScreen } from '../screens/forgot-password-otp'
 import { LoginScreen } from '../screens/login'
 import { OnboardingObjectivesScreen } from '../screens/onboarding/OnboardingObjectivesScreen'
 import { OnboardingSexScreen } from '../screens/onboarding/OnboardingSexScreen'
@@ -41,7 +43,7 @@ export function MainStackNavigator({ initialRouteName }: Props) {
     headerBackImage       : () => <Image source={arrowLeftIcon}
                                          style={{ height: 24, marginLeft: 16, width: 24 }}/>,
     headerBackTitleVisible: false,
-    headerRight      : null,
+    headerRight           : null,
   }
 
   return (
@@ -53,9 +55,9 @@ export function MainStackNavigator({ initialRouteName }: Props) {
         headerBackTitleVisible: false,
         headerStyle           : {
           borderBottomWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0,
-          height: (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
+          elevation        : 0,
+          shadowOpacity    : 0,
+          height           : (Platform.OS === 'ios' ? Constants.statusBarHeight : 0) + 56,
         },
         headerTitle           : HeaderTitle,
         headerRight           : props => <RightButtons {...props} tint={ButtonsTint.DARK}/>,
@@ -63,8 +65,12 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='SignUp' component={SignUpScreen} options={signUpScreensConfig}/>
       <Stack.Screen name='SignUpOtp' component={SignUpOtpScreen} options={signUpScreensConfig}/>
-      <Stack.Screen name="OnboardingSex" component={OnboardingSexScreen} options={{ ...onboardingScreensConfig, headerBackImage: null }}/>
-      <Stack.Screen name="OnboardingObjectives" component={OnboardingObjectivesScreen} options={{...onboardingScreensConfig, headerRight:() => <View style={{padding:6}}/>}}/>
+      <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} options={signUpScreensConfig}/>
+      <Stack.Screen name='ForgotPasswordOtp' component={ForgotPasswordOtpScreen} options={signUpScreensConfig}/>
+      <Stack.Screen name="OnboardingSex" component={OnboardingSexScreen}
+                    options={{ ...onboardingScreensConfig, headerBackImage: null }}/>
+      <Stack.Screen name="OnboardingObjectives" component={OnboardingObjectivesScreen}
+                    options={{ ...onboardingScreensConfig, headerRight: () => <View style={{ padding: 6 }}/> }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Profile' component={ProfileScreen}
                     options={{ headerRight: () => <View style={{ padding: 6 }}/> }}/>

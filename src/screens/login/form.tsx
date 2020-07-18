@@ -11,12 +11,13 @@ const summax = require('./summax.png')
 interface Props {
   emailValue?: string
   onEmailChanged?: (email: string) => void
+  onForgotPassword?: (email?: string) => void
   onPasswordChanged?: (password: string) => void
   onSignUpPressed?: () => void
   passwordValue?: string
 }
 
-export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged = NoOp, onSignUpPressed = NoOp, passwordValue = '' }: Props) {
+export function Form({ emailValue = '', onEmailChanged = NoOp, onForgotPassword, onPasswordChanged = NoOp, onSignUpPressed = NoOp, passwordValue = '' }: Props) {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   const toggleSecureEntry = () => {
@@ -51,7 +52,7 @@ export function Form({ emailValue = '', onEmailChanged = NoOp, onPasswordChanged
         textStyle={styles.inputText}
       />
 
-      {false && <Text style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>}
+      <Text onPress={() => onForgotPassword(emailValue)} style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>
 
       <HideWithKeyboard>
         <Layout style={{ height: 100 }}/>
