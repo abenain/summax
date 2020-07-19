@@ -11,10 +11,12 @@ import { Image, View } from 'react-native'
 import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
+import { getAmplitudeApiKey } from './amplitude'
 import useLogoutListener from './hooks/logout-listener'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
 import { getHydrationPromise, getStore } from './redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from './sequences'
+import * as Amplitude from 'expo-analytics-amplitude'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -79,6 +81,7 @@ export default () => {
         nexaXBold        : require('../assets/fonts/Nexa-XBold.otf'),
       }),
       getHydrationPromise(),
+      Amplitude.initialize(getAmplitudeApiKey()),
     ])
   }
 

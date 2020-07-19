@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
@@ -22,6 +24,10 @@ export function OnboardingObjectivesScreen() {
   const [isLoading, setLoading] = useState(false)
   const [error, setError] = useState(Maybe.nothing<string>())
   const [objectives, setObjectives] = useState<Objectives[]>([])
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEvent(EVENTS.SHOWED_ONBOARDING_OBJECTIVES_PAGE)
+  }, [])
 
   function goToNextScreen() {
     if (objectives.length === 0) {

@@ -2,6 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import { Subscription } from '@unimodules/core'
+import * as Amplitude from 'expo-analytics-amplitude'
 import { Video } from 'expo-av'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
@@ -11,6 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
 import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
@@ -135,12 +137,21 @@ export function TrainingScreen() {
     Promise.resolve()
       .then(() => {
         if (warmup) {
+          Amplitude.logEvent(EVENTS.PLAYED_WARMUP)
+
           return callAuthenticatedWebservice(fetchWarmup, {})
             .then(warmup => {
               setWarmupWorkout(warmup)
               return warmup
             })
         }
+
+        Amplitude.logEventWithProperties(EVENTS.PLAYED_COURSE, {
+          course: selectedWorkout.caseOf({
+            just   : ({ title }) => title,
+            nothing: () => ''
+          })
+        })
 
         return selectedWorkout
       })
@@ -329,6 +340,14 @@ export function TrainingScreen() {
                     }
 
                     setIsLeaving(true)
+
+                    Amplitude.logEventWithProperties(EVENTS.PRESSED_LEAVE_COURSE_BTN, {
+                      course  : workout.title,
+                      exercise: currentExercise.caseOf(({
+                        just   : ({ title }) => title,
+                        nothing: () => ''
+                      }))
+                    })
                   }
                 }}
               />

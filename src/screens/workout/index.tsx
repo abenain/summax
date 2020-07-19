@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import Constants from 'expo-constants'
 import { LinearGradient } from 'expo-linear-gradient'
 import i18n from 'i18n-js'
@@ -8,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Duration, Size as DurationSize } from '../../components/duration'
@@ -35,15 +37,25 @@ export function WorkoutScreen() {
 
   useEffect(function componentDidMount() {
 
-    navigation.setOptions({headerStyle: { height: Constants.statusBarHeight + 56 }})
+    navigation.setOptions({ headerStyle: { height: Constants.statusBarHeight + 56 } })
+
 
     callAuthenticatedWebservice(WorkoutServices.load, { workoutId })
       .then((workout: Maybe<Workout>) => {
+
         dispatch({
           type: ActionType.SELECTED_WORKOUT,
           workout
         })
+
         setIsLoading(false)
+
+        Amplitude.logEventWithProperties(EVENTS.SHOWED_COURSE_DESCRIPTION, {
+          course: workout.caseOf({
+            just   : ({ title }) => title,
+            nothing: () => ''
+          })
+        })
       })
   }, [])
 
@@ -115,7 +127,7 @@ export function WorkoutScreen() {
           <Layout style={styles.buttonContainer}>
             <SummaxButton
               buttonStyle={ButtonStyle.TRANSPARENT}
-              onPress={() => navigation.navigate('Training', {warmup: true})}
+              onPress={() => navigation.navigate('Training', { warmup: true })}
               text={i18n.t('Workout Description - Warm up')}
             />
             <SummaxButton

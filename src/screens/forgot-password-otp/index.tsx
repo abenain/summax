@@ -1,12 +1,14 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ImageBackground, KeyboardAvoidingView, Platform, StatusBar, StyleSheet } from 'react-native'
 import HideWithKeyboard from 'react-native-hide-with-keyboard'
 import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
@@ -26,6 +28,10 @@ export function ForgotPasswordOtpScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'ForgotPasswordOtp'>>()
   const { email: userEmail } = route.params
   const dispatch = useDispatch()
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEvent(EVENTS.SHOWED_FORGOT_PASSWORD_OTP_PAGE)
+  }, [])
 
   function doCheckOtp() {
     if (!otp || otp.length < 4) {

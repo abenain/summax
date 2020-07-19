@@ -1,5 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -7,6 +8,7 @@ import { ImageBackground, KeyboardAvoidingView, Platform, StatusBar, StyleSheet 
 import { ShowWithKeyboard } from 'react-native-hide-with-keyboard'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
@@ -34,6 +36,10 @@ export function LoginScreen({ navigation }: Props) {
     accessToken,
     user
   }))
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEvent(EVENTS.SHOWED_LOGIN_PAGE)
+  }, [])
 
   useEffect(() => {
     accessToken.caseOf({

@@ -1,20 +1,35 @@
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import Constants from 'expo-constants'
 import { LinearGradient } from 'expo-linear-gradient'
 import i18n from 'i18n-js'
 import * as React from 'react'
+import { useEffect } from 'react'
 import { Image, StatusBar, StyleSheet } from 'react-native'
+import { useSelector } from 'react-redux'
+import { EVENTS } from '../../amplitude'
 import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { GlobalState } from '../../redux/store'
 
 const summax = require('./summax.png')
 const boltCirle = require('./bolt-circle.png')
 
 export function RewardScreen() {
   const navigation: StackNavigationProp<RootStackParamList, 'Reward'> = useNavigation()
+  const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEventWithProperties(EVENTS.FINISHED_COURSE, {
+      course: selectedWorkout.caseOf({
+        just   : ({ title }) => title,
+        nothing: () => ''
+      })
+    })
+  }, [])
 
   return (
     <LinearGradient style={styles.gradientBackground}
@@ -82,10 +97,10 @@ const styles = StyleSheet.create({
     fontSize  : 59,
   },
   smallText         : {
-    color      : 'white',
-    fontFamily : 'aktivGroteskXBold',
-    fontSize   : 38,
-    textAlign  : 'center',
+    color     : 'white',
+    fontFamily: 'aktivGroteskXBold',
+    fontSize  : 38,
+    textAlign : 'center',
   },
   buttonContainer   : {
     backgroundColor  : 'transparent',

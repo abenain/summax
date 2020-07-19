@@ -1,29 +1,35 @@
 import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
+import { useEffect } from 'react'
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
+import { DurationFilters } from '../../components/duration-filters'
+import { IntensityFilters } from '../../components/intensity-filters'
 import { Separator } from '../../components/separator'
+import { TargetFilters } from '../../components/target-filters'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { HomePageWorkout, Target } from '../../types'
-import { DurationFilters } from '../../components/duration-filters'
 import { callAuthenticatedWebservice } from '../../webservices'
-import { FeaturedWorkout } from './featuredWorkout'
-import { IntensityFilters } from '../../components/intensity-filters'
-import { PopularWorkouts } from './popularWorkouts'
-import { TargetFilters } from '../../components/target-filters'
 import * as WorkoutService from '../../webservices/workouts'
-import { useDispatch } from 'react-redux'
+import { FeaturedWorkout } from './featuredWorkout'
+import { PopularWorkouts } from './popularWorkouts'
 
 export function HomeScreen() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const homepage = useSelector(({ contents: { homepage } }: GlobalState) => homepage)
   const navigation = useNavigation()
   const dispatch = useDispatch()
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEvent(EVENTS.SHOWED_HOME_PAGE)
+  }, [])
 
   function navigateToWorkout(workout: HomePageWorkout) {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })

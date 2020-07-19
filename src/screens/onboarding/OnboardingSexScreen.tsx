@@ -1,15 +1,17 @@
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, TextInput } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
+import { RootStackParamList } from '../../App'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
-import { OnboardingStackParamList } from '../../navigation/OnboardingStackNavigator'
 import { ActionType } from '../../redux/actions'
 import { Sex } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
@@ -46,7 +48,7 @@ function getSex(checked: boolean) {
 }
 
 export function OnboardingSexScreen() {
-  const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
   const dispatch = useDispatch()
   const [isMale, setIsMale] = useState(false)
   const [heightCm, setHeightCm] = useState('')
@@ -54,6 +56,10 @@ export function OnboardingSexScreen() {
   const [weightKg, setWeightKg] = useState('')
   const [weightError, setWeightError] = useState(false)
   const [isLoading, setLoading] = useState(false)
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEvent(EVENTS.SHOWED_ONBOARDING_SEX_PAGE)
+  }, [])
 
   function goToNextPage() {
     if (!heightCm || !weightKg) {
@@ -181,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems    : 'center',
     flexDirection : 'row',
     justifyContent: 'space-between',
-    marginBottom: 32,
+    marginBottom  : 32,
   },
   input                      : {
     backgroundColor  : SummaxColors.lightGrey,

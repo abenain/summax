@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native'
 import { HeaderHeightContext } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
+import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
+import { EVENTS } from '../../amplitude'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
@@ -27,6 +29,10 @@ export function SignUpScreen() {
   const [lastname, setLastname] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setLoading] = useState(false)
+
+  useEffect(function componentDidMount() {
+    Amplitude.logEvent(EVENTS.SHOWED_SIGNUP_PAGE)
+  }, [])
 
   function doSignUp() {
     if (!confirmPassword || !dob || !email || !firstname || !lastname || !password) {
