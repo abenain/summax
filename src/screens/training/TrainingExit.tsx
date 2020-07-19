@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   titleContainer     : {
     alignItems: 'center',
     height    : 20,
-    marginTop : 15,
+    marginTop : 56,
   },
   summaxIcon         : {
     height: 20,
