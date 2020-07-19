@@ -88,7 +88,7 @@ export function Form({ confirmPasswordValue, dobValue, emailValue, firstnameValu
         style={styles.input}
         placeholder={i18n.t('Placeholder - Password confirm')}
         value={confirmPasswordValue}
-        secureTextEntry={true}
+        secureTextEntry={secureTextEntry}
         onChangeText={onConfirmPasswordChanged}
         textStyle={styles.inputText}
       />

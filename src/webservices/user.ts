@@ -132,5 +132,4 @@ export function fetchMe({ token }: { token: string }) {
       return response.json()
     })
     .then((user: User) => Maybe.maybe(user))
-
 }

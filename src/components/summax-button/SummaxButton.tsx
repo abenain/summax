@@ -14,6 +14,7 @@ export enum ButtonStyle {
 interface Props {
   buttonStyle?: ButtonStyle
   children?: React.ReactNode
+  disabled?: boolean
   onPress?: () => void
   style?: ViewStyle
   text?: string
@@ -71,10 +72,11 @@ function getPropsForButton(buttonStyle: ButtonStyle) {
   }
 }
 
-export function SummaxButton({ buttonStyle = ButtonStyle.TRANSPARENT, children, onPress = NoOp, style = {}, text }: Props) {
+export function SummaxButton({ buttonStyle = ButtonStyle.TRANSPARENT, children, disabled, onPress = NoOp, style = {}, text }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={.9}
+      disabled={disabled}
       style={[...getStylesForButton(buttonStyle), style]}
       onPress={onPress}
       {...getPropsForButton(buttonStyle)}>

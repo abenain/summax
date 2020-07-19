@@ -3,6 +3,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import moment from 'moment'
 import * as React from 'react'
+import { useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { ErrorPage } from '../../components/ErrorPage'
@@ -12,6 +13,7 @@ import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
 import { Field } from './Field'
+import { PasswordModal } from './PasswordModal'
 
 const enveloppeIcon = require('./enveloppe.png')
 const phoneIcon = require('./phone.png')
@@ -32,6 +34,7 @@ export function ProfileScreen() {
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const user = useSelector(({ userData: { user } }: GlobalState) => user)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -71,7 +74,11 @@ export function ProfileScreen() {
 
             <Separator style={{ marginVertical: 16 }}/>
 
-            <Field title={i18n.t('Profile - Password')} editable={true}/>
+            <Field
+              editable={true}
+              onEditButtonPress={() => setShowPasswordModal(true)}
+              title={i18n.t('Profile - Password')}
+            />
 
             <Text style={styles.title}>{i18n.t('Profile - Contact')}</Text>
 
@@ -108,8 +115,11 @@ export function ProfileScreen() {
               <Text style={[styles.subtitle, { marginBottom: 31 }]}>{i18n.t('Profile - Legal - Liability')}</Text>
             </TouchableOpacity>
 
-            <SummaxButton buttonStyle={ButtonStyle.GREEN} text={i18n.t('Sign out')}
-                          onPress={() => dispatch({ type: ActionType.LOGOUT })}/>
+            <SummaxButton
+              buttonStyle={ButtonStyle.GREEN}
+              onPress={() => dispatch({ type: ActionType.LOGOUT })}
+              text={i18n.t('Sign out')}
+            />
 
             <Image source={summaxIcon} style={styles.summaxIcon}/>
 
@@ -119,6 +129,12 @@ export function ProfileScreen() {
         ),
         nothing: () => <ErrorPage message={i18n.t('Profile - Error Page Message')}/>
       })}
+
+      <PasswordModal
+        onDismiss={() => setShowPasswordModal(false)}
+        visible={showPasswordModal}
+      />
+
     </SafeAreaView>
   )
 }
