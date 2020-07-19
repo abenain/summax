@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import moment from 'moment'
 import * as React from 'react'
@@ -12,6 +12,16 @@ import { ButtonStyle, SummaxButton } from '../../components/summax-button/Summax
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
+import {
+  CONTACT_US_EMAIL,
+  CONTACT_US_PHONE_NUMBER,
+  LIABILITY_URL,
+  makePhoneCall,
+  openUrl,
+  PRIVACY_URL,
+  sendEmail,
+  TERMS_OF_USE_URL
+} from '../../utils'
 import { Field } from './Field'
 import { PasswordModal } from './PasswordModal'
 
@@ -82,36 +92,41 @@ export function ProfileScreen() {
 
             <Text style={styles.title}>{i18n.t('Profile - Contact')}</Text>
 
-            <Layout style={[styles.contactContainer, { marginBottom: 42 }]}>
+            <TouchableOpacity
+              activeOpacity={.8}
+              onPress={() => sendEmail(CONTACT_US_EMAIL)}
+              style={[styles.contactContainer, { marginBottom: 42 }]}
+            >
               <Image source={enveloppeIcon} style={{
                 height: 15,
                 width : 18,
               }}/>
               <Text style={styles.subtitle}>{i18n.t('Profile - Contact us - email')}</Text>
-            </Layout>
+            </TouchableOpacity>
 
-            <Layout style={styles.contactContainer}>
+            <TouchableOpacity
+              activeOpacity={.8}
+              onPress={() => makePhoneCall(CONTACT_US_PHONE_NUMBER)}
+              style={styles.contactContainer}
+            >
               <Image source={phoneIcon} style={{
                 height: 16,
                 width : 16,
               }}/>
               <Text style={styles.subtitle}>{i18n.t('Profile - Contact us - telephone')}</Text>
-            </Layout>
+            </TouchableOpacity>
 
             <Text style={styles.title}>{i18n.t('Profile - Legal')}</Text>
 
-            <TouchableOpacity activeOpacity={.8} onPress={() => {
-            }}>
+            <TouchableOpacity activeOpacity={.8} onPress={() => openUrl(TERMS_OF_USE_URL)}>
               <Text style={[styles.subtitle, { marginBottom: 16 }]}>{i18n.t('Profile - Legal - Terms of use')}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={.8} onPress={() => {
-            }}>
+            <TouchableOpacity activeOpacity={.8} onPress={() => openUrl(PRIVACY_URL)}>
               <Text style={[styles.subtitle, { marginBottom: 16 }]}>{i18n.t('Profile - Legal - Privacy')}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={.8} onPress={() => {
-            }}>
+            <TouchableOpacity activeOpacity={.8} onPress={() => openUrl(LIABILITY_URL)}>
               <Text style={[styles.subtitle, { marginBottom: 31 }]}>{i18n.t('Profile - Legal - Liability')}</Text>
             </TouchableOpacity>
 
