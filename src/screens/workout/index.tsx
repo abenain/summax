@@ -120,7 +120,7 @@ export function WorkoutScreen() {
             />
             <SummaxButton
               buttonStyle={ButtonStyle.GREEN}
-              onPress={() => navigation.navigate('Training')}
+              onPress={() => navigation.navigate('Training', {})}
               text={i18n.t('Workout Description - Workout')}
             />
           </Layout>
