@@ -217,7 +217,7 @@ export function TrainingScreen() {
           startTimer()
         }
       }}
-      onQuit={navigation.popToTop}/>
+      onQuit={() => navigation.replace('Home')}/>
   }
 
   return getWorkout().caseOf({

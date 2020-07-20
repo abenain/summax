@@ -53,7 +53,7 @@ export function RewardScreen() {
 
         <Layout style={styles.buttonContainer}>
           <SummaxButton buttonStyle={ButtonStyle.WHITE} text={i18n.t('Reward - Back home')}
-                        onPress={navigation.popToTop}/>
+                        onPress={() => navigation.replace('Home')}/>
         </Layout>
       </Layout>
 
