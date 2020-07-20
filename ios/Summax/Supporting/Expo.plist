@@ -6,5 +6,7 @@
         <string>YOUR-APP-SDK-VERSION-HERE</string>
         <key>EXUpdatesURL</key>
         <string>YOUR-APP-URL-HERE</string>
+        <key>EXUpdatesReleaseChannel</key>
+        <string>staging-v2</string>
 </dict>
 </plist>
