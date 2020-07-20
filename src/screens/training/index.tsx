@@ -3,13 +3,13 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import { Subscription } from '@unimodules/core'
 import * as Amplitude from 'expo-analytics-amplitude'
-import { Video } from 'expo-av'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native'
+import JWPlayer from 'react-native-jw-media-player'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
@@ -40,21 +40,43 @@ export function TrainingScreen() {
   const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
   const [isLoading, setIsLoading] = useState(true)
   const isFullScreen = useRef(false)
-  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
+  const selectedExerciseIndex = useRef(-1)
+  const [exerciseIndex, setExerciseIndex] = useState(-1)
   const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
   const [isPlaying, setIsPlaying] = useState(false)
   const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({
     countdown         : true,
-    onCountdownExpired: useCallback(nextExercise, [selectedExerciseIndex])
+    onCountdownExpired: nextExercise
   })
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
   const exerciseList = useRef<ExerciseListHandle>()
-  const videoPlayer = useRef<Video>()
-  const videoUrl = useMemo(() => currentExercise.caseOf({
-    just   : exercise => getExerciseVideoUrl(exercise),
-    nothing: () => null
-  }), [currentExercise.valueOr(null)])
+  const videoPlayer = useRef<JWPlayer>()
+
+  const workoutPlaylist = useMemo(() => {
+    return selectedWorkout.caseOf({
+      just   : workout => workout.exercises.map(exercise => ({
+        backgroundAudioEnabled: true,
+        file                  : getExerciseVideoUrl(exercise),
+        title                 : exercise.title,
+        mediaId               : exercise.mediaId as any,
+        desc                  : exercise.title,
+        autostart             : true,
+        controls              : true,
+        repeat                : true,
+        displayDescription    : true,
+        displayTitle          : true
+      })),
+      nothing: () => []
+    })
+  }, [selectedWorkout.valueOr(null)])
+
+  function onPlaylistItemStart({ nativeEvent: { playlistItem } }) {
+    const index = JSON.parse(playlistItem).index
+    if (selectedExerciseIndex.current >= 0 && index !== selectedExerciseIndex.current) {
+      videoPlayer.current.setPlaylistIndex(selectedExerciseIndex.current)
+    }
+  }
 
   function getWorkout() {
     if (warmup) {
@@ -86,8 +108,8 @@ export function TrainingScreen() {
   useEffect(() => {
     getWorkout().caseOf({
       just   : workout => {
-        if (selectedExerciseIndex >= 0 && selectedExerciseIndex < workout.exercises.length) {
-          const selectedExercise = workout.exercises[selectedExerciseIndex]
+        if (exerciseIndex >= 0 && exerciseIndex < workout.exercises.length) {
+          const selectedExercise = workout.exercises[exerciseIndex]
           setCurrentExercise(Maybe.just(selectedExercise))
 
           if (selectedExercise.modality === ExerciseModality.TIME) {
@@ -97,19 +119,13 @@ export function TrainingScreen() {
       },
       nothing: NoOp
     })
-  }, [selectedExerciseIndex])
+  }, [exerciseIndex])
 
   const selectExerciseAt = async (index: number) => {
-    if (videoPlayer.current) {
-      try {
-        await videoPlayer.current.setPositionAsync(0)
-        await videoPlayer.current.dismissFullscreenPlayer()
-      } catch (error) {
-        console.log(error)
-      }
-    }
     exerciseList.current.scrollToExercise(index)
-    setSelectedExerciseIndex(index)
+    videoPlayer.current.setPlaylistIndex(index)
+    selectedExerciseIndex.current = index
+    setExerciseIndex(index)
     setIsPlaying(true)
   }
 
@@ -119,17 +135,12 @@ export function TrainingScreen() {
     orientationChangedSubscription.current = Maybe.maybe(
       ScreenOrientation.addOrientationChangeListener(async ({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
         if (orientation === Orientation.PORTRAIT_UP) {
+          videoPlayer.current.setFullscreen(false)
           isFullScreen.current = false
-          if (videoPlayer.current) {
-            await videoPlayer.current.dismissFullscreenPlayer()
-          }
           return
         }
 
-        if (videoPlayer.current) {
-          await videoPlayer.current.presentFullscreenPlayer()
-        }
-
+        videoPlayer.current.setFullscreen(true)
         isFullScreen.current = true
       })
     )
@@ -183,12 +194,12 @@ export function TrainingScreen() {
   function nextExercise() {
     const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
 
-    if (selectedExerciseIndex < 0) {
+    if (selectedExerciseIndex.current < 0) {
       return
     }
 
-    if (selectedExerciseIndex < exerciseCount - 1) {
-      selectExerciseAt(selectedExerciseIndex + 1)
+    if (selectedExerciseIndex.current < exerciseCount - 1) {
+      selectExerciseAt(selectedExerciseIndex.current + 1)
       return
     }
 
@@ -224,49 +235,30 @@ export function TrainingScreen() {
     just   : workout => (
       <Layout style={styles.mainContainer}>
 
-        {currentExercise.caseOf({
-          just   : () => (
-            <Video
-              isLooping={true}
-              isMuted={false}
-              onLoad={async () => {
-                if (isFullScreen.current) {
-                  await videoPlayer.current.presentFullscreenPlayer()
-                }
-
-                const isTimedExercise = currentExercise.caseOf({
-                  just   : exercise => exercise.modality === ExerciseModality.TIME,
-                  nothing: () => false
-                })
-
-                if (isTimedExercise) {
-                  startTimer()
-                }
-
-              }}
-              rate={1.0}
-              ref={videoPlayer}
-              resizeMode={Video.RESIZE_MODE_CONTAIN}
-              shouldPlay={true}
-              source={{
-                uri: videoUrl
-              }}
-              style={{
-                height: 233,
-                width : Dimensions.get('window').width
-              }}
-              useNativeControls={true}
-              volume={1.0}
-            />
-          ),
-          nothing: () => (
-            <Layout style={{
-              backgroundColor: 'black',
-              height         : 233,
-              width          : Dimensions.get('window').width,
-            }}/>
-          )
-        })}
+        <JWPlayer
+          ref={videoPlayer}
+          style={{
+            height: 233,
+            width : Dimensions.get('window').width
+          }}
+          playlist={workoutPlaylist}
+          onPlaylistItem={onPlaylistItemStart}
+          onPlay={NoOp}
+          onPause={NoOp}
+          onSetupPlayerError={NoOp}
+          onPlayerError={NoOp}
+          onBuffer={NoOp}
+          onTime={NoOp}
+          onFullScreen={NoOp}
+          onFullScreenExit={NoOp}
+          landscapeOnFullScreen={true}
+          portraitOnExitFullScreen={true}
+          exitFullScreenOnPortrait={true}
+          nextUpDisplay={true}
+          onPlaylistComplete={NoOp}
+          onFullScreenRequested={NoOp}
+          onFullScreenExitRequested={NoOp}
+        />
 
         <SafeAreaView style={styles.safeContentsArea}>
           <Layout style={styles.contents}>
@@ -315,7 +307,7 @@ export function TrainingScreen() {
 
             <Layout style={{ flex: 1 }}>
               <ExerciseList
-                activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
+                activeIndex={exerciseIndex >= 0 ? Maybe.just(exerciseIndex) : Maybe.nothing()}
                 exercises={workout.exercises}
                 onPress={selectExerciseAt}
                 ref={exerciseList}

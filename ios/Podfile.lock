@@ -69,6 +69,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - JWPlayer-SDK (3.15.1)
   - RCTRequired (0.61.5)
   - RCTTypeSafety (0.61.5):
     - FBLazyVector (= 0.61.5)
@@ -232,6 +233,9 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
+  - react-native-jw-media-player (0.1.48):
+    - JWPlayer-SDK
+    - React
   - react-native-netinfo (5.5.1):
     - React
   - react-native-safe-area-context (0.7.3):
@@ -334,6 +338,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-jw-media-player (from `../node_modules/react-native-jw-media-player/ios`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -371,6 +376,7 @@ SPEC REPOS:
   trunk:
     - Amplitude-iOS
     - boost-for-react-native
+    - JWPlayer-SDK
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -435,6 +441,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-jw-media-player:
+    :path: "../node_modules/react-native-jw-media-player/ios"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -523,6 +531,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  JWPlayer-SDK: bb34fb03095f3ab9b9cba3da72844be483ef6e5f
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
@@ -532,6 +541,7 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
+  react-native-jw-media-player: 45886cf3ee17042e78135cb6d1c099bd47b2a29d
   react-native-netinfo: 1ee553f84e01aaffbed0e5bd53d8515f7d675055
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76

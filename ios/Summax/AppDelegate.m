@@ -13,6 +13,7 @@
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
 #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
+#import <JWPlayer_iOS_SDK/JWPlayerController.h>
 
 @interface AppDelegate ()
 
@@ -40,6 +41,8 @@
 
   [super application:application didFinishLaunchingWithOptions:launchOptions];
 
+      [JWPlayerController setPlayerKey:@"1s75JVUTpZ4Qkk1+vfM9geuBWE3gVG7zdvBGRcRWS+v9egFnjJoOMAuq+QeXYS0w"];
+  
   return YES;
 }
 
