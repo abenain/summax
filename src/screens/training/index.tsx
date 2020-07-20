@@ -204,8 +204,10 @@ export function TrainingScreen() {
     }
 
     if (warmup) {
+      videoPlayer.current.stop()
       navigation.replace('Training', {})
     } else {
+      videoPlayer.current.stop()
       navigation.navigate('Reward')
     }
   }
@@ -228,7 +230,10 @@ export function TrainingScreen() {
           startTimer()
         }
       }}
-      onQuit={() => navigation.replace('Home')}/>
+      onQuit={() => {
+        videoPlayer.current.stop()
+        navigation.replace('Home')}
+      }/>
   }
 
   return getWorkout().caseOf({
