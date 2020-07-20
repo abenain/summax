@@ -5,7 +5,8 @@ import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, TextInput } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Switch, TextInput } from 'react-native'
+import HideWithKeyboard from 'react-native-hide-with-keyboard'
 import { useDispatch } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
@@ -95,15 +96,22 @@ export function OnboardingSexScreen() {
     <Loading/>
   ) : (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <ScrollView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={100}
+        style={{ flex: 1 }}
+      >
         <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 2 }}>
-          <Text style={styles.instructions}>
-            {i18n.t('Onboarding - Sex - Instructions')}
-          </Text>
+          <HideWithKeyboard>
+            <Text style={styles.instructions}>
+              {i18n.t('Onboarding - Sex - Instructions')}
+            </Text>
+          </HideWithKeyboard>
 
           <Layout style={styles.sexSelectionIconsContainer}>
-            <Image source={getWomanIcon(getSex(isMale))} style={styles.womanIcon}/>
-            <Image source={getManIcon(getSex(isMale))} style={styles.manIcon}/>
+            <Image resizeMode={'contain'} source={getWomanIcon(getSex(isMale))}
+                   style={[styles.sexIcon, { marginRight: 30 }]}/>
+            <Image resizeMode={'contain'} source={getManIcon(getSex(isMale))} style={styles.sexIcon}/>
           </Layout>
 
           <Layout style={styles.sexSelectionSwitchContainer}>
@@ -143,7 +151,7 @@ export function OnboardingSexScreen() {
           </Layout>
 
         </BaseScreen>
-      </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -161,15 +169,11 @@ const styles = StyleSheet.create({
     flexDirection : 'row',
     justifyContent: 'center',
     marginBottom  : 53,
+    flex          : 1,
   },
-  womanIcon                  : {
-    height     : 220,
-    marginRight: 30,
-    width      : 56,
-  },
-  manIcon                    : {
-    height: 220,
-    width : 76,
+  sexIcon                    : {
+    height: '100%',
+    width : '30%',
   },
   sexSelectionSwitchContainer: {
     alignItems    : 'center',
