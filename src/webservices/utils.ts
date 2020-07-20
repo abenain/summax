@@ -12,7 +12,7 @@ const API_V1_PATH = 'api/v1'
 const CLIENT_ID = 'ayhcwZdiy5rgWreq3wN6tA2hk2HC'
 
 export function getBackendUrl() {
-  const { releaseChannel } = Constants.manifest
+  const { releaseChannel } = Constants.manifest || {releaseChannel: null}
 
   if (Boolean(releaseChannel) === false) {
     return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`

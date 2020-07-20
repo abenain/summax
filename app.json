@@ -27,6 +27,7 @@
     "ios": {
       "bundleIdentifier": "fr.summax.app",
       "supportsTablet": true
-    }
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }

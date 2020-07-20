@@ -20,9 +20,9 @@ export enum EVENTS {
 }
 
 export function getAmplitudeApiKey() {
-  const { releaseChannel } = Constants.manifest
+  const { releaseChannel } = Constants.manifest || {releaseChannel: undefined}
 
-  if (releaseChannel === undefined) {
+  if (Boolean(releaseChannel) === false) {
     return AMPLITUDE_API_KEY_TEST
   }
 
