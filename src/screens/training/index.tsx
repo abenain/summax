@@ -248,8 +248,8 @@ export function TrainingScreen() {
           }}
           playlist={workoutPlaylist}
           onPlaylistItem={onPlaylistItemStart}
-          onPlay={NoOp}
-          onPause={NoOp}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
           onSetupPlayerError={NoOp}
           onPlayerError={NoOp}
           onBuffer={NoOp}
