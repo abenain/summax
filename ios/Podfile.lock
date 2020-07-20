@@ -305,6 +305,7 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
+  - Amplitude-iOS (~> 4.7.1)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXAmplitude (from `../node_modules/expo-analytics-amplitude/ios`)
   - EXAV (from `../node_modules/expo-av/ios`)
@@ -575,6 +576,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: 4e6c4c34a89512e2225d336154df1cb689226a29
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: f4937af73abd81e92643638e5b2b99a384256b6a
+PODFILE CHECKSUM: ce05e1da3b249197aaee85e600e3c6e19603b52e
 
 COCOAPODS: 1.8.4
