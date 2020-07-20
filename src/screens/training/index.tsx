@@ -53,7 +53,7 @@ export function TrainingScreen() {
   const videoPlayer = useRef<JWPlayer>()
 
   const workoutPlaylist = useMemo(() => {
-    return selectedWorkout.caseOf({
+    return getWorkout().caseOf({
       just   : workout => workout.exercises.map(exercise => ({
         backgroundAudioEnabled: true,
         file                  : getExerciseVideoUrl(exercise),
@@ -68,7 +68,7 @@ export function TrainingScreen() {
       })),
       nothing: () => []
     })
-  }, [selectedWorkout.valueOr(null)])
+  }, [getWorkout().valueOr(null)])
 
   function onPlaylistItemStart({ nativeEvent: { playlistItem } }) {
     const index = JSON.parse(playlistItem).index
