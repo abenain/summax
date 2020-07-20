@@ -327,6 +327,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - JWPlayer-SDK (~> 3.15.1)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -574,6 +575,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: 4e6c4c34a89512e2225d336154df1cb689226a29
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: cc27f3a45805d47cad774197a741cc0370b19240
+PODFILE CHECKSUM: f4937af73abd81e92643638e5b2b99a384256b6a
 
 COCOAPODS: 1.8.4
