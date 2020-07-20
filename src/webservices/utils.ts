@@ -1,9 +1,8 @@
-import Constants from 'expo-constants'
 import { Exercise } from '../types'
 
 const SCHEME_HTTP = 'http'
 const SCHEME_HTTPS = 'https'
-const BACKEND_URL_DEV = '10.0.0.6:18000'
+//const BACKEND_URL_DEV = '10.0.0.6:18000'
 //const BACKEND_URL_DEV = '192.168.1.28:18000'
 const BACKEND_URL_PROD = 'summax.fr'
 
@@ -12,21 +11,7 @@ const API_V1_PATH = 'api/v1'
 const CLIENT_ID = 'ayhcwZdiy5rgWreq3wN6tA2hk2HC'
 
 export function getBackendUrl() {
-  const { releaseChannel } = Constants.manifest || {releaseChannel: null}
-
-  if (Boolean(releaseChannel) === false) {
-    return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`
-  }
-
-  if (releaseChannel.indexOf('prod') !== -1) {
-    return `${SCHEME_HTTP}://${BACKEND_URL_PROD}`
-  }
-
-  if (releaseChannel.indexOf('staging') !== -1) {
-    return `${SCHEME_HTTP}://${BACKEND_URL_PROD}`
-  }
-
-  return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`
+  return `${SCHEME_HTTP}://${BACKEND_URL_PROD}`
 }
 
 export function getApiBaseUrl() {
@@ -67,10 +52,10 @@ const JWPLAYER_VIDEO_FOLDER = 'videos'
 const JWPLAYER_THUMB_WIDTH = '1920'
 const JWPLAYER_1080P_CODEC_ID_PROD = 'XbWGWCTK'
 
-export function getExerciseVideoUrl(exercise: Exercise){
+export function getExerciseVideoUrl(exercise: Exercise) {
   return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_VIDEO_FOLDER}/${exercise.mediaId}-${JWPLAYER_1080P_CODEC_ID_PROD}.mp4`
 }
 
-export function getExerciseThumbnail(exercise: Exercise){
+export function getExerciseThumbnail(exercise: Exercise) {
   return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_THUMBS_FOLDER}/${exercise.mediaId}-${JWPLAYER_THUMB_WIDTH}.jpg`
 }
