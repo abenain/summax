@@ -4,7 +4,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import { Subscription } from '@unimodules/core'
 import * as Amplitude from 'expo-analytics-amplitude'
 import * as ScreenOrientation from 'expo-screen-orientation'
-import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
+import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -39,7 +39,6 @@ export function TrainingScreen() {
   const [warmupWorkout, setWarmupWorkout] = useState(Maybe.nothing<Workout>())
   const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
   const [isLoading, setIsLoading] = useState(true)
-  const isFullScreen = useRef(false)
   const selectedExerciseIndex = useRef(-1)
   const [exerciseIndex, setExerciseIndex] = useState(-1)
   const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
@@ -131,19 +130,6 @@ export function TrainingScreen() {
 
   useEffect(function componentDidMount() {
     ScreenOrientation.unlockAsync()
-
-    orientationChangedSubscription.current = Maybe.maybe(
-      ScreenOrientation.addOrientationChangeListener(async ({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
-        if (orientation === Orientation.PORTRAIT_UP) {
-          videoPlayer.current.setFullscreen(false)
-          isFullScreen.current = false
-          return
-        }
-
-        videoPlayer.current.setFullscreen(true)
-        isFullScreen.current = true
-      })
-    )
 
     Promise.resolve()
       .then(() => {
@@ -262,6 +248,7 @@ export function TrainingScreen() {
           onTime={NoOp}
           onFullScreen={NoOp}
           onFullScreenExit={NoOp}
+          fullScreenOnLandscape={true}
           landscapeOnFullScreen={true}
           portraitOnExitFullScreen={true}
           exitFullScreenOnPortrait={true}
