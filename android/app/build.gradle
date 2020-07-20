@@ -181,6 +181,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-jw-media-player')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.media:media:1.1.0'
