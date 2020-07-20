@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
 import Constants from 'expo-constants'
@@ -36,28 +36,32 @@ export function WorkoutScreen() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(function componentDidMount() {
-
     navigation.setOptions({ headerStyle: { height: Constants.statusBarHeight + 56 } })
+  }, [])
 
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoading(true)
 
-    callAuthenticatedWebservice(WorkoutServices.load, { workoutId })
-      .then((workout: Maybe<Workout>) => {
+      callAuthenticatedWebservice(WorkoutServices.load, { workoutId })
+        .then((workout: Maybe<Workout>) => {
 
-        dispatch({
-          type: ActionType.SELECTED_WORKOUT,
-          workout
-        })
+          dispatch({
+            type: ActionType.SELECTED_WORKOUT,
+            workout
+          })
 
-        setIsLoading(false)
+          setIsLoading(false)
 
-        Amplitude.logEventWithProperties(EVENTS.SHOWED_COURSE_DESCRIPTION, {
-          course: workout.caseOf({
-            just   : ({ title }) => title,
-            nothing: () => ''
+          Amplitude.logEventWithProperties(EVENTS.SHOWED_COURSE_DESCRIPTION, {
+            course: workout.caseOf({
+              just   : ({ title }) => title,
+              nothing: () => ''
+            })
           })
         })
-      })
-  }, [])
+    }, [workoutId])
+  )
 
   if (isLoading) {
     return <Loading/>
