@@ -193,10 +193,14 @@ export function TrainingScreen() {
     }
 
     if (warmup) {
-      videoPlayer.current.stop()
+      if(videoPlayer.current){
+        videoPlayer.current.stop()
+      }
       navigation.replace('Training', {})
     } else {
-      videoPlayer.current.stop()
+      if(videoPlayer.current){
+        videoPlayer.current.stop()
+      }
       navigation.navigate('Reward')
     }
   }
@@ -220,7 +224,9 @@ export function TrainingScreen() {
         }
       }}
       onQuit={() => {
-        videoPlayer.current.stop()
+        if(videoPlayer.current){
+          videoPlayer.current.stop()
+        }
         navigation.replace('Home')}
       }/>
   }
