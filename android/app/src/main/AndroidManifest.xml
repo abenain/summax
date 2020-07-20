@@ -25,6 +25,9 @@
     <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="37.0.0" />
     <meta-data android:name="expo.modules.updates.EXPO_RELEASE_CHANNEL" android:value="staging-v1" />
     <meta-data
+        android:name="releaseChannel"
+        android:value="staging-v1" />
+    <meta-data
         android:name="JW_LICENSE_KEY"
         android:value="oVeut7BaCjhVtar9KPluGDPC29XDTDzC3UVpGk5aSEDdxETbfLodC0kO+lPVyteT" />
     <receiver android:name="androidx.media.session.MediaButtonReceiver">
