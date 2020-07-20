@@ -7,6 +7,6 @@
         <key>EXUpdatesURL</key>
         <string>YOUR-APP-URL-HERE</string>
         <key>EXUpdatesReleaseChannel</key>
-        <string>staging-v2</string>
+        <string>staging-v1</string>
 </dict>
 </plist>
