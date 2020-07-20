@@ -44,4 +44,6 @@ target 'Summax' do
 
   # react-native-cli autolinking
   use_native_modules!
+  pod 'react-native-jw-media-player', :path => '../node_modules/react-native-jw-media-player/ios'
+
 end
