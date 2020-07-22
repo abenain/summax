@@ -71,6 +71,7 @@ export function TrainingScreen() {
   }, [getWorkout().valueOr(null)])
 
   function onPlaylistItemStart({ nativeEvent: { playlistItem } }) {
+    setIsPlaying(false)
     const index = JSON.parse(playlistItem).index
     if (selectedExerciseIndex.current >= 0 && index !== selectedExerciseIndex.current) {
       videoPlayer.current.setPlaylistIndex(selectedExerciseIndex.current)
@@ -125,7 +126,6 @@ export function TrainingScreen() {
     videoPlayer.current.setPlaylistIndex(index)
     selectedExerciseIndex.current = index
     setExerciseIndex(index)
-    setIsPlaying(true)
   }
 
   useEffect(function componentDidMount() {

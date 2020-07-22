@@ -82,8 +82,7 @@ export function useTimer({ countdown, countdownFromMs, onCountdownExpired = NoOp
     stop()
 
     internalValue.current = newValueMs
-
-    start()
+    setTimerValue(internalValue.current)
   }
 
   return [timerValue, start, stop, resetTo]
