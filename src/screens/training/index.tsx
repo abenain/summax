@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   title            : {
     fontFamily: 'aktivGroteskXBold',
     fontSize  : 30,
-    lineHeight: 27,
+    lineHeight: 30,
   },
   controlsContainer: {
     flexDirection: 'row',
