@@ -9,7 +9,7 @@ import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-scree
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native'
+import { Dimensions, Image, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
@@ -31,7 +31,17 @@ const greenClockIcon = require('../../../assets/clock-green.png')
 const repsIcon = require('./reps.png')
 const nextIcon = require('./next.png')
 
+
+function getSmallSide({ height, width }: ScaledSize) {
+  if (height < width) {
+    return height
+  }
+
+  return width
+}
+
 export function TrainingScreen() {
+  const screenWidthPortrait = useRef(getSmallSide(Dimensions.get('window')))
   const route = useRoute<RouteProp<RootStackParamList, 'Training'>>()
   const { warmup = false } = route.params
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
@@ -193,12 +203,12 @@ export function TrainingScreen() {
     }
 
     if (warmup) {
-      if(videoPlayer.current){
+      if (videoPlayer.current) {
         videoPlayer.current.stop()
       }
       navigation.replace('Training', {})
     } else {
-      if(videoPlayer.current){
+      if (videoPlayer.current) {
         videoPlayer.current.stop()
       }
       navigation.navigate('Reward')
@@ -224,10 +234,11 @@ export function TrainingScreen() {
         }
       }}
       onQuit={() => {
-        if(videoPlayer.current){
+        if (videoPlayer.current) {
           videoPlayer.current.stop()
         }
-        navigation.replace('Home')}
+        navigation.replace('Home')
+      }
       }/>
   }
 
@@ -264,7 +275,7 @@ export function TrainingScreen() {
               }}
               style={{
                 height: 233,
-                width : Dimensions.get('window').width
+                width : screenWidthPortrait.current
               }}
               useNativeControls={true}
               volume={1.0}
@@ -274,7 +285,7 @@ export function TrainingScreen() {
             <Layout style={{
               backgroundColor: 'black',
               height         : 233,
-              width          : Dimensions.get('window').width,
+              width          : screenWidthPortrait.current
             }}/>
           )
         })}
