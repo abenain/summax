@@ -113,14 +113,14 @@ export function TrainingScreen() {
     if (videoPlayer.current) {
       try {
         await videoPlayer.current.setPositionAsync(0)
-        await videoPlayer.current.dismissFullscreenPlayer()
+        await videoPlayer.current.unloadAsync()
       } catch (error) {
         console.log(error)
       }
     }
     exerciseList.current.scrollToExercise(index)
     setSelectedExerciseIndex(index)
-    setIsPlaying(true)
+    setIsPlaying(false)
   }
 
   useEffect(function componentDidMount() {
@@ -130,14 +130,7 @@ export function TrainingScreen() {
       ScreenOrientation.addOrientationChangeListener(async ({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
         if (orientation === Orientation.PORTRAIT_UP) {
           isFullScreen.current = false
-          if (videoPlayer.current) {
-            await videoPlayer.current.dismissFullscreenPlayer()
-          }
           return
-        }
-
-        if (videoPlayer.current) {
-          await videoPlayer.current.presentFullscreenPlayer()
         }
 
         isFullScreen.current = true
@@ -202,15 +195,13 @@ export function TrainingScreen() {
       return
     }
 
+    if (videoPlayer.current) {
+      videoPlayer.current.unloadAsync()
+    }
+
     if (warmup) {
-      if (videoPlayer.current) {
-        videoPlayer.current.stop()
-      }
       navigation.replace('Training', {})
     } else {
-      if (videoPlayer.current) {
-        videoPlayer.current.stop()
-      }
       navigation.navigate('Reward')
     }
   }
@@ -235,7 +226,7 @@ export function TrainingScreen() {
       }}
       onQuit={() => {
         if (videoPlayer.current) {
-          videoPlayer.current.stop()
+          videoPlayer.current.stopAsync()
         }
         navigation.replace('Home')
       }
@@ -252,17 +243,13 @@ export function TrainingScreen() {
               isLooping={true}
               isMuted={false}
               onLoad={async () => {
-                if (isFullScreen.current) {
-                  await videoPlayer.current.presentFullscreenPlayer()
-                }
-
                 const isTimedExercise = currentExercise.caseOf({
                   just   : exercise => exercise.modality === ExerciseModality.TIME,
                   nothing: () => false
                 })
 
                 if (isTimedExercise) {
-                  startTimer()
+                  setIsPlaying(true)
                 }
 
               }}
@@ -277,7 +264,7 @@ export function TrainingScreen() {
                 height: 233,
                 width : screenWidthPortrait.current
               }}
-              useNativeControls={true}
+              useNativeControls={false}
               volume={1.0}
             />
           ),
