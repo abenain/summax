@@ -124,6 +124,11 @@ const styles = StyleSheet.create({
     right          : 16,
   },
   portraitControlsLayer: {},
+  fullscreenButton: {
+    height: 32,
+    padding: 8,
+    width: 32,
+  },
   fullscreenIcon       : {
     height: 16,
     width : 16,
