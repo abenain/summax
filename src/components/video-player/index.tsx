@@ -1,5 +1,6 @@
-import { Layout } from '@ui-kitten/components'
+import { Layout, Text } from '@ui-kitten/components'
 import { AVPlaybackStatus, Video } from 'expo-av'
+import moment from 'moment'
 import * as React from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Dimensions, Image, StyleSheet, TouchableOpacity } from 'react-native'
@@ -34,6 +35,11 @@ interface Props {
   width: number
 }
 
+function formatDuration(durationMs: number) {
+  const duration = moment.duration(durationMs)
+  return `${duration.minutes().toString().padStart(2, '0')}:${duration.seconds().toString().padStart(2, '0')}`
+}
+
 export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
                                                                    currentPlaylistItem,
                                                                    fullscreen,
@@ -52,6 +58,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     return getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId })
   }, [currentPlaylistItem])
   const [isPlaying, setIsPlaying] = useState(false)
+  const [durationMs, setDurationMs] = useState(0)
+  const [positionMs, setPositionMs] = useState(0)
 
   useEffect(() => {
     onPlaybackStatusChanged(PlaybackStatus.PAUSED)
@@ -78,7 +86,12 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
   function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
     const videoIsPlaying = status.isLoaded && status.isPlaying && status.isBuffering === false
+    const durationMillis = status.isLoaded ? status.durationMillis : 0
+    const positionMillis = status.isLoaded ? status.positionMillis : 0
+
     setIsPlaying(videoIsPlaying)
+    setDurationMs(durationMillis)
+    setPositionMs(positionMillis)
   }
 
   useEffect(() => {
@@ -111,9 +124,17 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
       />
 
       <Layout style={styles.controlsLayer}>
-        <TouchableOpacity activeOpacity={.8} onPress={onFullscreenButtonPress}>
+
+        <Text style={styles.timelineText}>{formatDuration(positionMs)}</Text>
+
+        <Layout style={styles.timeline}/>
+
+        <Text style={styles.timelineText}>{formatDuration(durationMs)}</Text>
+
+        <TouchableOpacity activeOpacity={.8} onPress={onFullscreenButtonPress} style={styles.fullscreenButton}>
           <Image source={fullscreen ? exitFullscreenIcon : goFullscreenIcon} style={styles.fullscreenIcon}/>
         </TouchableOpacity>
+
       </Layout>
 
     </Layout>
@@ -125,20 +146,32 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     bottom         : 16,
     height         : 20,
-    justifyContent : 'flex-end',
     flexDirection  : 'row',
     left           : 16,
     position       : 'absolute',
     right          : 16,
   },
-  portraitControlsLayer: {},
   fullscreenButton     : {
-    height : 32,
-    padding: 8,
+    height : 20,
+    marginLeft: 14,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
     width  : 32,
   },
   fullscreenIcon       : {
     height: 16,
     width : 16,
+  },
+  timelineText         : {
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    fontSize  : 12,
+    lineHeight: 20,
+  },
+  timeline             : {
+    backgroundColor: 'transparent',
+    flex           : 1,
+    marginLeft     : 13,
+    marginRight    : 16,
   },
 })
