@@ -8,7 +8,7 @@ import * as ScreenOrientation from 'expo-screen-orientation'
 import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Dimensions, Image, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
@@ -17,12 +17,12 @@ import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
+import { PlaybackStatus, VideoPlayer } from '../../components/VideoPlayer'
 import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
 import { Exercise, ExerciseModality, Workout } from '../../types'
 import { NoOp } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
-import { getExerciseVideoUrl } from '../../webservices/utils'
 import { fetchWarmup } from '../../webservices/workouts'
 import { ExerciseList, ExerciseListHandle } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
@@ -61,10 +61,12 @@ export function TrainingScreen() {
   const [isLeaving, setIsLeaving] = useState(false)
   const exerciseList = useRef<ExerciseListHandle>()
   const videoPlayer = useRef<Video>()
-  const videoUrl = useMemo(() => currentExercise.caseOf({
-    just   : exercise => getExerciseVideoUrl(exercise),
-    nothing: () => null
-  }), [currentExercise.valueOr(null)])
+  const getPlaylist = useCallback(() => {
+    return getWorkout().caseOf({
+      just: workout => workout.exercises.map(({mediaId}) => ({mediaId})),
+      nothing: () => ([])
+    })
+  }, [warmup, selectedWorkout.valueOr(null)])
 
   function getWorkout() {
     if (warmup) {
@@ -237,45 +239,15 @@ export function TrainingScreen() {
     just   : workout => (
       <Layout style={styles.mainContainer}>
 
-        {currentExercise.caseOf({
-          just   : () => (
-            <Video
-              isLooping={true}
-              isMuted={false}
-              onLoad={async () => {
-                const isTimedExercise = currentExercise.caseOf({
-                  just   : exercise => exercise.modality === ExerciseModality.TIME,
-                  nothing: () => false
-                })
-
-                if (isTimedExercise) {
-                  setIsPlaying(true)
-                }
-
-              }}
-              rate={1.0}
-              ref={videoPlayer}
-              resizeMode={Video.RESIZE_MODE_CONTAIN}
-              shouldPlay={true}
-              source={{
-                uri: videoUrl
-              }}
-              style={{
-                height: 233,
-                width : screenWidthPortrait.current
-              }}
-              useNativeControls={false}
-              volume={1.0}
-            />
-          ),
-          nothing: () => (
-            <Layout style={{
-              backgroundColor: 'black',
-              height         : 233,
-              width          : screenWidthPortrait.current
-            }}/>
-          )
-        })}
+        <VideoPlayer
+          currentPlaylistItem={selectedExerciseIndex}
+          height={233}
+          onPlaybackStatusChanged={(status) => {
+            setIsPlaying(status === PlaybackStatus.PLAYING)
+          }}
+          width={screenWidthPortrait.current}
+          playlist={getPlaylist()}
+        />
 
         <SafeAreaView style={styles.safeContentsArea}>
           <Layout style={styles.contents}>
