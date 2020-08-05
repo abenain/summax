@@ -57,7 +57,14 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
     if (videoPlayer.current) {
       videoPlayer.current.unloadAsync()
-        .then(() => videoPlayer.current.setPositionAsync(0))
+        .then(() => videoPlayer.current.loadAsync({
+          uri: videoUrl
+        }, {
+          positionMillis: 0,
+          shouldPlay    : true,
+          isMuted       : false,
+          isLooping     : true,
+        }))
         .catch(console.log)
     }
   }, [currentPlaylistItem])
@@ -71,8 +78,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   return (
     <Layout style={{
       backgroundColor: 'black',
-      height: fullscreen ? Dimensions.get('window').height : height,
-      width : fullscreen ? Dimensions.get('window').width : width,
+      height         : fullscreen ? Dimensions.get('window').height : height,
+      width          : fullscreen ? Dimensions.get('window').width : width,
     }}>
       <Video
         isLooping={true}
@@ -85,7 +92,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
         resizeMode={Video.RESIZE_MODE_CONTAIN}
         shouldPlay={true}
         source={{
-          uri: videoUrl
+          uri: getExerciseVideoUrl({ mediaId: playlist[0].mediaId })
         }}
         style={{
           height: fullscreen ? Dimensions.get('window').height : height,
@@ -106,7 +113,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 })
 
 const styles = StyleSheet.create({
-  controlsLayer : {
+  controlsLayer        : {
     backgroundColor: 'black',
     bottom         : 16,
     height         : 20,
@@ -116,9 +123,8 @@ const styles = StyleSheet.create({
     position       : 'absolute',
     right          : 16,
   },
-  portraitControlsLayer: {
-  },
-  fullscreenIcon: {
+  portraitControlsLayer: {},
+  fullscreenIcon       : {
     height: 16,
     width : 16,
   },

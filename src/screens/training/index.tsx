@@ -52,10 +52,6 @@ export function TrainingScreen() {
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
   const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
   const [isPlaying, setIsPlaying] = useState(false)
-  const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({
-    countdown         : true,
-    onCountdownExpired: useCallback(nextExercise, [selectedExerciseIndex])
-  })
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
   const exerciseList = useRef<ExerciseListHandle>()
@@ -74,6 +70,30 @@ export function TrainingScreen() {
 
     return selectedWorkout
   }
+
+  const nextExercise = useCallback(() => {
+    const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
+
+    if (selectedExerciseIndex < 0) {
+      return
+    }
+
+    if (selectedExerciseIndex < exerciseCount - 1) {
+      selectExerciseAt(selectedExerciseIndex + 1, isFullscreen === false)
+      return
+    }
+
+    if (warmup) {
+      navigation.replace('Training', {})
+    } else {
+      navigation.navigate('Reward')
+    }
+  }, [isFullscreen, selectedExerciseIndex])
+
+  const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({
+    countdown         : true,
+    onCountdownExpired: nextExercise,
+  })
 
   useEffect(() => {
     setTimerText(format(timerValue))
@@ -110,8 +130,8 @@ export function TrainingScreen() {
     })
   }, [selectedExerciseIndex])
 
-  const selectExerciseAt = async (index: number) => {
-    if (isFullscreen === false) {
+  function selectExerciseAt(index: number, scrollToExercise: boolean){
+    if (scrollToExercise && exerciseList.current) {
       exerciseList.current.scrollToExercise(index)
     }
     setSelectedExerciseIndex(index)
@@ -172,7 +192,7 @@ export function TrainingScreen() {
         setIsLoading(false)
 
         workout.caseOf({
-          just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0),
+          just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0, false),
           nothing: () => {
           }
         })
@@ -190,6 +210,10 @@ export function TrainingScreen() {
   useEffect(() => {
     unsubscribeToOrientationChanges()
     subscribeToOrientationChanges()
+
+    if(isFullscreen === false && exerciseList.current){
+      exerciseList.current.scrollToExercise(selectedExerciseIndex)
+    }
   }, [isFullscreen])
 
   function onFullscreenButtonPress() {
@@ -197,25 +221,6 @@ export function TrainingScreen() {
     setIsFullscreen(!isFullscreen)
     ScreenOrientation.lockAsync(newOrientation)
       .then(ScreenOrientation.unlockAsync)
-  }
-
-  function nextExercise() {
-    const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
-
-    if (selectedExerciseIndex < 0) {
-      return
-    }
-
-    if (selectedExerciseIndex < exerciseCount - 1) {
-      selectExerciseAt(selectedExerciseIndex + 1)
-      return
-    }
-
-    if (warmup) {
-      navigation.replace('Training', {})
-    } else {
-      navigation.navigate('Reward')
-    }
   }
 
   if (isLoading) {
@@ -311,7 +316,7 @@ export function TrainingScreen() {
                 <ExerciseList
                   activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
                   exercises={workout.exercises}
-                  onPress={selectExerciseAt}
+                  onPress={index => selectExerciseAt(index, true)}
                   ref={exerciseList}
                 />
               </Layout>
