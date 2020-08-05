@@ -135,7 +135,6 @@ export function TrainingScreen() {
       exerciseList.current.scrollToExercise(index)
     }
     setSelectedExerciseIndex(index)
-    setIsPlaying(false)
   }
 
   const handleOrientationChange = useCallback(({ orientationInfo: { orientation } }: OrientationChangeEvent) => {

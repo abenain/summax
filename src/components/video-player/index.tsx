@@ -1,7 +1,7 @@
 import { Layout } from '@ui-kitten/components'
-import { Video } from 'expo-av'
+import { AVPlaybackStatus, Video } from 'expo-av'
 import * as React from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Dimensions, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
@@ -51,6 +51,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
     return getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId })
   }, [currentPlaylistItem])
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     onPlaybackStatusChanged(PlaybackStatus.PAUSED)
@@ -75,6 +76,15 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     }
   }))
 
+  function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
+    const videoIsPlaying = status.isLoaded && status.isPlaying && status.isBuffering === false
+    setIsPlaying(videoIsPlaying)
+  }
+
+  useEffect(() => {
+    onPlaybackStatusChanged(isPlaying ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED)
+  }, [isPlaying])
+
   return (
     <Layout style={{
       backgroundColor: 'black',
@@ -84,9 +94,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
       <Video
         isLooping={true}
         isMuted={false}
-        onLoad={async () => {
-          onPlaybackStatusChanged(PlaybackStatus.PLAYING)
-        }}
+        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
         rate={1.0}
         ref={videoPlayer}
         resizeMode={Video.RESIZE_MODE_CONTAIN}
@@ -124,10 +132,10 @@ const styles = StyleSheet.create({
     right          : 16,
   },
   portraitControlsLayer: {},
-  fullscreenButton: {
-    height: 32,
+  fullscreenButton     : {
+    height : 32,
     padding: 8,
-    width: 32,
+    width  : 32,
   },
   fullscreenIcon       : {
     height: 16,
