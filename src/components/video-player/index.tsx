@@ -6,6 +6,7 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 import { Dimensions, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
+import { ProgressBar } from './ProgressBar'
 
 const exitFullscreenIcon = require('./exitFullscreen.png')
 const goFullscreenIcon = require('./goFullscreen.png')
@@ -151,7 +152,9 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
         <Text style={styles.timelineText}>{formatDuration(positionMs)}</Text>
 
-        <Layout style={styles.timeline}/>
+        <Layout style={styles.timeline}>
+          <ProgressBar progress={durationMs ? positionMs * 100 / durationMs : 0}/>
+        </Layout>
 
         <Text style={styles.timelineText}>{formatDuration(durationMs)}</Text>
 
@@ -207,6 +210,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   timeline        : {
+    alignSelf      : 'center',
     backgroundColor: 'transparent',
     flex           : 1,
     marginLeft     : 13,
