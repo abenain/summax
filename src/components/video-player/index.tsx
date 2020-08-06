@@ -2,7 +2,8 @@ import { Layout, Spinner } from '@ui-kitten/components'
 import { AVPlaybackStatus, Video } from 'expo-av'
 import * as React from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { Dimensions, StyleSheet } from 'react-native'
+import { Dimensions, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Maybe } from 'tsmonad'
 import { NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
 import { ControlBar } from './ControlBar'
@@ -54,6 +55,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   const [videoIsBuffering, setVideoIsBuffering] = useState(false)
   const [durationMs, setDurationMs] = useState(0)
   const [positionMs, setPositionMs] = useState(0)
+  const [showControls, setShowControls] = useState(false)
+  const hideControlsTimeout = useRef<Maybe<number>>(Maybe.nothing())
 
   useEffect(() => {
     onPlaybackStatusChanged(PlaybackStatus.PAUSED)
@@ -81,7 +84,10 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   }))
 
   function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
-    const newVideoStatus = (status.isLoaded && status.isPlaying && status.isBuffering === false) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED
+    const newVideoStatus = Platform.select({
+      android: (status.isLoaded && status.isPlaying) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED,
+      ios: (status.isLoaded && status.isPlaying && status.isBuffering === false) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED,
+    })
     const durationMillis = status.isLoaded ? status.durationMillis : 0
     const positionMillis = status.isLoaded ? status.positionMillis : 0
 
@@ -104,48 +110,72 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     onPlaybackStatusChanged(videoStatus)
   }, [videoStatus])
 
+  function handlePress() {
+    hideControlsTimeout.current.caseOf({
+      just: timeout => clearTimeout(timeout),
+      nothing: () => {}
+    })
+    setShowControls(true)
+    hideControlsTimeout.current = Maybe.just(setTimeout(() => setShowControls(false), 3000))
+  }
+
+  const videoIsPlaying = Platform.select({
+    android: videoIsLoaded,
+    ios: videoIsLoaded && videoIsBuffering === false,
+  })
+
   return (
-    <Layout style={{
-      backgroundColor: 'black',
-      height         : fullscreen ? Dimensions.get('window').height : height,
-      width          : fullscreen ? Dimensions.get('window').width : width,
-    }}>
-      <Video
-        isLooping={true}
-        isMuted={false}
-        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-        rate={1.0}
-        ref={videoPlayer}
-        resizeMode={Video.RESIZE_MODE_CONTAIN}
-        shouldPlay={true}
-        source={{
-          uri: getExerciseVideoUrl({ mediaId: playlist[0].mediaId })
-        }}
+    <TouchableWithoutFeedback onPress={handlePress}>
+      <Layout
         style={{
-          height: fullscreen ? Dimensions.get('window').height : height,
-          width : fullscreen ? Dimensions.get('window').width : width,
-        }}
-        useNativeControls={false}
-        volume={1.0}
-      />
+          backgroundColor: 'black',
+          height         : fullscreen ? Dimensions.get('window').height : height,
+          width          : fullscreen ? Dimensions.get('window').width : width,
+        }}>
+        <Video
+          isLooping={true}
+          isMuted={false}
+          onLoad={() => {
+            setVideoIsLoaded(true)
+            if(Platform.OS !== 'ios'){
+              setVideoStatus(PlaybackStatus.PLAYING)
+            }
+          }}
+          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+          rate={1.0}
+          ref={videoPlayer}
+          resizeMode={Video.RESIZE_MODE_CONTAIN}
+          shouldPlay={true}
+          source={{
+            uri: getExerciseVideoUrl({ mediaId: playlist[0].mediaId })
+          }}
+          style={{
+            height: fullscreen ? Dimensions.get('window').height : height,
+            width : fullscreen ? Dimensions.get('window').width : width,
+          }}
+          useNativeControls={false}
+          volume={1.0}
+        />
 
-      <ControlBar
-        disabled={videoIsBuffering || videoIsLoaded === false}
-        durationMs={durationMs}
-        isFullscreen={fullscreen}
-        isPlaying={videoStatus === PlaybackStatus.PLAYING}
-        onFullscreenButtonPress={onFullscreenButtonPress}
-        onPlayPauseButtonPress={handlePlayPauseButtonPress}
-        positionMs={positionMs}
-      />
+        <ControlBar
+          disabled={videoIsPlaying === false}
+          durationMs={durationMs}
+          hideControls={showControls === false}
+          isFullscreen={fullscreen}
+          isPlaying={videoStatus === PlaybackStatus.PLAYING}
+          onFullscreenButtonPress={onFullscreenButtonPress}
+          onPlayPauseButtonPress={handlePlayPauseButtonPress}
+          positionMs={positionMs}
+        />
 
-      {videoIsLoaded === false || videoIsBuffering && (
-        <Layout style={styles.loadingContainer}>
-          <Spinner size='giant' status={'control'}/>
-        </Layout>
-      )}
+        {videoIsPlaying === false && (
+          <Layout style={styles.loadingContainer}>
+            <Spinner size='giant' status={'control'}/>
+          </Layout>
+        )}
 
-    </Layout>
+      </Layout>
+    </TouchableWithoutFeedback>
   )
 })
 

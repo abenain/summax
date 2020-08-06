@@ -13,6 +13,7 @@ const pauseIcon = require('./pause.png')
 interface Props {
   disabled?: boolean
   durationMs?: number
+  hideControls?: boolean
   isFullscreen: boolean
   isPlaying: boolean
   onFullscreenButtonPress?: () => void
@@ -25,34 +26,38 @@ function formatDuration(durationMs: number) {
   return `${duration.minutes().toString().padStart(2, '0')}:${duration.seconds().toString().padStart(2, '0')}`
 }
 
-export function ControlBar({ disabled = false, durationMs = 0, isFullscreen, isPlaying, onFullscreenButtonPress = NoOp, onPlayPauseButtonPress = NoOp, positionMs = 0 }: Props) {
+export function ControlBar({ disabled = false, durationMs = 0, hideControls = false, isFullscreen, isPlaying, onFullscreenButtonPress = NoOp, onPlayPauseButtonPress = NoOp, positionMs = 0}: Props) {
   return (
     <Layout style={styles.controlsLayer}>
 
-      <TouchableOpacity
-        activeOpacity={.8}
-        disabled={disabled}
-        onPress={onPlayPauseButtonPress}
-        style={[styles.button, styles.playPauseButton]}
-      >
-        <Image source={isPlaying ? pauseIcon : playIcon} style={styles.playPauseIcon}/>
-      </TouchableOpacity>
+      {hideControls === false && (
+        <Layout style={styles.innerContainer}>
+          <TouchableOpacity
+            activeOpacity={.8}
+            disabled={disabled}
+            onPress={onPlayPauseButtonPress}
+            style={[styles.button, styles.playPauseButton]}
+          >
+            <Image source={isPlaying ? pauseIcon : playIcon} style={styles.playPauseIcon}/>
+          </TouchableOpacity>
 
-      <Text style={styles.timelineText}>{formatDuration(positionMs)}</Text>
+          <Text style={styles.timelineText}>{formatDuration(positionMs)}</Text>
 
-      <Layout style={styles.timeline}>
-        <ProgressBar progress={durationMs ? positionMs * 100 / durationMs : 0}/>
-      </Layout>
+          <Layout style={styles.timeline}>
+            <ProgressBar progress={durationMs ? positionMs * 100 / durationMs : 0}/>
+          </Layout>
 
-      <Text style={styles.timelineText}>{formatDuration(durationMs)}</Text>
+          <Text style={styles.timelineText}>{formatDuration(durationMs)}</Text>
 
-      <TouchableOpacity
-        activeOpacity={.8}
-        onPress={onFullscreenButtonPress}
-        style={[styles.button, styles.fullscreenButton]}
-      >
-        <Image source={isFullscreen ? exitFullscreenIcon : goFullscreenIcon} style={styles.fullscreenIcon}/>
-      </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={.8}
+            onPress={onFullscreenButtonPress}
+            style={[styles.button, styles.fullscreenButton]}
+          >
+            <Image source={isFullscreen ? exitFullscreenIcon : goFullscreenIcon} style={styles.fullscreenIcon}/>
+          </TouchableOpacity>
+        </Layout>
+      )}
 
     </Layout>
   )
@@ -63,10 +68,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     bottom         : 16,
     height         : 20,
-    flexDirection  : 'row',
     left           : 16,
     position       : 'absolute',
     right          : 16,
+  },
+  innerContainer: {
+    backgroundColor: 'transparent',
+    flex: 1,
+    flexDirection  : 'row',
+    width: '100%',
   },
   button          : {
     height: 20,
