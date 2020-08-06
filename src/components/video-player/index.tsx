@@ -1,4 +1,4 @@
-import { Layout, Text } from '@ui-kitten/components'
+import { Layout, Spinner, Text } from '@ui-kitten/components'
 import { AVPlaybackStatus, Video } from 'expo-av'
 import moment from 'moment'
 import * as React from 'react'
@@ -69,6 +69,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   useEffect(() => {
     onPlaybackStatusChanged(PlaybackStatus.PAUSED)
     setVideoStatus(PlaybackStatus.PAUSED)
+    setVideoIsLoaded(false)
 
     if (videoPlayer.current) {
       videoPlayer.current.unloadAsync()
@@ -168,6 +169,12 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
       </Layout>
 
+      {videoIsLoaded === false || videoIsBuffering && (
+        <Layout style={styles.loadingContainer}>
+          <Spinner size='giant' status={'control'}/>
+        </Layout>
+      )}
+
     </Layout>
   )
 })
@@ -215,5 +222,15 @@ const styles = StyleSheet.create({
     flex           : 1,
     marginLeft     : 13,
     marginRight    : 16,
+  },
+  loadingContainer: {
+    alignItems     : 'center',
+    bottom         : 0,
+    backgroundColor: 'transparent',
+    justifyContent : 'center',
+    left           : 0,
+    position       : 'absolute',
+    right          : 0,
+    top            : 0,
   },
 })
