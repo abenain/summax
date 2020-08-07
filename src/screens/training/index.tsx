@@ -130,7 +130,7 @@ export function TrainingScreen() {
     })
   }, [selectedExerciseIndex])
 
-  function selectExerciseAt(index: number, scrollToExercise: boolean){
+  function selectExerciseAt(index: number, scrollToExercise: boolean) {
     if (scrollToExercise && exerciseList.current) {
       exerciseList.current.scrollToExercise(index)
     }
@@ -138,20 +138,16 @@ export function TrainingScreen() {
   }
 
   const handleOrientationChange = useCallback(({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
-    if ((orientation === Orientation.PORTRAIT_UP || orientation === Orientation.PORTRAIT_DOWN) && isFullscreen === true) {
-      setIsFullscreen(false)
-    }
+    const isNowFullScreen = orientation === Orientation.LANDSCAPE_RIGHT || orientation === Orientation.LANDSCAPE_LEFT
 
-    if ((orientation === Orientation.LANDSCAPE_RIGHT || orientation === Orientation.LANDSCAPE_LEFT) && isFullscreen === false) {
-      setIsFullscreen(true)
-    }
+    setIsFullscreen(isNowFullScreen)
   }, [isFullscreen])
 
-  function subscribeToOrientationChanges(){
+  function subscribeToOrientationChanges() {
     orientationChangedSubscription.current = Maybe.maybe(ScreenOrientation.addOrientationChangeListener(handleOrientationChange))
   }
 
-  function unsubscribeToOrientationChanges(){
+  function unsubscribeToOrientationChanges() {
     orientationChangedSubscription.current.caseOf({
       just   : subscription => {
         ScreenOrientation.removeOrientationChangeListener(subscription)
@@ -162,8 +158,6 @@ export function TrainingScreen() {
   }
 
   useEffect(function componentDidMount() {
-    ScreenOrientation.unlockAsync()
-
     orientationChangedSubscription.current = Maybe.maybe(ScreenOrientation.addOrientationChangeListener(handleOrientationChange))
 
     Promise.resolve()
@@ -210,7 +204,7 @@ export function TrainingScreen() {
     unsubscribeToOrientationChanges()
     subscribeToOrientationChanges()
 
-    if(isFullscreen === false && exerciseList.current){
+    if (isFullscreen === false && exerciseList.current) {
       exerciseList.current.scrollToExercise(selectedExerciseIndex)
     }
   }, [isFullscreen])
@@ -219,7 +213,6 @@ export function TrainingScreen() {
     const newOrientation = isFullscreen ? OrientationLock.PORTRAIT_UP : OrientationLock.LANDSCAPE
     setIsFullscreen(!isFullscreen)
     ScreenOrientation.lockAsync(newOrientation)
-      .then(ScreenOrientation.unlockAsync)
   }
 
   if (isLoading) {
