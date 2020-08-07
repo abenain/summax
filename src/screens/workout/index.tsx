@@ -88,10 +88,12 @@ export function WorkoutScreen() {
                 <Text style={styles.title}>{workout.title}</Text>
               </Layout>
 
-              <Layout style={styles.favoritesContainer}>
-                <Image source={plusIcon} style={styles.favoritesIcon}/>
-                <Text style={styles.favoritesText}>{i18n.t('Workout Description - Add to Favorites')}</Text>
-              </Layout>
+              {false && (
+                <Layout style={styles.favoritesContainer}>
+                  <Image source={plusIcon} style={styles.favoritesIcon}/>
+                  <Text style={styles.favoritesText}>{i18n.t('Workout Description - Add to Favorites')}</Text>
+                </Layout>
+              )}
 
               <Layout style={styles.workoutFeatures}>
 
