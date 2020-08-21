@@ -4,6 +4,7 @@ import * as React from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Dimensions, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { Maybe } from 'tsmonad'
+import { Exercise } from '../../types'
 import { NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
 import { ControlBar } from './ControlBar'
@@ -48,7 +49,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
       return null
     }
 
-    return getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId })
+    return getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId } as Exercise)
   }, [currentPlaylistItem])
   const [videoStatus, setVideoStatus] = useState(PlaybackStatus.PAUSED)
   const [videoIsLoaded, setVideoIsLoaded] = useState(false)
@@ -132,30 +133,32 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
           height         : fullscreen ? Dimensions.get('window').height : height,
           width          : fullscreen ? Dimensions.get('window').width : width,
         }}>
-        <Video
-          isLooping={true}
-          isMuted={false}
-          onLoad={() => {
-            setVideoIsLoaded(true)
-            if(Platform.OS !== 'ios'){
-              setVideoStatus(PlaybackStatus.PLAYING)
-            }
-          }}
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          rate={1.0}
-          ref={videoPlayer}
-          resizeMode={Video.RESIZE_MODE_CONTAIN}
-          shouldPlay={true}
-          source={{
-            uri: getExerciseVideoUrl({ mediaId: playlist[0].mediaId })
-          }}
-          style={{
-            height: fullscreen ? Dimensions.get('window').height : height,
-            width : fullscreen ? Dimensions.get('window').width : width,
-          }}
-          useNativeControls={false}
-          volume={1.0}
-        />
+        {videoUrl && (
+          <Video
+            isLooping={true}
+            isMuted={false}
+            onLoad={() => {
+              setVideoIsLoaded(true)
+              if(Platform.OS !== 'ios'){
+                setVideoStatus(PlaybackStatus.PLAYING)
+              }
+            }}
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            rate={1.0}
+            ref={videoPlayer}
+            resizeMode={Video.RESIZE_MODE_CONTAIN}
+            shouldPlay={true}
+            source={{
+              uri: videoUrl
+            }}
+            style={{
+              height: fullscreen ? Dimensions.get('window').height : height,
+              width : fullscreen ? Dimensions.get('window').width : width,
+            }}
+            useNativeControls={false}
+            volume={1.0}
+          />
+        )}
 
         <ControlBar
           disabled={videoIsPlaying === false}

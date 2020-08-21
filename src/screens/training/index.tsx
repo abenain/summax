@@ -61,7 +61,7 @@ export function TrainingScreen() {
       just   : workout => workout.exercises.map(({ mediaId }) => ({ mediaId })),
       nothing: () => ([])
     })
-  }, [warmup, selectedWorkout.valueOr(null)])
+  }, [warmup, warmupWorkout.valueOr(null), selectedWorkout.valueOr(null)])
 
   function getWorkout() {
     if (warmup) {
