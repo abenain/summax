@@ -64,7 +64,7 @@ export function getAuthorizationHeaders(token: string) {
 const BASE_JWPLAYER_URL = 'content.jwplatform.com'
 const JWPLAYER_THUMBS_FOLDER = 'thumbs'
 const JWPLAYER_VIDEO_FOLDER = 'videos'
-const JWPLAYER_THUMB_WIDTH = '1920'
+const JWPLAYER_THUMB_WIDTH = '150'
 const JWPLAYER_1080P_CODEC_ID_PROD = 'XbWGWCTK'
 
 export function getExerciseVideoUrl(exercise: Exercise){
