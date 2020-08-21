@@ -1,7 +1,7 @@
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import { FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
@@ -45,43 +45,47 @@ export const ExerciseList = forwardRef<ExerciseListHandle, Props>(({ activeIndex
     }
   }))
 
+  const renderItem = useCallback(({ item: exercise, index }) => (
+    <TouchableOpacity
+      activeOpacity={.8}
+      onPress={() => onPress(index)}
+      style={[
+        styles.exerciseContainer,
+        index === 0 ? styles.firstExercise : {},
+        index === exercises.length - 1 ? styles.lastExercise : {}
+      ]}>
+
+      <Image
+        resizeMode={'contain'}
+        source={{ uri: getExerciseThumbnail(exercise) }}
+        style={styles.exerciseThumbnail}/>
+
+      <Layout style={styles.exerciseDetailsContainer}>
+        <Text style={styles.exerciseTitle}>{exercise.title}</Text>
+        <Text style={styles.exerciseDuration}>{getFormattedDuration(exercise)}</Text>
+      </Layout>
+
+      <Layout style={{ justifyContent: 'center' }}>
+        {activeIndex.caseOf({
+          just   : activeIndex => index === activeIndex && (
+            <Image source={playIcon} style={styles.playIcon} resizeMode={'contain'}/>
+          ),
+          nothing: () => null
+        })}
+      </Layout>
+
+    </TouchableOpacity>
+  ), [])
+
+  const keyExtractor = useCallback((exercise, index) => `${exercise.title}${index}`, [])
+
   return (
     <FlatList
       data={exercises}
-      keyExtractor={(exercise, index) => `${exercise.title}${index}`}
+      keyExtractor={keyExtractor}
       ref={flatList}
       removeClippedSubviews={true}
-      renderItem={({ item: exercise, index }) => (
-        <TouchableOpacity
-          activeOpacity={.8}
-          onPress={() => onPress(index)}
-          style={[
-            styles.exerciseContainer,
-            index === 0 ? styles.firstExercise : {},
-            index === exercises.length - 1 ? styles.lastExercise : {}
-          ]}>
-
-          <Image
-            resizeMode={'contain'}
-            source={{ uri: getExerciseThumbnail(exercise) }}
-            style={styles.exerciseThumbnail}/>
-
-          <Layout style={styles.exerciseDetailsContainer}>
-            <Text style={styles.exerciseTitle}>{exercise.title}</Text>
-            <Text style={styles.exerciseDuration}>{getFormattedDuration(exercise)}</Text>
-          </Layout>
-
-          <Layout style={{ justifyContent: 'center' }}>
-            {activeIndex.caseOf({
-              just   : activeIndex => index === activeIndex && (
-                <Image source={playIcon} style={styles.playIcon} resizeMode={'contain'}/>
-              ),
-              nothing: () => null
-            })}
-          </Layout>
-
-        </TouchableOpacity>
-      )}
+      renderItem={renderItem}
     />
   )
 })
