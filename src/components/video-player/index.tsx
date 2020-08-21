@@ -63,6 +63,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     onPlaybackStatusChanged(PlaybackStatus.PAUSED)
     setVideoStatus(PlaybackStatus.PAUSED)
     setVideoIsLoaded(false)
+    setDurationMs(0)
+    setPositionMs(0)
 
     if (videoPlayer.current) {
       videoPlayer.current.unloadAsync()
@@ -85,25 +87,28 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   }))
 
   function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
-    const newVideoStatus = Platform.select({
-      android: (status.isLoaded && status.isPlaying) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED,
-      ios: (status.isLoaded && status.isPlaying && status.isBuffering === false) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED,
-    })
     const durationMillis = status.isLoaded ? status.durationMillis : 0
     const positionMillis = status.isLoaded ? status.positionMillis : 0
 
-    setVideoIsLoaded(status.isLoaded)
+    if(status.isLoaded){
+      setVideoIsLoaded(status.isLoaded)
+    }
     setVideoIsBuffering(status.isLoaded && status.isBuffering)
-    setVideoStatus(newVideoStatus)
-    setDurationMs(durationMillis)
-    setPositionMs(positionMillis)
+    if(durationMillis){
+      setDurationMs(durationMillis)
+    }
+    if(positionMillis){
+      setPositionMs(positionMillis)
+    }
   }
 
   function handlePlayPauseButtonPress() {
     if (videoStatus === PlaybackStatus.PLAYING) {
       videoPlayer.current.pauseAsync()
+      setVideoStatus(PlaybackStatus.PAUSED)
     } else {
       videoPlayer.current.playAsync()
+      setVideoStatus(PlaybackStatus.PLAYING)
     }
   }
 
@@ -139,9 +144,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
             isMuted={false}
             onLoad={() => {
               setVideoIsLoaded(true)
-              if(Platform.OS !== 'ios'){
-                setVideoStatus(PlaybackStatus.PLAYING)
-              }
+              setVideoStatus(PlaybackStatus.PLAYING)
             }}
             onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
             rate={1.0}

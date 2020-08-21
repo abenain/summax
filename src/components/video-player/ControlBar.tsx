@@ -28,7 +28,7 @@ function formatDuration(durationMs: number) {
 
 export function ControlBar({ disabled = false, durationMs = 0, hideControls = false, isFullscreen, isPlaying, onFullscreenButtonPress = NoOp, onPlayPauseButtonPress = NoOp, positionMs = 0}: Props) {
   return (
-    <Layout style={styles.controlsLayer}>
+    <Layout style={[styles.controlsLayer, hideControls ? {height: 0} : {}]}>
 
       {hideControls === false && (
         <Layout style={styles.innerContainer}>
