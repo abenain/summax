@@ -86,7 +86,17 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     }
   }))
 
-  function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
+  function handlePlaybackStatusUpdate_ios(status: AVPlaybackStatus){
+    const newVideoStatus = (status.isLoaded && status.isPlaying && status.isBuffering === false) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED
+
+    setVideoIsLoaded(status.isLoaded)
+    setVideoIsBuffering(status.isLoaded && status.isBuffering)
+    setVideoStatus(newVideoStatus)
+    setDurationMs(status.isLoaded ? status.durationMillis : 0)
+    setPositionMs(status.isLoaded ? status.positionMillis : 0)
+  }
+
+  function handlePlaybackStatusUpdate_android(status: AVPlaybackStatus){
     const durationMillis = status.isLoaded ? status.durationMillis : 0
     const positionMillis = status.isLoaded ? status.positionMillis : 0
 
@@ -99,6 +109,16 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     }
     if(positionMillis){
       setPositionMs(positionMillis)
+    }
+  }
+
+  function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
+    if(Platform.OS === 'ios'){
+      handlePlaybackStatusUpdate_ios(status)
+    }
+
+    if(Platform.OS === 'android'){
+      handlePlaybackStatusUpdate_android(status)
     }
   }
 
@@ -144,7 +164,9 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
             isMuted={false}
             onLoad={() => {
               setVideoIsLoaded(true)
-              setVideoStatus(PlaybackStatus.PLAYING)
+              if(Platform.OS !== 'ios'){
+                setVideoStatus(PlaybackStatus.PLAYING)
+              }
             }}
             onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
             rate={1.0}
