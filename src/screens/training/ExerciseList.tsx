@@ -75,7 +75,7 @@ export const ExerciseList = forwardRef<ExerciseListHandle, Props>(({ activeIndex
       </Layout>
 
     </TouchableOpacity>
-  ), [])
+  ), [activeIndex.valueOr(null)])
 
   const keyExtractor = useCallback((exercise, index) => `${exercise.title}${index}`, [])
 
