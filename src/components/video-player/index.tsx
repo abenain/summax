@@ -1,7 +1,7 @@
 import { Layout, Spinner } from '@ui-kitten/components'
 import { AVPlaybackStatus, Video } from 'expo-av'
 import * as React from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Dimensions, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { Exercise } from '../../types'
@@ -44,13 +44,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
                                                                    width
                                                                  }, ref) => {
   const videoPlayer = useRef<Video>()
-  const videoUrl = useMemo(() => {
-    if (currentPlaylistItem < 0 || currentPlaylistItem >= playlist.length) {
-      return null
-    }
-
-    return getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId } as Exercise)
-  }, [currentPlaylistItem])
+  const [playlistLoaded, setPlaylistLoaded] = useState(false)
   const [videoStatus, setVideoStatus] = useState(PlaybackStatus.PAUSED)
   const [videoIsLoaded, setVideoIsLoaded] = useState(false)
   const [videoIsBuffering, setVideoIsBuffering] = useState(false)
@@ -58,6 +52,12 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   const [positionMs, setPositionMs] = useState(0)
   const [showControls, setShowControls] = useState(false)
   const hideControlsTimeout = useRef<Maybe<number>>(Maybe.nothing())
+
+  useEffect(() => {
+    if(!playlistLoaded && playlist && playlist.length){
+      setPlaylistLoaded(true)
+    }
+  }, [playlist])
 
   useEffect(() => {
     onPlaybackStatusChanged(PlaybackStatus.PAUSED)
@@ -69,7 +69,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     if (videoPlayer.current) {
       videoPlayer.current.unloadAsync()
         .then(() => videoPlayer.current.loadAsync({
-          uri: videoUrl
+          uri: getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId } as Exercise)
         }, {
           positionMillis: 0,
           shouldPlay    : true,
@@ -158,7 +158,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
           height         : fullscreen ? Dimensions.get('window').height : height,
           width          : fullscreen ? Dimensions.get('window').width : width,
         }}>
-        {videoUrl && (
+        {playlistLoaded && (
           <Video
             isLooping={true}
             isMuted={false}
@@ -174,7 +174,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
             resizeMode={Video.RESIZE_MODE_CONTAIN}
             shouldPlay={true}
             source={{
-              uri: videoUrl
+              uri: getExerciseVideoUrl({ mediaId: playlist[0].mediaId } as Exercise)
             }}
             style={{
               height: fullscreen ? Dimensions.get('window').height : height,
