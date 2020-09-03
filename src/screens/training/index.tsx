@@ -86,6 +86,7 @@ export function TrainingScreen() {
     if (warmup) {
       navigation.replace('Training', {})
     } else {
+      videoPlayer.current.stop()
       navigation.navigate('Reward')
     }
   }, [isFullscreen, selectedExerciseIndex])
@@ -247,6 +248,7 @@ export function TrainingScreen() {
       <Layout style={styles.mainContainer}>
 
         <VideoPlayer
+          ref={videoPlayer}
           currentPlaylistItem={selectedExerciseIndex}
           fullscreen={isFullscreen}
           height={233}
