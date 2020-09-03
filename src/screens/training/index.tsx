@@ -1,10 +1,9 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
-import { Subscription } from '@unimodules/core'
 import * as Amplitude from 'expo-analytics-amplitude'
 import * as ScreenOrientation from 'expo-screen-orientation'
-import { Orientation, OrientationChangeEvent, OrientationLock } from 'expo-screen-orientation'
+import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -46,7 +45,6 @@ export function TrainingScreen() {
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
   const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
   const [warmupWorkout, setWarmupWorkout] = useState(Maybe.nothing<Workout>())
-  const orientationChangedSubscription = useRef<Maybe<Subscription>>(Maybe.nothing())
   const [isLoading, setIsLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
@@ -71,7 +69,7 @@ export function TrainingScreen() {
     return selectedWorkout
   }
 
-  const nextExercise = useCallback(() => {
+  const nextExercise = useCallback(async () => {
     const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
 
     if (selectedExerciseIndex < 0) {
@@ -83,10 +81,11 @@ export function TrainingScreen() {
       return
     }
 
+    videoPlayer.current.stop()
+    await ScreenOrientation.lockAsync(OrientationLock.PORTRAIT_UP)
     if (warmup) {
       navigation.replace('Training', {})
     } else {
-      videoPlayer.current.stop()
       navigation.navigate('Reward')
     }
   }, [isFullscreen, selectedExerciseIndex])
@@ -138,29 +137,7 @@ export function TrainingScreen() {
     setSelectedExerciseIndex(index)
   }
 
-  const handleOrientationChange = useCallback(({ orientationInfo: { orientation } }: OrientationChangeEvent) => {
-    const isNowFullScreen = orientation === Orientation.LANDSCAPE_RIGHT || orientation === Orientation.LANDSCAPE_LEFT
-
-    setIsFullscreen(isNowFullScreen)
-  }, [isFullscreen])
-
-  function subscribeToOrientationChanges() {
-    orientationChangedSubscription.current = Maybe.maybe(ScreenOrientation.addOrientationChangeListener(handleOrientationChange))
-  }
-
-  function unsubscribeToOrientationChanges() {
-    orientationChangedSubscription.current.caseOf({
-      just   : subscription => {
-        ScreenOrientation.removeOrientationChangeListener(subscription)
-        orientationChangedSubscription.current = Maybe.nothing()
-      },
-      nothing: NoOp
-    })
-  }
-
   useEffect(function componentDidMount() {
-    orientationChangedSubscription.current = Maybe.maybe(ScreenOrientation.addOrientationChangeListener(handleOrientationChange))
-
     Promise.resolve()
       .then(() => {
         if (warmup) {
@@ -193,28 +170,21 @@ export function TrainingScreen() {
       })
 
     return function componentWillUnmount() {
-      unsubscribeToOrientationChanges()
-
-      ScreenOrientation.lockAsync(OrientationLock.PORTRAIT_UP)
-
       stopTimer()
     }
   }, [])
 
   useEffect(() => {
-    unsubscribeToOrientationChanges()
-    subscribeToOrientationChanges()
-
     if (isFullscreen === false && exerciseList.current) {
       exerciseList.current.scrollToExercise(selectedExerciseIndex)
     }
   }, [isFullscreen])
 
-  function onFullscreenButtonPress() {
+  const onFullscreenButtonPress = useCallback(() => {
     const newOrientation = isFullscreen ? OrientationLock.PORTRAIT_UP : OrientationLock.LANDSCAPE
     setIsFullscreen(!isFullscreen)
     ScreenOrientation.lockAsync(newOrientation)
-  }
+  }, [isFullscreen])
 
   if (isLoading) {
     return <Loading/>
