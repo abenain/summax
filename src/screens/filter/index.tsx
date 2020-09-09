@@ -1,9 +1,9 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
@@ -28,7 +28,7 @@ export function FilterScreen({}: Props) {
   const [workouts, setWorkouts] = useState(Maybe.nothing<Workout[]>())
   const navigation = useNavigation()
 
-  function loadWorkouts() {
+  const loadWorkouts = useCallback(() => {
     return callAuthenticatedWebservice(WorkoutServices.fetchWorkouts, {
       filter: {
         type : filterType,
@@ -38,14 +38,17 @@ export function FilterScreen({}: Props) {
       .then((workouts: Maybe<Workout[]>) => {
         setWorkouts(workouts)
       })
-  }
+  }, [filterType, filterValue])
 
-  useEffect(function componentDidMount() {
-
+  const updateTitle = useCallback(() => {
     navigation.setOptions({ headerTitle: title || getTitleForFilter(filterType, filterValue) })
+  }, [title, filterType, filterValue])
 
+  useFocusEffect(useCallback(() => {
+    setIsLoading(true)
+    updateTitle()
     loadWorkouts().then(() => setIsLoading(false))
-  }, [])
+  }, [title, filterType, filterValue]))
 
   if (isLoading) {
     return <Loading/>
@@ -79,7 +82,7 @@ export function FilterScreen({}: Props) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       {workouts.caseOf({
         just   : workouts => {
           if (!workouts.length) {
