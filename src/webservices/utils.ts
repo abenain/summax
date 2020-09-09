@@ -7,7 +7,7 @@ const BACKEND_URL_DEV = '10.0.0.6:18000'
 //const BACKEND_URL_DEV = '192.168.1.28:18000'
 const BACKEND_URL_PROD = 'summax.fr'
 
-const API_V1_PATH = 'api/v1'
+const API_V1_PATH = 'v1'
 
 const CLIENT_ID = 'ayhcwZdiy5rgWreq3wN6tA2hk2HC'
 
