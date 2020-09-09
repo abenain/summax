@@ -1,7 +1,7 @@
 import Constants from 'expo-constants'
 
 const AMPLITUDE_API_KEY_TEST = '2e48b765aa8663f304b9413cf97f4e86'
-const AMPLITUDE_API_KEY_PROD = '2e48b765aa8663f304b9413cf97f4e86'
+const AMPLITUDE_API_KEY_PROD = '6c0c8e66a2e1bd319850a67a79f44c5c'
 
 export enum EVENTS {
   FINISHED_COURSE = 'FINISHED_COURSE',
