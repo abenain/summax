@@ -29,7 +29,7 @@ export function WorkoutListWithSubfilter({ onPress = NoOp, onToggleFavorite = No
     <>
       {Object.keys(workoutMap).map((key, index, allKeys) => {
         return (
-          <>
+          <React.Fragment key={key}>
             <HorizontalWorkoutList
               key={`list-${key}`}
               onPress={onPress}
@@ -42,7 +42,7 @@ export function WorkoutListWithSubfilter({ onPress = NoOp, onToggleFavorite = No
             ) : (
               <Layout key={`spacer-${index}`} style={{backgroundColor: 'transparent', height: 32}}/>
             )}
-          </>
+          </React.Fragment>
         )
       })}
     </>
