@@ -23,7 +23,7 @@
     ],
     "android": {
       "package": "fr.summax.app",
-      "versionCode": 2
+      "versionCode": 3
     },
     "ios": {
       "bundleIdentifier": "fr.summax.app",
