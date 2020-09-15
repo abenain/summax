@@ -8,8 +8,7 @@ import * as Localization from 'expo-localization'
 import * as SplashScreen from 'expo-splash-screen'
 import i18n from 'i18n-js'
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, View } from 'react-native'
-import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler'
+import { Image, View } from 'react-native'
 import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
@@ -56,22 +55,6 @@ export type RootStackParamList = {
     title: string
   }
 }
-
-setJSExceptionHandler((error, isFatal) => {
-  // This is your custom global error handler
-  // You do stuff like show an error dialog
-  // or hit google analytics to track crashes
-  // or hit a custom api to inform the dev team.
-  Alert.alert('Unhandled error', error.message)
-}, true)
-
-setNativeExceptionHandler(exceptionString => {
-  // This is your custom global error handler
-  // You do stuff likehit google analytics to track crashes.
-  // or hit a custom api to inform the dev team.
-  //NOTE: alert or showing any UI change via JS
-  //WILL NOT WORK in case of NATIVE ERRORS.
-}, true, true)
 
 export default () => {
   const store = getStore()
