@@ -2,12 +2,14 @@ import * as eva from '@eva-design/eva'
 import { NavigationContainer } from '@react-navigation/native'
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
+import * as Amplitude from 'expo-analytics-amplitude'
 import * as Font from 'expo-font'
 import * as Localization from 'expo-localization'
 import * as SplashScreen from 'expo-splash-screen'
 import i18n from 'i18n-js'
 import React, { useEffect, useState } from 'react'
-import { Image, View } from 'react-native'
+import { Alert, Image, View } from 'react-native'
+import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler'
 import { Provider } from 'react-redux'
 import en from '../assets/i18n/en'
 import fr from '../assets/i18n/fr'
@@ -16,7 +18,6 @@ import useLogoutListener from './hooks/logout-listener'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
 import { getHydrationPromise, getStore } from './redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from './sequences'
-import * as Amplitude from 'expo-analytics-amplitude'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -55,6 +56,22 @@ export type RootStackParamList = {
     title: string
   }
 }
+
+setJSExceptionHandler((error, isFatal) => {
+  // This is your custom global error handler
+  // You do stuff like show an error dialog
+  // or hit google analytics to track crashes
+  // or hit a custom api to inform the dev team.
+  Alert.alert('Unhandled error', error.message)
+}, true)
+
+setNativeExceptionHandler(exceptionString => {
+  // This is your custom global error handler
+  // You do stuff likehit google analytics to track crashes.
+  // or hit a custom api to inform the dev team.
+  //NOTE: alert or showing any UI change via JS
+  //WILL NOT WORK in case of NATIVE ERRORS.
+}, true, true)
 
 export default () => {
   const store = getStore()

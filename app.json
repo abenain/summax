@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "1.6.0",
+    "version": "1.6.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,7 +27,7 @@
     },
     "ios": {
       "bundleIdentifier": "fr.summax.app",
-      "supportsTablet": true,
+      "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
       }
