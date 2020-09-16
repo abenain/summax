@@ -10,6 +10,7 @@ export enum ActionType {
   LOADED_USERDATA,
   LOGOUT,
   SELECTED_WORKOUT,
+  SET_WORKOUT_FAVORITE_STATUS,
   UPDATE_WORKOUT_CATALOG,
 }
 
@@ -29,15 +30,20 @@ export interface SelectedWorkoutAction extends Action {
   workout: Maybe<Workout>
 }
 
-export interface GotTokensAction extends Action{
+export interface GotTokensAction extends Action {
   access: string
   refresh: string
 }
 
-export interface LoadedUserDataAction extends Action{
+export interface LoadedUserDataAction extends Action {
   user: Maybe<User>
 }
 
-export interface LoadedWorkoutsAction extends Action{
+export interface LoadedWorkoutsAction extends Action {
   workouts: Maybe<Workout[]>
+}
+
+export interface SetWorkoutFavoriteStatusAction extends Action {
+  favorite: boolean
+  workoutId: string
 }

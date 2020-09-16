@@ -61,7 +61,7 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
 
           <Layout style={styles.footerContainer}>
             <Text style={styles.title}>{themeOrWorkout.title}</Text>
-            {false && cardStyle !== Style.THEME && (
+            {cardStyle !== Style.THEME && (
               <TouchableOpacity onPress={() => onToggleFavorite(!themeOrWorkout.favorite)} activeOpacity={.5}>
                 <Image source={themeOrWorkout.favorite ? checkIcon : plusIcon} style={styles.plusIcon}/>
               </TouchableOpacity>

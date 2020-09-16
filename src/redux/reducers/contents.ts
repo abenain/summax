@@ -1,6 +1,13 @@
 import { Maybe } from 'tsmonad'
 import { Homepage, Workout } from '../../types'
-import { Action, ActionType, LoadedHomepageAction, LoadedWorkoutsAction, UpdateWorkoutCatalogAction } from '../actions'
+import {
+  Action,
+  ActionType,
+  LoadedHomepageAction,
+  LoadedWorkoutsAction,
+  SetWorkoutFavoriteStatusAction,
+  UpdateWorkoutCatalogAction
+} from '../actions'
 
 export interface Contents {
   favoriteWorkouts: Maybe<Workout[]>
@@ -21,6 +28,18 @@ export default function reducer(state = initialState, action: Action) {
       return {
         ...state,
         favoriteWorkouts,
+      }
+    case ActionType.SET_WORKOUT_FAVORITE_STATUS:
+      const {favorite, workoutId} = action as SetWorkoutFavoriteStatusAction
+      return {
+        ...state,
+        workoutCatalog: {
+          ...state.workoutCatalog,
+          [workoutId]: {
+            ...state.workoutCatalog[workoutId],
+            favorite
+          }
+        },
       }
     case ActionType.UPDATED_HOMEPAGE:
       const { homepage } = action as LoadedHomepageAction

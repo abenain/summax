@@ -85,15 +85,10 @@ export function HomeScreen() {
                 cardStyle={WorkoutCardSize.WORKOUT_LARGE}
                 onPress={() => navigateToWorkout(workoutCatalog[homepage.selectedForYou.id])}
                 onToggleFavorite={(favorite: boolean) => {
-                  /*dispatch({
-                    type    : ActionType.UPDATED_HOMEPAGE,
-                    homepage: Maybe.just({
-                      ...homepage,
-                      selectedForYou: {
-                        ...homepage.selectedForYou,
-                        favorite
-                      }
-                    })
+                  dispatch({
+                    favorite,
+                    type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+                    workoutId: homepage.selectedForYou.id,
                   })
                   toggleFavorite(homepage.selectedForYou.id, favorite)
                     .then(user => user.caseOf({
@@ -101,17 +96,12 @@ export function HomeScreen() {
                       },
                       nothing: () => {
                         dispatch({
-                          type    : ActionType.UPDATED_HOMEPAGE,
-                          homepage: Maybe.just({
-                            ...homepage,
-                            selectedForYou: {
-                              ...homepage.selectedForYou,
-                              favorite: !favorite
-                            }
-                          })
+                          favorite: !favorite,
+                          type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+                          workoutId: homepage.selectedForYou.id,
                         })
                       }
-                    }))*/
+                    }))
                 }}/>
             </Layout>
 
@@ -140,15 +130,10 @@ export function HomeScreen() {
               workouts={homepage.popularWorkouts.map(({id}: {id: string}) => workoutCatalog[id])}
               onPress={navigateToWorkout}
               onToggleFavorite={(workoutId: string, favorite: boolean) => {
-                /*dispatch({
-                  type    : ActionType.UPDATED_HOMEPAGE,
-                  homepage: Maybe.just({
-                    ...homepage,
-                    popularWorkouts: homepage.popularWorkouts.map(workout => ({
-                      ...workout,
-                      favorite: workout.id === workoutId ? favorite : workout.favorite
-                    }))
-                  })
+                dispatch({
+                  favorite,
+                  type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+                  workoutId,
                 })
                 toggleFavorite(workoutId, favorite)
                   .then(user => user.caseOf({
@@ -156,17 +141,12 @@ export function HomeScreen() {
                     },
                     nothing: () => {
                       dispatch({
-                        type    : ActionType.UPDATED_HOMEPAGE,
-                        homepage: Maybe.just({
-                          ...homepage,
-                          popularWorkouts: homepage.popularWorkouts.map(workout => ({
-                            ...workout,
-                            favorite: workout.id === workoutId ? !favorite : workout.favorite
-                          }))
-                        })
+                        favorite: !favorite,
+                        type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+                        workoutId,
                       })
                     }
-                  }))*/
+                  }))
               }}/>
 
             <TargetFilters onFilter={(target: Target) => navigateToFilterScreen({
