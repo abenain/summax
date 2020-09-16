@@ -4,14 +4,14 @@ import { Dimensions, Image, ImageBackground, StyleSheet, TouchableOpacity } from
 import { SummaxColors } from '../../colors'
 import { Duration, Size as DurationSize } from '../../components/duration'
 import { Intensity, Size as IntensitySize } from '../../components/intensity'
-import { HomePageWorkout } from '../../types'
+import { Workout } from '../../types'
 import { NoOp, PosterAspectRatio } from '../../utils'
 
 const play = require('./play.png')
 
 interface Props {
   onPress?: () => void
-  workout: HomePageWorkout
+  workout: Workout
 }
 
 const {width: screenWidth} = Dimensions.get('window')

@@ -41,15 +41,6 @@ export enum WorkoutDuration {
   LONG
 }
 
-export interface HomePageWorkout {
-  durationMin: number
-  favorite: boolean
-  id: string
-  intensity: IntensityLevel
-  posterUrl: string
-  title: string
-}
-
 export enum ExerciseModality {
   REPETITIONS,
   TIME,
@@ -91,8 +82,13 @@ export enum Target {
 }
 
 export interface Homepage {
-  featuredWorkout: HomePageWorkout
-  selectedForYou: Workout
+  featuredWorkout: {
+    id: string
+    posterUrl: string
+  }
+  selectedForYou: {
+    id: string
+  }
   themes: Theme[]
-  popularWorkouts: Workout[]
+  popularWorkouts: { id: string }[]
 }

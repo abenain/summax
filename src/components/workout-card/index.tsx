@@ -1,7 +1,7 @@
 import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Dimensions, Image, ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
-import { HomePageWorkout } from '../../types'
+import { Workout } from '../../types'
 import { NoOp, PosterAspectRatio } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
@@ -20,7 +20,7 @@ interface Props {
   onToggleFavorite?: (favorite: boolean) => void
   cardStyle: Style
   style?: ViewStyle
-  themeOrWorkout: Partial<HomePageWorkout>
+  themeOrWorkout: Partial<Workout>
 }
 
 const { width: screenWidth } = Dimensions.get('window')

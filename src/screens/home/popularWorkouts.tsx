@@ -3,15 +3,15 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { Image, StyleSheet } from 'react-native'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
-import { HomePageWorkout } from '../../types'
+import { Workout } from '../../types'
 import { NoOp } from '../../utils'
 
 const x = require('./x.png')
 
 interface Props {
-  onPress?: (workout: HomePageWorkout) => void
+  onPress?: (workout: Workout) => void
   onToggleFavorite: (workoutId: string, favorite: boolean) => void
-  workouts: HomePageWorkout[]
+  workouts: Workout[]
 }
 
 export function PopularWorkouts({ onPress = NoOp, onToggleFavorite, workouts }: Props) {

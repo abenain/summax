@@ -6,7 +6,6 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
 import { DurationFilters } from '../../components/duration-filters'
 import { IntensityFilters } from '../../components/intensity-filters'
@@ -15,7 +14,7 @@ import { TargetFilters } from '../../components/target-filters'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
-import { HomePageWorkout, Target } from '../../types'
+import { Target, Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutService from '../../webservices/workouts'
 import { FeaturedWorkout } from './featuredWorkout'
@@ -23,7 +22,10 @@ import { PopularWorkouts } from './popularWorkouts'
 
 export function HomeScreen() {
   const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
-  const homepage = useSelector(({ contents: { homepage } }: GlobalState) => homepage)
+  const { homepage, workoutCatalog } = useSelector(({ contents: { homepage, workoutCatalog } }: GlobalState) => ({
+    homepage,
+    workoutCatalog
+  }))
   const navigation = useNavigation()
   const dispatch = useDispatch()
 
@@ -31,7 +33,7 @@ export function HomeScreen() {
     Amplitude.logEvent(EVENTS.SHOWED_HOME_PAGE)
   }, [])
 
-  function navigateToWorkout(workout: HomePageWorkout) {
+  function navigateToWorkout(workout: Workout) {
     navigation.navigate('Workout', { id: workout.id, title: workout.title })
   }
 
@@ -64,8 +66,12 @@ export function HomeScreen() {
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
             </Layout>
 
-            <FeaturedWorkout workout={homepage.featuredWorkout}
-                             onPress={() => navigateToWorkout(homepage.featuredWorkout)}/>
+            <FeaturedWorkout
+              workout={{
+                ...workoutCatalog[homepage.featuredWorkout.id],
+                posterUrl: homepage.featuredWorkout.posterUrl
+              }}
+              onPress={() => navigateToWorkout(workoutCatalog[homepage.featuredWorkout.id])}/>
 
             <Separator style={styles.separator}/>
 
@@ -75,11 +81,11 @@ export function HomeScreen() {
 
             <Layout style={{ paddingHorizontal: 16, marginBottom: 32 }}>
               <WorkoutCard
-                themeOrWorkout={homepage.selectedForYou}
+                themeOrWorkout={workoutCatalog[homepage.selectedForYou.id]}
                 cardStyle={WorkoutCardSize.WORKOUT_LARGE}
-                onPress={() => navigateToWorkout(homepage.selectedForYou)}
+                onPress={() => navigateToWorkout(workoutCatalog[homepage.selectedForYou.id])}
                 onToggleFavorite={(favorite: boolean) => {
-                  dispatch({
+                  /*dispatch({
                     type    : ActionType.UPDATED_HOMEPAGE,
                     homepage: Maybe.just({
                       ...homepage,
@@ -105,7 +111,7 @@ export function HomeScreen() {
                           })
                         })
                       }
-                    }))
+                    }))*/
                 }}/>
             </Layout>
 
@@ -131,10 +137,10 @@ export function HomeScreen() {
             </ScrollView>
 
             <PopularWorkouts
-              workouts={homepage.popularWorkouts}
+              workouts={homepage.popularWorkouts.map(({id}: {id: string}) => workoutCatalog[id])}
               onPress={navigateToWorkout}
               onToggleFavorite={(workoutId: string, favorite: boolean) => {
-                dispatch({
+                /*dispatch({
                   type    : ActionType.UPDATED_HOMEPAGE,
                   homepage: Maybe.just({
                     ...homepage,
@@ -160,7 +166,7 @@ export function HomeScreen() {
                         })
                       })
                     }
-                  }))
+                  }))*/
               }}/>
 
             <TargetFilters onFilter={(target: Target) => navigateToFilterScreen({

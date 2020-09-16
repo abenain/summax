@@ -10,6 +10,7 @@ export enum ActionType {
   LOADED_USERDATA,
   LOGOUT,
   SELECTED_WORKOUT,
+  UPDATE_WORKOUT_CATALOG,
 }
 
 export interface Action {
@@ -18,6 +19,10 @@ export interface Action {
 
 export interface LoadedHomepageAction extends Action {
   homepage: Maybe<Homepage>
+}
+
+export interface UpdateWorkoutCatalogAction extends Action {
+  workouts: Maybe<Workout[]>
 }
 
 export interface SelectedWorkoutAction extends Action {
