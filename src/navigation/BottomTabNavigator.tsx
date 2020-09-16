@@ -27,13 +27,12 @@ const screensWithNoTabs = ['Reward', 'Training']
 export function BottomTabNavigator() {
 
   function getTabBarVisible(route: any){
-    return false
-    /*if(!route || !route.state || !route.state.routes || !route.state.routes.length){
+    if(!route || !route.state || !route.state.routes || !route.state.routes.length){
       return true
     }
 
     const routeName = route.state.routes[route.state.routes.length-1].name
-    return screensWithNoTabs.some(screenName => screenName === routeName) === false*/
+    return screensWithNoTabs.some(screenName => screenName === routeName) === false
   }
   return (
     <Tab.Navigator

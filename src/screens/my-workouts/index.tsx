@@ -20,7 +20,7 @@ export function MyWorkoutsScreen() {
   const [isLoading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const favoriteWorkouts = useSelector(({ contents: { favoriteWorkouts } }: GlobalState) => favoriteWorkouts)
+  const {user, workoutCatalog} = useSelector(({ contents: { workoutCatalog }, userData: {user} }: GlobalState) => ({user, workoutCatalog}))
 
   function loadFavorites() {
     return callAuthenticatedWebservice(WorkoutServices.loadFavorites)
@@ -46,14 +46,17 @@ export function MyWorkoutsScreen() {
     setLoading(true)
 
     callAuthenticatedWebservice(WorkoutServices.removeFromFavorites, { workoutId })
-      .then(loadFavorites)
+      .then(user => dispatch({
+        type: ActionType.LOADED_USERDATA,
+        user,
+      }))
       .then(() => setLoading(false))
   }
 
   return isLoading ? (
     <Loading/>
-  ) : favoriteWorkouts.caseOf({
-    just   : workouts => (
+  ) : user.caseOf({
+    just   : ({favoriteWorkouts}) => (
       <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
 
         <Layout style={[styles.mainPadding, { marginBottom: 17, marginTop: 45, }]}>
@@ -62,38 +65,44 @@ export function MyWorkoutsScreen() {
         </Layout>
 
         <Layout style={[styles.mainPadding]}>
-          {workouts.length === 0 ? (
+          {favoriteWorkouts.length === 0 ? (
             <Text style={[styles.workoutTitle, { marginTop: 16 }]}>{i18n.t('My Workouts - No favorite workout')}</Text>
           ) : (
-            workouts.map((workout, index, allWorkouts) => (
-              <Layout
-                key={workout.id}
-                style={[
-                  styles.workoutContainer,
-                  (allWorkouts.length === 1 || index === allWorkouts.length - 1) ? {} : {
-                    borderBottomWidth: 1,
-                    borderColor      : SummaxColors.darkGrey
-                  }]}>
+            favoriteWorkouts.map((workoutId, index, allWorkouts) => {
+              const workout = workoutCatalog[workoutId]
+              if(!workout){
+                return null
+              }
+              return (
+                <Layout
+                  key={workout.id}
+                  style={[
+                    styles.workoutContainer,
+                    (allWorkouts.length === 1 || index === allWorkouts.length - 1) ? {} : {
+                      borderBottomWidth: 1,
+                      borderColor      : SummaxColors.darkGrey
+                    }]}>
 
-                <TouchableOpacity activeOpacity={.8} onPress={() => navigateToWorkout(workout)}>
-                  <Image source={{ uri: workout.posterUrl }} style={styles.workoutImage}/>
-                </TouchableOpacity>
-
-                <TouchableOpacity activeOpacity={.8} style={styles.workoutTitleContainer}
-                                  onPress={() => navigateToWorkout(workout)}>
-                  <Layout style={styles.workoutTitleContainer}>
-                    <Text style={styles.workoutTitle}>{workout.title}</Text>
-                  </Layout>
-                </TouchableOpacity>
-
-                <Layout style={styles.buttonContainer}>
-                  <TouchableOpacity activeOpacity={.8} onPress={() => remove(workout.id)}>
-                    <Image source={minusCircleIcon} style={styles.buttonImage}/>
+                  <TouchableOpacity activeOpacity={.8} onPress={() => navigateToWorkout(workout)}>
+                    <Image source={{ uri: workout.posterUrl }} style={styles.workoutImage}/>
                   </TouchableOpacity>
-                </Layout>
 
-              </Layout>
-            ))
+                  <TouchableOpacity activeOpacity={.8} style={styles.workoutTitleContainer}
+                                    onPress={() => navigateToWorkout(workout)}>
+                    <Layout style={styles.workoutTitleContainer}>
+                      <Text style={styles.workoutTitle}>{workout.title}</Text>
+                    </Layout>
+                  </TouchableOpacity>
+
+                  <Layout style={styles.buttonContainer}>
+                    <TouchableOpacity activeOpacity={.8} onPress={() => remove(workout.id)}>
+                      <Image source={minusCircleIcon} style={styles.buttonImage}/>
+                    </TouchableOpacity>
+                  </Layout>
+
+                </Layout>
+              )
+            })
           )}
         </Layout>
       </SafeAreaView>

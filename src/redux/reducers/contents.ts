@@ -10,13 +10,11 @@ import {
 } from '../actions'
 
 export interface Contents {
-  favoriteWorkouts: Maybe<Workout[]>
   homepage: Maybe<Homepage>
   workoutCatalog: { [workoutId: string]: Workout }
 }
 
 const initialState = {
-  favoriteWorkouts: Maybe.nothing(),
   homepage        : Maybe.nothing(),
   workoutCatalog  : {}
 }
@@ -27,7 +25,16 @@ export default function reducer(state = initialState, action: Action) {
       const { workouts: favoriteWorkouts } = action as LoadedWorkoutsAction
       return {
         ...state,
-        favoriteWorkouts,
+        workoutCatalog: {
+          ...state.workoutCatalog,
+          ...(favoriteWorkouts.caseOf({
+            just: workoutTable => workoutTable.reduce((accumulator, workout) => ({
+              ...accumulator,
+              [workout.id]: workout,
+            }), {}),
+            nothing: () => ({})
+          }))
+        },
       }
     case ActionType.SET_WORKOUT_FAVORITE_STATUS:
       const {favorite, workoutId} = action as SetWorkoutFavoriteStatusAction
