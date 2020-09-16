@@ -20,12 +20,15 @@ const boltCirle = require('./bolt-circle.png')
 
 export function RewardScreen() {
   const navigation: StackNavigationProp<RootStackParamList, 'Reward'> = useNavigation()
-  const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
+  const { selectedWorkoutId, workoutCatalog } = useSelector(({ contents: { workoutCatalog }, uiState: { selectedWorkoutId } }: GlobalState) => ({
+    selectedWorkoutId,
+    workoutCatalog
+  }))
 
   useEffect(function componentDidMount() {
     Amplitude.logEventWithProperties(EVENTS.FINISHED_COURSE, {
-      course: selectedWorkout.caseOf({
-        just   : ({ title }) => title,
+      course: selectedWorkoutId.caseOf({
+        just   : workoutId => workoutCatalog[workoutId].title,
         nothing: () => ''
       })
     })

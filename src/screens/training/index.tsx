@@ -45,7 +45,7 @@ export function TrainingScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'Training'>>()
   const { warmup = false } = route.params
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
-  const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
+  const {selectedWorkoutId, workoutCatalog} = useSelector(({ contents: {workoutCatalog}, uiState: { selectedWorkoutId } }: GlobalState) => ({selectedWorkoutId, workoutCatalog}))
   const [warmupWorkout, setWarmupWorkout] = useState(Maybe.nothing<Workout>())
   const [isLoading, setIsLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -80,15 +80,15 @@ export function TrainingScreen() {
       just   : workout => workout.exercises.map(({ mediaId }) => ({ mediaId })),
       nothing: () => ([])
     })
-  }, [warmup, warmupWorkout.valueOr(null), selectedWorkout.valueOr(null)])
+  }, [warmup, warmupWorkout.valueOr(null), selectedWorkoutId.valueOr(null)])
 
-  function getWorkout() {
+  const getWorkout = useCallback(() => {
     if (warmup) {
       return warmupWorkout
     }
 
-    return selectedWorkout
-  }
+    return selectedWorkoutId.map(id => workoutCatalog[id])
+  }, [warmupWorkout.valueOr(null), selectedWorkoutId.valueOr(null), Object.keys(workoutCatalog).map(key => JSON.stringify(workoutCatalog[key])).join('')])
 
   const nextExercise = useCallback(async () => {
     const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
@@ -173,13 +173,13 @@ export function TrainingScreen() {
         }
 
         Amplitude.logEventWithProperties(EVENTS.PLAYED_COURSE, {
-          course: selectedWorkout.caseOf({
+          course: getWorkout().caseOf({
             just   : ({ title }) => title,
             nothing: () => ''
           })
         })
 
-        return selectedWorkout
+        return getWorkout()
       })
       .then(workout => {
         setIsLoading(false)

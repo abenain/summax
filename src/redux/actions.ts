@@ -27,7 +27,7 @@ export interface UpdateWorkoutCatalogAction extends Action {
 }
 
 export interface SelectedWorkoutAction extends Action {
-  workout: Maybe<Workout>
+  workoutId: Maybe<string>
 }
 
 export interface GotTokensAction extends Action {

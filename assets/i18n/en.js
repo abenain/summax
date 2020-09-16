@@ -114,6 +114,7 @@ const en = {
 	'Training Exit - Quit'                         : 'Quit workout',
 	'Training Exit - Resume'                       : 'Resume workout',
 	'Workout Description - Add to Favorites'       : 'Add to My workouts',
+	'Workout Description - Remove from Favorites'  : 'Remove from My workouts',
 	'Workout Description - Warm up'                : 'Warm up',
 	'Workout Description - Workout'                : 'Workout',
 	'X min'                                        : '{{durationMin}} min',

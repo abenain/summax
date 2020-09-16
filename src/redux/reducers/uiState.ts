@@ -1,22 +1,21 @@
 import { Maybe } from 'tsmonad'
-import { Workout } from '../../types'
 import { Action, ActionType, SelectedWorkoutAction } from '../actions'
 
 export interface UiState {
-  selectedWorkout: Maybe<Workout>
+  selectedWorkoutId: Maybe<string>
 }
 
 const initialState = {
-  selectedWorkout: Maybe.nothing<Workout>(),
+  selectedWorkoutId: Maybe.nothing<string>(),
 }
 
 export default function reducer(state = initialState, action: Action) {
   switch (action.type) {
     case ActionType.SELECTED_WORKOUT:
-      const { workout: selectedWorkout } = action as SelectedWorkoutAction
+      const { workoutId: selectedWorkoutId } = action as SelectedWorkoutAction
       return {
         ...state,
-        selectedWorkout
+        selectedWorkoutId
       }
     default:
       return state

@@ -6,7 +6,16 @@ import { LinearGradient } from 'expo-linear-gradient'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native'
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
@@ -26,13 +35,14 @@ import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
 
 const plusIcon = require('./plus.png')
+const checkIcon = require('../../../assets/check-circle.png')
 
 export function WorkoutScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'Workout'>>()
   const { id: workoutId } = route.params
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const selectedWorkout = useSelector(({ uiState: { selectedWorkout } }: GlobalState) => selectedWorkout)
+  const {selectedWorkoutId, workoutCatalog} = useSelector(({ contents: {workoutCatalog}, uiState: { selectedWorkoutId } }: GlobalState) => ({selectedWorkoutId, workoutCatalog}))
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(function componentDidMount() {
@@ -47,8 +57,13 @@ export function WorkoutScreen() {
         .then((workout: Maybe<Workout>) => {
 
           dispatch({
-            type: ActionType.SELECTED_WORKOUT,
-            workout
+            type     : ActionType.SELECTED_WORKOUT,
+            workoutId: workout.map(workout => workout.id)
+          })
+
+          dispatch({
+            type    : ActionType.UPDATE_WORKOUT_CATALOG,
+            workouts: workout.map(workout => [workout])
           })
 
           setIsLoading(false)
@@ -63,88 +78,124 @@ export function WorkoutScreen() {
     }, [workoutId])
   )
 
+  function toggleFavorite(workoutId: string, favorite: boolean) {
+    const webservice = favorite ? WorkoutServices.addToFavorites : WorkoutServices.removeFromFavorites
+
+    return callAuthenticatedWebservice(webservice, { workoutId })
+      .then(user => {
+        dispatch({
+          type: ActionType.LOADED_USERDATA,
+          user,
+        })
+        return user
+      })
+  }
+
+  function handleToggleFavorite(workoutId: string, favorite: boolean) {
+    dispatch({
+      favorite,
+      type: ActionType.SET_WORKOUT_FAVORITE_STATUS,
+      workoutId,
+    })
+    toggleFavorite(workoutId, favorite)
+      .then(user => user.caseOf({
+        just   : () => {
+        },
+        nothing: () => {
+          dispatch({
+            favorite: !favorite,
+            type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+            workoutId,
+          })
+        }
+      }))
+  }
+
   if (isLoading) {
     return <Loading/>
   }
 
-  return selectedWorkout.caseOf({
-    just   : workout => (
-      <View style={{ flex: 1, width: '100%' }}>
-        <StatusBar barStyle={'light-content'} translucent={true}/>
+  return selectedWorkoutId.caseOf({
+    just   : workoutId => {
+      const workout = workoutCatalog[workoutId]
+      return (
+        <View style={{ flex: 1, width: '100%' }}>
+          <StatusBar barStyle={'light-content'} translucent={true}/>
 
-        <Image source={{ uri: workout.backgroundPosterUrl }} style={styles.backgroundImage}/>
+          <Image source={{ uri: workout.backgroundPosterUrl }} style={styles.backgroundImage}/>
 
-        <LinearGradient colors={['rgba(1,1,17,0)', 'rgba(0,0,0,1)', 'rgb(0,0,0)']}
-                        start={[.5, 0]}
-                        end={[.5, 1]}
-                        style={styles.colorGradient}
-                        locations={[0, .53, 1]}/>
+          <LinearGradient colors={['rgba(1,1,17,0)', 'rgba(0,0,0,1)', 'rgb(0,0,0)']}
+                          start={[.5, 0]}
+                          end={[.5, 1]}
+                          style={styles.colorGradient}
+                          locations={[0, .53, 1]}/>
 
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1 }}>
-            <Layout style={styles.contents}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }}>
+              <Layout style={styles.contents}>
 
-              <Layout style={styles.titleContainer}>
-                <Text style={styles.title}>{workout.title}</Text>
+                <Layout style={styles.titleContainer}>
+                  <Text style={styles.title}>{workout.title}</Text>
+                </Layout>
+
+                <TouchableOpacity onPress={() => handleToggleFavorite(workout.id, !workout.favorite)} activeOpacity={.5}>
+                  <Layout style={styles.favoritesContainer}>
+                    <Image source={workout.favorite ? checkIcon : plusIcon} style={styles.favoritesIcon}/>
+                    <Text style={styles.favoritesText}>{i18n.t(workout.favorite ? 'Workout Description - Remove from Favorites' : 'Workout Description - Add to Favorites')}</Text>
+                  </Layout>
+                </TouchableOpacity>
+
+                <Layout style={styles.workoutFeatures}>
+
+                  <Layout style={styles.workoutFeaturesSplitContainer}>
+                    <Layout style={styles.workoutFeaturesSplitLeftContainer}>
+                      <Text style={styles.workoutFeaturesText}>{workout.techniques.join(' ')}</Text>
+                    </Layout>
+                    <Layout style={styles.workoutFeaturesSplitRightContainer}>
+                      <Text style={styles.workoutFeaturesText}>{workout.target.map(aTarget => getTitleForTarget(aTarget)).join(' ')}</Text>
+                    </Layout>
+                  </Layout>
+
+                  <Text style={styles.workoutFeaturesDetails}>{workout.details}</Text>
+
+                  <Layout style={styles.workoutFeaturesSplitContainer}>
+                    <Layout style={styles.workoutFeaturesSplitLeftContainer}>
+                      <Intensity
+                        iconMode={IntensityIconMode.MULTIPLE}
+                        size={IntensitySize.SMALL}
+                        level={workout.intensity}
+                        textColor={'black'}/>
+                    </Layout>
+                    <Layout style={styles.workoutFeaturesSplitRightContainer}>
+                      <Duration
+                        iconMode={IntensityIconMode.MULTIPLE}
+                        size={DurationSize.SMALL}
+                        durationMin={workout.durationMin}
+                        textColor={'black'}/>
+                    </Layout>
+                  </Layout>
+
+                </Layout>
+
               </Layout>
+            </ScrollView>
 
-              {false && (
-                <Layout style={styles.favoritesContainer}>
-                  <Image source={plusIcon} style={styles.favoritesIcon}/>
-                  <Text style={styles.favoritesText}>{i18n.t('Workout Description - Add to Favorites')}</Text>
-                </Layout>
-              )}
-
-              <Layout style={styles.workoutFeatures}>
-
-                <Layout style={styles.workoutFeaturesSplitContainer}>
-                  <Layout style={styles.workoutFeaturesSplitLeftContainer}>
-                    <Text style={styles.workoutFeaturesText}>{workout.techniques.join(' ')}</Text>
-                  </Layout>
-                  <Layout style={styles.workoutFeaturesSplitRightContainer}>
-                    <Text style={styles.workoutFeaturesText}>{workout.target.map(aTarget => getTitleForTarget(aTarget)).join(' ')}</Text>
-                  </Layout>
-                </Layout>
-
-                <Text style={styles.workoutFeaturesDetails}>{workout.details}</Text>
-
-                <Layout style={styles.workoutFeaturesSplitContainer}>
-                  <Layout style={styles.workoutFeaturesSplitLeftContainer}>
-                    <Intensity
-                      iconMode={IntensityIconMode.MULTIPLE}
-                      size={IntensitySize.SMALL}
-                      level={workout.intensity}
-                      textColor={'black'}/>
-                  </Layout>
-                  <Layout style={styles.workoutFeaturesSplitRightContainer}>
-                    <Duration
-                      iconMode={IntensityIconMode.MULTIPLE}
-                      size={DurationSize.SMALL}
-                      durationMin={workout.durationMin}
-                      textColor={'black'}/>
-                  </Layout>
-                </Layout>
-
-              </Layout>
-
+            <Layout style={styles.buttonContainer}>
+              <SummaxButton
+                buttonStyle={ButtonStyle.TRANSPARENT}
+                onPress={() => navigation.navigate('Training', { warmup: true })}
+                text={i18n.t('Workout Description - Warm up')}
+              />
+              <SummaxButton
+                buttonStyle={ButtonStyle.GREEN}
+                onPress={() => navigation.navigate('Training', {})}
+                text={i18n.t('Workout Description - Workout')}
+              />
             </Layout>
-          </ScrollView>
-
-          <Layout style={styles.buttonContainer}>
-            <SummaxButton
-              buttonStyle={ButtonStyle.TRANSPARENT}
-              onPress={() => navigation.navigate('Training', { warmup: true })}
-              text={i18n.t('Workout Description - Warm up')}
-            />
-            <SummaxButton
-              buttonStyle={ButtonStyle.GREEN}
-              onPress={() => navigation.navigate('Training', {})}
-              text={i18n.t('Workout Description - Workout')}
-            />
-          </Layout>
-        </SafeAreaView>
-      </View>
-    ),
+          </SafeAreaView>
+        </View>
+      )
+    },
     nothing: () => <ErrorPage/>
   })
 }
