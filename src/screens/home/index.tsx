@@ -47,7 +47,7 @@ export function HomeScreen() {
     dispatch({
       favorite,
       type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
-      workoutId: homepage.selectedForYou.id,
+      workoutId,
     })
 
     return callAuthenticatedWebservice(webservice, { workoutId })
@@ -63,7 +63,7 @@ export function HomeScreen() {
             dispatch({
               favorite: !favorite,
               type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
-              workoutId: homepage.selectedForYou.id,
+              workoutId,
             })
           }
         })
@@ -127,7 +127,7 @@ export function HomeScreen() {
             <PopularWorkouts
               workouts={homepage.popularWorkouts.map(({id}: {id: string}) => workoutCatalog[id])}
               onPress={navigateToWorkout}
-              onToggleFavorite={(workoutId: string, favorite: boolean) => toggleFavorite(homepage.selectedForYou.id, favorite)}/>
+              onToggleFavorite={toggleFavorite}/>
 
             <TargetFilters onFilter={(target: Target) => navigateToFilterScreen({
               subfilter: 'duration',

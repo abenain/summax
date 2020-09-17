@@ -30,7 +30,7 @@ import { getTitleForTarget } from '../../components/target-filters'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
-import { PosterAspectRatio } from '../../utils'
+import { NoOp, PosterAspectRatio } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
 
@@ -99,8 +99,7 @@ export function WorkoutScreen() {
     })
     toggleFavorite(workoutId, favorite)
       .then(user => user.caseOf({
-        just   : () => {
-        },
+        just   : NoOp,
         nothing: () => {
           dispatch({
             favorite: !favorite,
