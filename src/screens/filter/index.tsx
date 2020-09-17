@@ -5,10 +5,13 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
+import { ActionType } from '../../redux/actions'
+import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutService from '../../webservices/workouts'
@@ -22,11 +25,13 @@ interface Props {
 }
 
 export function FilterScreen({}: Props) {
+  const dispatch = useDispatch()
+  const navigation = useNavigation()
   const route = useRoute<RouteProp<RootStackParamList, 'Filter'>>()
   const { subfilter, title, type: filterType, value: filterValue } = route.params
   const [isLoading, setIsLoading] = useState(true)
-  const [workouts, setWorkouts] = useState(Maybe.nothing<Workout[]>())
-  const navigation = useNavigation()
+  const [workoutIds, setWorkoutIds] = useState(Maybe.nothing<string[]>())
+  const workoutCatalog = useSelector(({ contents: { workoutCatalog } }: GlobalState) => workoutCatalog)
 
   const loadWorkouts = useCallback(() => {
     return callAuthenticatedWebservice(WorkoutServices.fetchWorkouts, {
@@ -34,9 +39,12 @@ export function FilterScreen({}: Props) {
         type : filterType,
         value: filterValue
       }
-    })
-      .then((workouts: Maybe<Workout[]>) => {
-        setWorkouts(workouts)
+    }).then((workouts: Maybe<Workout[]>) => {
+        setWorkoutIds(workouts.map(workouts => workouts.map(workout => workout.id)))
+        dispatch({
+          type: ActionType.UPDATE_WORKOUT_CATALOG,
+          workouts
+        })
       })
   }, [filterType, filterValue])
 
@@ -62,30 +70,40 @@ export function FilterScreen({}: Props) {
   }
 
   function toggleFavorite(workout: Workout) {
-    const webservice = workout.favorite ? WorkoutService.removeFromFavorites : WorkoutService.addToFavorites
+    const setFavorite = workout.favorite === false
+    const webservice = setFavorite ? WorkoutService.addToFavorites : WorkoutService.removeFromFavorites
 
-    return callAuthenticatedWebservice(webservice, { workoutId: workout.id })
-      .then(() => {
-        const updatedWorkouts = workouts.map(workouts => workouts.map(workoutInState => {
-          if (workoutInState.id !== workout.id) {
-            return workoutInState
+    dispatch({
+      favorite : setFavorite,
+      type     : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+      workoutId: workout.id,
+    })
+
+    callAuthenticatedWebservice(webservice, { workoutId: workout.id })
+      .then(user => {
+        user.caseOf({
+          just   : () => {
+            dispatch({
+              type: ActionType.LOADED_USERDATA,
+              user,
+            })
+          },
+          nothing: () => {
+            dispatch({
+              favorite : !setFavorite,
+              type     : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+              workoutId: workout.id,
+            })
           }
-
-          return {
-            ...workoutInState,
-            favorite: !workoutInState.favorite
-          }
-        }))
-
-        setWorkouts(updatedWorkouts)
+        })
       })
   }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      {workouts.caseOf({
-        just   : workouts => {
-          if (!workouts.length) {
+      {workoutIds.caseOf({
+        just   : workoutIds => {
+          if (!workoutIds.length) {
             return <ErrorPage message={i18n.t('Filter - No Workout in this category')}/>
           }
 
@@ -95,7 +113,7 @@ export function FilterScreen({}: Props) {
                 onPress={navigateToWorkout}
                 onToggleFavorite={toggleFavorite}
                 subfilter={subfilter}
-                workouts={workouts}
+                workouts={workoutIds.map(workoutId => workoutCatalog[workoutId])}
               />
             </ScrollView>
           ) : (
@@ -103,7 +121,7 @@ export function FilterScreen({}: Props) {
               <VerticalWorkoutList
                 onPress={navigateToWorkout}
                 onToggleFavorite={toggleFavorite}
-                workouts={workouts}
+                workouts={workoutIds.map(workoutId => workoutCatalog[workoutId])}
               />
             </Layout>
           )
