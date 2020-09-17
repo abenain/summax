@@ -3,7 +3,7 @@ import { Exercise } from '../types'
 
 const SCHEME_HTTP = 'http'
 const SCHEME_HTTPS = 'https'
-const BACKEND_URL_DEV = '10.0.0.6:18100'
+const BACKEND_URL_DEV = '10.0.0.6:18000'
 //const BACKEND_URL_DEV = '192.168.1.28:18000'
 const BACKEND_URL_PROD = 'api.summax.fr'
 

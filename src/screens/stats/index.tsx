@@ -21,10 +21,14 @@ export function StatsScreen() {
     workoutCatalog
   }))
   const [isLoading, setLoading] = useState(true)
-  const keyExtractor = useCallback((workout, index) => `${workout.id}${index}`, [])
-  const renderItem = useCallback(({ item: workout }) => (
-    <UnfinishedWorkoutCard workout={workout} completionRatio={0}/>
-  ), [])
+  const keyExtractor = useCallback((workout, index) => workout === null ? 'poster' : `${workout.id}${index}`, [])
+  const renderItem = useCallback(({ item: workout }) => {
+    if(workout === null){
+      return <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
+    }
+
+    return <UnfinishedWorkoutCard workout={workout} completionRatio={0}/>
+  }, [])
 
   function loadFavorites() {
     return callAuthenticatedWebservice(WorkoutServices.loadFavorites)
@@ -68,19 +72,17 @@ export function StatsScreen() {
         {unfinishedWorkouts.length === 0 ? (
           <Layout style={{ flex: 1 }}>
             <Text style={styles.workoutTitle}>{i18n.t('Statistics - No unfinished workout')}</Text>
+            <Layout style={{flex: 1}} />
+            <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
           </Layout>
         ) : (
           <FlatList
-            data={unfinishedWorkouts}
+            data={unfinishedWorkouts.concat(null)}
             keyExtractor={keyExtractor}
             removeClippedSubviews={true}
             renderItem={renderItem}
           />
         )}
-
-        <Layout>
-          <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
-        </Layout>
 
       </Layout>
 

@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Image } from 'react-native'
 import { SummaxColors } from '../colors'
 import { MyWorkoutsScreen } from '../screens/my-workouts'
+import { StatsScreen } from '../screens/stats'
 import { HomeStackNavigator } from './HomeStackNavigator'
 
 const Tab = createBottomTabNavigator()
@@ -11,11 +12,15 @@ const homeLightIcon = require('./home-light.png')
 const homeDarkIcon = require('./home-dark.png')
 const trainingLightIcon = require('./training-light.png')
 const trainingDarkIcon = require('./training-dark.png')
+const statsDarkIcon = require('./stats-dark.png')
+const statsLightIcon = require('./stats-light.png')
 
 function getTabIcon(routeName: string, focused: boolean) {
   switch (routeName) {
     case 'MyWorkouts':
       return focused ? trainingDarkIcon : trainingLightIcon
+    case 'Stats':
+      return focused ? statsDarkIcon : statsLightIcon
     case 'Home':
     default:
       return focused ? homeDarkIcon : homeLightIcon
@@ -53,6 +58,7 @@ export function BottomTabNavigator() {
     >
       <Tab.Screen name="Home" options={({route}) => ({tabBarLabel: i18n.t('Tab bar - Home'), tabBarVisible: getTabBarVisible(route)})} component={HomeStackNavigator}/>
       <Tab.Screen name="MyWorkouts" options={{tabBarLabel: i18n.t('Tab bar - MyWorkouts')}} component={MyWorkoutsScreen}/>
+      <Tab.Screen name="Stats" options={{tabBarLabel: i18n.t('Tab bar - Stats')}} component={StatsScreen}/>
     </Tab.Navigator>
   )
 }
