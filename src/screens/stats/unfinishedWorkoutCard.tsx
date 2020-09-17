@@ -1,9 +1,10 @@
 import { Layout, Text } from '@ui-kitten/components'
 import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
+import { SummaxColors } from '../../colors'
 import { Workout } from '../../types'
 import { NoOp } from '../../utils'
-
+import {ProgressCircle} from './progressCircle'
 interface Props {
   completionRatio: number
   style?: ViewStyle
@@ -22,6 +23,17 @@ export function UnfinishedWorkoutCard({ style = {}, workout }: Props) {
       <Layout style={styles.workoutTitleContainer}>
         <Text style={styles.workoutTitle}>{workout.title}</Text>
       </Layout>
+
+      <ProgressCircle
+        color={SummaxColors.lightishGreen}
+        progressRatio={.99}
+        size={64}
+        strokeWidth={3}
+        style={{
+          justifyContent: 'center',
+          alignSelf: 'stretch',
+        }}
+      />
     </TouchableOpacity>
   )
 }

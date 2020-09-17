@@ -1,5 +1,6 @@
 export const SummaxColors = {
   blueGrey     : 'rgb(143,155,179)',
+  cloudyBlue   : 'rgb(213,220,226)',
   dark         : 'rgb(34,43,69)',
   darkGrey     : 'rgb(227,229,232)',
   darkerGrey   : 'rgb(196,196,196)',
