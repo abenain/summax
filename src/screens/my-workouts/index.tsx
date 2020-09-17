@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Image, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import { useCallback, useEffect, useState } from 'react'
+import { FlatList, SafeAreaView, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { SummaxColors } from '../../colors'
 import { ErrorPage } from '../../components/ErrorPage'
@@ -13,14 +13,16 @@ import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
-
-const minusCircleIcon = require('./minus-circle.png')
+import { MyWorkoutCard } from './myWorkoutCard'
 
 export function MyWorkoutsScreen() {
   const [isLoading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const {user, workoutCatalog} = useSelector(({ contents: { workoutCatalog }, userData: {user} }: GlobalState) => ({user, workoutCatalog}))
+  const { user, workoutCatalog } = useSelector(({ contents: { workoutCatalog }, userData: { user } }: GlobalState) => ({
+    user,
+    workoutCatalog
+  }))
 
   function loadFavorites() {
     return callAuthenticatedWebservice(WorkoutServices.loadFavorites)
@@ -53,10 +55,35 @@ export function MyWorkoutsScreen() {
       .then(() => setLoading(false))
   }
 
+  const keyExtractor = useCallback((workout, index) => `${workout.id}${index}`, [])
+  const favoriteWorkoutIds = user.caseOf({
+    just   : user => user.favoriteWorkouts,
+    nothing: () => []
+  })
+  const renderItem = useCallback(({ item: workoutId, index }) => {
+    const workout = workoutCatalog[workoutId]
+
+    if (!workout) {
+      return null
+    }
+
+    return (
+      <MyWorkoutCard
+        navigateToWorkout={navigateToWorkout}
+        remove={remove}
+        style={(favoriteWorkoutIds.length === 1 || index === favoriteWorkoutIds.length - 1) ? {} : {
+          borderBottomWidth: 1,
+          borderColor      : SummaxColors.darkGrey
+        }}
+        workout={workout}
+      />
+    )
+  }, [])
+
   return isLoading ? (
     <Loading/>
   ) : user.caseOf({
-    just   : ({favoriteWorkouts}) => (
+    just   : ({ favoriteWorkouts }) => (
       <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
 
         <Layout style={[styles.mainPadding, { marginBottom: 17, marginTop: 45, }]}>
@@ -64,45 +91,16 @@ export function MyWorkoutsScreen() {
           <Text style={styles.subtitle}>{i18n.t('My Workouts - Favorite workouts')} :</Text>
         </Layout>
 
-        <Layout style={[styles.mainPadding]}>
+        <Layout style={[styles.mainPadding, { paddingBottom: 150 }]}>
           {favoriteWorkouts.length === 0 ? (
             <Text style={[styles.workoutTitle, { marginTop: 16 }]}>{i18n.t('My Workouts - No favorite workout')}</Text>
           ) : (
-            favoriteWorkouts.map((workoutId, index, allWorkouts) => {
-              const workout = workoutCatalog[workoutId]
-              if(!workout){
-                return null
-              }
-              return (
-                <Layout
-                  key={workout.id}
-                  style={[
-                    styles.workoutContainer,
-                    (allWorkouts.length === 1 || index === allWorkouts.length - 1) ? {} : {
-                      borderBottomWidth: 1,
-                      borderColor      : SummaxColors.darkGrey
-                    }]}>
-
-                  <TouchableOpacity activeOpacity={.8} onPress={() => navigateToWorkout(workout)}>
-                    <Image source={{ uri: workout.posterUrl }} style={styles.workoutImage}/>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity activeOpacity={.8} style={styles.workoutTitleContainer}
-                                    onPress={() => navigateToWorkout(workout)}>
-                    <Layout style={styles.workoutTitleContainer}>
-                      <Text style={styles.workoutTitle}>{workout.title}</Text>
-                    </Layout>
-                  </TouchableOpacity>
-
-                  <Layout style={styles.buttonContainer}>
-                    <TouchableOpacity activeOpacity={.8} onPress={() => remove(workout.id)}>
-                      <Image source={minusCircleIcon} style={styles.buttonImage}/>
-                    </TouchableOpacity>
-                  </Layout>
-
-                </Layout>
-              )
-            })
+            <FlatList
+              data={favoriteWorkouts}
+              keyExtractor={keyExtractor}
+              removeClippedSubviews={true}
+              renderItem={renderItem}
+            />
           )}
         </Layout>
       </SafeAreaView>
@@ -112,46 +110,25 @@ export function MyWorkoutsScreen() {
 }
 
 const styles = StyleSheet.create({
-  mainPadding          : {
+  mainPadding : {
     paddingHorizontal: 16,
   },
-  title                : {
+  title       : {
     color     : 'black',
     fontFamily: 'aktivGroteskXBold',
     fontSize  : 30,
     lineHeight: 30,
   },
-  subtitle             : {
+  subtitle    : {
     color     : 'black',
     fontFamily: 'nexaXBold',
     fontSize  : 18,
     lineHeight: 18,
   },
-  workoutContainer     : {
-    flexDirection  : 'row',
-    paddingVertical: 16,
-  },
-  workoutImage         : {
-    borderRadius: 5,
-    height      : 74,
-    width       : 131,
-  },
-  workoutTitleContainer: {
-    flex             : 1,
-    justifyContent   : 'center',
-    paddingHorizontal: 13,
-  },
-  workoutTitle         : {
+  workoutTitle: {
     color     : 'black',
     fontFamily: 'nexaXBold',
     fontSize  : 14,
     lineHeight: 24,
   },
-  buttonContainer      : {
-    justifyContent: 'center',
-  },
-  buttonImage          : {
-    height: 20,
-    width : 20,
-  }
 })
