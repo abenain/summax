@@ -44,13 +44,29 @@ export function HomeScreen() {
   function toggleFavorite(workoutId: string, favorite: boolean) {
     const webservice = favorite ? WorkoutService.addToFavorites : WorkoutService.removeFromFavorites
 
+    dispatch({
+      favorite,
+      type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+      workoutId: homepage.selectedForYou.id,
+    })
+
     return callAuthenticatedWebservice(webservice, { workoutId })
       .then(user => {
-        dispatch({
-          type: ActionType.LOADED_USERDATA,
-          user,
+        user.caseOf({
+          just   : () => {
+            dispatch({
+              type: ActionType.LOADED_USERDATA,
+              user,
+            })
+          },
+          nothing: () => {
+            dispatch({
+              favorite: !favorite,
+              type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+              workoutId: homepage.selectedForYou.id,
+            })
+          }
         })
-        return user
       })
   }
 
@@ -84,25 +100,7 @@ export function HomeScreen() {
                 themeOrWorkout={workoutCatalog[homepage.selectedForYou.id]}
                 cardStyle={WorkoutCardSize.WORKOUT_LARGE}
                 onPress={() => navigateToWorkout(workoutCatalog[homepage.selectedForYou.id])}
-                onToggleFavorite={(favorite: boolean) => {
-                  dispatch({
-                    favorite,
-                    type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
-                    workoutId: homepage.selectedForYou.id,
-                  })
-                  toggleFavorite(homepage.selectedForYou.id, favorite)
-                    .then(user => user.caseOf({
-                      just   : () => {
-                      },
-                      nothing: () => {
-                        dispatch({
-                          favorite: !favorite,
-                          type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
-                          workoutId: homepage.selectedForYou.id,
-                        })
-                      }
-                    }))
-                }}/>
+                onToggleFavorite={(favorite: boolean) => toggleFavorite(homepage.selectedForYou.id, favorite)}/>
             </Layout>
 
             <Separator style={styles.separator}/>
@@ -129,25 +127,7 @@ export function HomeScreen() {
             <PopularWorkouts
               workouts={homepage.popularWorkouts.map(({id}: {id: string}) => workoutCatalog[id])}
               onPress={navigateToWorkout}
-              onToggleFavorite={(workoutId: string, favorite: boolean) => {
-                dispatch({
-                  favorite,
-                  type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
-                  workoutId,
-                })
-                toggleFavorite(workoutId, favorite)
-                  .then(user => user.caseOf({
-                    just   : () => {
-                    },
-                    nothing: () => {
-                      dispatch({
-                        favorite: !favorite,
-                        type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
-                        workoutId,
-                      })
-                    }
-                  }))
-              }}/>
+              onToggleFavorite={(workoutId: string, favorite: boolean) => toggleFavorite(homepage.selectedForYou.id, favorite)}/>
 
             <TargetFilters onFilter={(target: Target) => navigateToFilterScreen({
               subfilter: 'duration',
