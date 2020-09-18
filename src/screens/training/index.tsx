@@ -19,10 +19,11 @@ import { ButtonStyle, SummaxButton } from '../../components/summax-button/Summax
 import { PlaybackStatus, VideoPlayer, VideoPlayerHandle } from '../../components/video-player'
 import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
-import { Exercise, ExerciseModality, Workout } from '../../types'
+import { Exercise, ExerciseModality, Workout, WorkoutSession } from '../../types'
 import { NoOp } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import { fetchWarmup } from '../../webservices/workouts'
+import { getOrCreateSession } from '../../webservices/workoutSessions'
 import { ExerciseList, ExerciseListHandle } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
 
@@ -54,6 +55,7 @@ export function TrainingScreen() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [timerText, setTimerText] = useState(format(0))
   const [isLeaving, setIsLeaving] = useState(false)
+  const [workoutSession, setWorkoutSession] = useState(Maybe.nothing<WorkoutSession>())
   const exerciseList = useRef<ExerciseListHandle>()
   const videoPlayer = useRef<VideoPlayerHandle>()
   const appState = useRef(AppState.currentState)
@@ -178,6 +180,11 @@ export function TrainingScreen() {
             nothing: () => ''
           })
         })
+
+        callAuthenticatedWebservice(getOrCreateSession, {
+          totalExerciseCount: getWorkout().map(workout => workout.exercises.length).valueOr(0),
+          workoutId: selectedWorkoutId.valueOr(null)
+        }).then(setWorkoutSession)
 
         return getWorkout()
       })
