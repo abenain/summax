@@ -44,9 +44,12 @@ function getSmallSide({ height, width }: ScaledSize) {
 export function TrainingScreen() {
   const screenWidthPortrait = useRef(getSmallSide(Dimensions.get('window')))
   const route = useRoute<RouteProp<RootStackParamList, 'Training'>>()
-  const { warmup = false } = route.params
+  const { warmup = false, startAtExercise = 0 } = route.params
   const navigation: StackNavigationProp<RootStackParamList, 'Training'> = useNavigation()
-  const {selectedWorkoutId, workoutCatalog} = useSelector(({ contents: {workoutCatalog}, uiState: { selectedWorkoutId } }: GlobalState) => ({selectedWorkoutId, workoutCatalog}))
+  const { selectedWorkoutId, workoutCatalog } = useSelector(({ contents: { workoutCatalog }, uiState: { selectedWorkoutId } }: GlobalState) => ({
+    selectedWorkoutId,
+    workoutCatalog
+  }))
   const [warmupWorkout, setWarmupWorkout] = useState(Maybe.nothing<Workout>())
   const [isLoading, setIsLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -110,10 +113,10 @@ export function TrainingScreen() {
       navigation.replace('Training', {})
     } else {
       workoutSession.caseOf({
-        just: session => {
+        just   : session => {
           callAuthenticatedWebservice(updateSession, {
             sessionId: session._id,
-            finished: true,
+            finished : true,
           })
         },
         nothing: NoOp,
@@ -169,9 +172,9 @@ export function TrainingScreen() {
     setSelectedExerciseIndex(index)
 
     workoutSession.caseOf({
-      just: session => {
+      just   : session => {
         callAuthenticatedWebservice(updateSession, {
-          sessionId: session._id,
+          sessionId        : session._id,
           doneExerciseCount: index,
         })
       },
@@ -202,7 +205,7 @@ export function TrainingScreen() {
 
         return callAuthenticatedWebservice(getOrCreateSession, {
           totalExerciseCount: getWorkout().map(workout => workout.exercises.length).valueOr(0),
-          workoutId: selectedWorkoutId.valueOr(null)
+          workoutId         : selectedWorkoutId.valueOr(null)
         }).then(session => {
           setWorkoutSession(session)
           return getWorkout()
@@ -212,7 +215,11 @@ export function TrainingScreen() {
         setIsLoading(false)
 
         workout.caseOf({
-          just   : workout => workout.exercises && workout.exercises.length && selectExerciseAt(0, false),
+          just   : workout => {
+            if (workout.exercises && workout.exercises.length) {
+              setTimeout(() => selectExerciseAt(startAtExercise, true), 500)
+            }
+          },
           nothing: () => {
           }
         })

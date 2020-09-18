@@ -49,6 +49,7 @@ export type RootStackParamList = {
   }
   Training: {
     warmup?: boolean
+    startAtExercise?: number
   }
   Workout: {
     id: string

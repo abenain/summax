@@ -3,19 +3,20 @@ import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { SummaxColors } from '../../colors'
 import { Workout } from '../../types'
-import { NoOp } from '../../utils'
-import {ProgressCircle} from './progressCircle'
+import { ProgressCircle } from './progressCircle'
+
 interface Props {
   completionRatio: number
+  onResumeWorkout: () => void
   style?: ViewStyle
   workout: Workout
 }
 
-export function UnfinishedWorkoutCard({ completionRatio, style = {}, workout }: Props) {
+export function UnfinishedWorkoutCard({ completionRatio, onResumeWorkout, style = {}, workout }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={.8}
-      onPress={NoOp}
+      onPress={onResumeWorkout}
       style={[styles.workoutContainer, style]}
     >
       <Image source={{ uri: workout.posterUrl }} style={styles.workoutImage}/>

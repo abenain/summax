@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
@@ -10,7 +10,7 @@ import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
-import { StatisticsData } from '../../types'
+import { StatisticsData, Workout } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
 import * as WorkoutSessionsServices from '../../webservices/workoutSessions'
@@ -21,18 +21,44 @@ const statsPoster = require('./summax-stats-poster.png')
 
 export function StatsScreen() {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const { workoutCatalog } = useSelector(({ contents: { workoutCatalog } }: GlobalState) => ({
     workoutCatalog
   }))
   const [isLoading, setLoading] = useState(true)
   const [statisticsData, setStatisticsData] = useState(Maybe.nothing<StatisticsData>())
   const keyExtractor = useCallback((workout, index) => workout === null ? 'poster' : `${workout.id}${index}`, [])
+  const resumeWorkout = useCallback((workout: Workout, startAtExercise: number) => {
+    dispatch({
+      type: ActionType.SELECTED_WORKOUT,
+      workoutId: Maybe.just(workout.id)
+    })
+
+    setLoading(true)
+    callAuthenticatedWebservice(WorkoutServices.load, { workoutId: workout.id })
+      .then((workout: Maybe<Workout>) => {
+        dispatch({
+          type: ActionType.UPDATE_WORKOUT_CATALOG,
+          workouts: workout.map(workout => [workout])
+        })
+
+        setLoading(false)
+
+        navigation.navigate('Training', {
+          startAtExercise
+        })
+      })
+  }, [])
   const renderItem = useCallback(({ item: workout }) => {
     if (workout === null) {
       return <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
     }
 
-    return <UnfinishedWorkoutCard workout={workout} completionRatio={workout.completionRatio}/>
+    return <UnfinishedWorkoutCard
+      workout={workout}
+      completionRatio={workout.doneExerciseCount / workout.totalExerciseCount}
+      onResumeWorkout={() => resumeWorkout(workout, workout.doneExerciseCount)}
+    />
   }, [])
 
   function loadStatistics() {
@@ -69,7 +95,8 @@ export function StatsScreen() {
     just   : statistics => statistics.unfinishedSessions.map(session => {
       return ({
         ...workoutCatalog[session.workoutId],
-        completionRatio: session.doneExerciseCount / session.totalExerciseCount
+        doneExerciseCount: session.doneExerciseCount,
+        totalExerciseCount: session.totalExerciseCount,
       })
     }),
     nothing: () => []
