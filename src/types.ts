@@ -103,6 +103,7 @@ export interface WorkoutSession {
 }
 
 export interface StatisticsData {
+  oldestSessionCreationDate: Date
   sessionCount: number
   timeSpentMs: number
   unfinishedSessions: WorkoutSession[]

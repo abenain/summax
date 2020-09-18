@@ -113,7 +113,7 @@ export function StatsScreen() {
             <Text style={[styles.title, { marginBottom: 36, marginTop: 45 }]}>{i18n.t('Statistics - Workouts')}</Text>
 
             <StatsCard
-              firstTrainingDate={new Date()}
+              firstTrainingDate={statistics.oldestSessionCreationDate}
               trainingCount={statistics.sessionCount}
               trainingTimeMinutes={Math.floor(statistics.timeSpentMs / 60000)}
               style={{ marginBottom: 52 }}
