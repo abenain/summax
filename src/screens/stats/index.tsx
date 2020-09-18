@@ -69,7 +69,7 @@ export function StatsScreen() {
     just   : statistics => statistics.unfinishedSessions.map(session => {
       return ({
         ...workoutCatalog[session.workoutId],
-        completionRatio: session.doneExerciseCount / session.totalExerciseCount / 100
+        completionRatio: session.doneExerciseCount / session.totalExerciseCount
       })
     }),
     nothing: () => []

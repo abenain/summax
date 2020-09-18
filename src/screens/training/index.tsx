@@ -23,7 +23,7 @@ import { Exercise, ExerciseModality, Workout, WorkoutSession } from '../../types
 import { NoOp } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import { fetchWarmup } from '../../webservices/workouts'
-import { getOrCreateSession } from '../../webservices/workoutSessions'
+import { getOrCreateSession, updateSession } from '../../webservices/workoutSessions'
 import { ExerciseList, ExerciseListHandle } from './ExerciseList'
 import { TrainingExit } from './TrainingExit'
 
@@ -109,6 +109,15 @@ export function TrainingScreen() {
     if (warmup) {
       navigation.replace('Training', {})
     } else {
+      workoutSession.caseOf({
+        just: session => {
+          callAuthenticatedWebservice(updateSession, {
+            sessionId: session._id,
+            finished: true,
+          })
+        },
+        nothing: NoOp,
+      })
       navigation.navigate('Reward')
     }
   }, [isFullscreen, selectedExerciseIndex])
@@ -153,12 +162,22 @@ export function TrainingScreen() {
     })
   }, [selectedExerciseIndex])
 
-  function selectExerciseAt(index: number, scrollToExercise: boolean) {
+  const selectExerciseAt = useCallback((index: number, scrollToExercise: boolean) => {
     if (scrollToExercise && exerciseList.current) {
       exerciseList.current.scrollToExercise(index)
     }
     setSelectedExerciseIndex(index)
-  }
+
+    workoutSession.caseOf({
+      just: session => {
+        callAuthenticatedWebservice(updateSession, {
+          sessionId: session._id,
+          doneExerciseCount: index,
+        })
+      },
+      nothing: NoOp,
+    })
+  }, [workoutSession.valueOr(null)])
 
   useEffect(function componentDidMount() {
     AppState.addEventListener('change', handleAppStateChange)
@@ -181,12 +200,13 @@ export function TrainingScreen() {
           })
         })
 
-        callAuthenticatedWebservice(getOrCreateSession, {
+        return callAuthenticatedWebservice(getOrCreateSession, {
           totalExerciseCount: getWorkout().map(workout => workout.exercises.length).valueOr(0),
           workoutId: selectedWorkoutId.valueOr(null)
-        }).then(setWorkoutSession)
-
-        return getWorkout()
+        }).then(session => {
+          setWorkoutSession(session)
+          return getWorkout()
+        })
       })
       .then(workout => {
         setIsLoading(false)
