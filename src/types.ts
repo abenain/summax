@@ -92,3 +92,18 @@ export interface Homepage {
   themes: Theme[]
   popularWorkouts: { id: string }[]
 }
+
+export interface WorkoutSession {
+  _id: string
+  doneExerciseCount : number
+  finished          : boolean
+  timeSpentMs       : number
+  totalExerciseCount: number
+  workoutId         : string
+}
+
+export interface StatisticsData {
+  sessionCount: number
+  timeSpentMs: number
+  unfinishedSessions: WorkoutSession[]
+}

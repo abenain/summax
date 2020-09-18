@@ -11,7 +11,7 @@ interface Props {
   workout: Workout
 }
 
-export function UnfinishedWorkoutCard({ style = {}, workout }: Props) {
+export function UnfinishedWorkoutCard({ completionRatio, style = {}, workout }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={.8}
@@ -26,7 +26,7 @@ export function UnfinishedWorkoutCard({ style = {}, workout }: Props) {
 
       <ProgressCircle
         color={SummaxColors.lightishGreen}
-        progressRatio={.99}
+        progressRatio={completionRatio}
         size={64}
         strokeWidth={3}
         style={{

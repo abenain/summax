@@ -14,7 +14,7 @@ export function load({ token, workoutId }: { token: string, workoutId: string })
     .then(workout => Maybe.maybe(workout))
 }
 
-export function fetchWarmup({ token }: { token: string, workoutId: string }) {
+export function fetchWarmup({ token }: { token: string }) {
   return fetch(`${getApiBaseUrl()}/workouts/warmup`, {
     headers: {
       ...getAuthorizationHeaders(token)
@@ -27,7 +27,7 @@ export function fetchWarmup({ token }: { token: string, workoutId: string }) {
     .then(workout => Maybe.maybe(workout))
 }
 
-export function loadFavorites({ token }: { token: string, workoutId: string }) {
+export function loadFavorites({ token }: { token: string }) {
   return fetch(`${getApiBaseUrl()}/workouts/favorites`, {
     headers: {
       ...getAuthorizationHeaders(token)
