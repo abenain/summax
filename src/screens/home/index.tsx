@@ -79,8 +79,7 @@ export function HomeScreen() {
         just   : homepage => (
           <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
 
-            <PremiumBanner isPremium={Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)}
-                           onBannerPress={() => console.log('go to premium popup')}/>
+            <PremiumBanner isPremium={Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)}/>
 
             <Layout style={styles.titleContainer}>
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>

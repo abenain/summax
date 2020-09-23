@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack'
+import { createStackNavigator, StackHeaderTitleProps } from '@react-navigation/stack'
 import Constants from 'expo-constants'
 import i18n from 'i18n-js'
 import * as React from 'react'
@@ -12,9 +12,10 @@ import { ProfileScreen } from '../screens/profile'
 import { ProfileObjectivesScreen } from '../screens/profile-objectives'
 import { SignUpOtpScreen } from '../screens/sign-up-otp'
 import { SignUpScreen } from '../screens/signup'
+import { SubscriptionScreen } from '../screens/subscription'
 import { BottomTabNavigator } from './BottomTabNavigator'
 import { ButtonsTint, RightButtons } from './header/RightButtons'
-import { HeaderTitle } from './header/Title'
+import { HeaderTint, HeaderTitle } from './header/Title'
 
 const arrowLeftIcon = require('../../assets/arrow-left-black.png')
 const arrowLeftIconWhite = require('../../assets/arrow-left-white.png')
@@ -75,6 +76,11 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <Stack.Screen name='Profile' component={ProfileScreen}
                     options={{ headerRight: () => <View style={{ padding: 6 }}/> }}/>
       <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{ headerRight: null }}/>
+      <Stack.Screen name='Subscription' component={SubscriptionScreen} options={() => ({
+        headerTitle      : (props: StackHeaderTitleProps) => <HeaderTitle title={i18n.t('Subscription - Go Premium')} tint={HeaderTint.DARK} {...props}/>,
+        headerTransparent: true,
+        headerRight      : props => <RightButtons {...props} tint={ButtonsTint.DARK}/>
+      })}/>
     </Stack.Navigator>
   )
 }

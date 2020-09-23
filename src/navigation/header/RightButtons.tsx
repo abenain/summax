@@ -29,10 +29,12 @@ function getPersonIcon(tint: ButtonsTint){
 export function RightButtons(props: Props) {
   const navigation = useNavigation()
   return (
-    <Layout style={{ paddingRight: 16, backgroundColor: 'transparent' }} {...props}>
+    <Layout style={{ backgroundColor: 'transparent', flexDirection: 'row', paddingRight: 16, }} {...props}>
+
       <TouchableOpacity activeOpacity={.8} onPress={() => navigation.navigate('Profile')}>
         <Image source={getPersonIcon(props.tint)} style={{ height: 24, width: 24 }}/>
       </TouchableOpacity>
+
     </Layout>
   )
 }

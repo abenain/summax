@@ -114,6 +114,7 @@ const en = {
 	'Statistics - Unfinished Workouts'             : 'Unfinished workouts',
 	'Statistics - Workouts'                        : 'Workouts',
 	'Statistics - Workout count'                   : 'Workouts done',
+	'Subscription - Go Premium'                    : 'Go Premium',
 	'Tab bar - Home'                               : 'Home',
 	'Tab bar - MyWorkouts'                         : 'My Workouts',
 	'Tab bar - Stats'                              : 'Stats',

@@ -15,8 +15,7 @@ export function useNavigateToWorkout() {
 
   return function(workout: Workout){
     if(workout.plan === WorkoutPlan.PREMIUM && isPremium() === false){
-      console.log('redirecting to subscription popup')
-      return
+      return navigation.navigate('Subscription')
     }
 
     navigation.navigate('Workout', { id: workout.id, title: workout.title })

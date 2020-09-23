@@ -114,6 +114,7 @@ const fr = {
 	'Statistics - Unfinished Workouts'             : 'Entraînements non terminés',
 	'Statistics - Workouts'                        : 'Entraînements',
 	'Statistics - Workout count'                   : 'Entraînements effectués',
+	'Subscription - Go Premium'                    : 'Passer Premium',
 	'Tab bar - Home'                               : 'Accueil',
 	'Tab bar - Stats'                              : 'Statistiques',
 	'Tab bar - MyWorkouts'                         : 'Mes entraînements',
