@@ -17,6 +17,7 @@ import useLogoutListener from './hooks/logout-listener'
 import { MainStackNavigator } from './navigation/MainStackNavigator'
 import { getHydrationPromise, getStore } from './redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from './sequences'
+import { AntDesign, Entypo } from '@expo/vector-icons'
 
 const MIN_SPLASH_SCREEN_DURATION_MS = 2000
 const splashWithPeople = require('../assets/splash_with_people.png')
@@ -80,6 +81,8 @@ export default () => {
         nexaHeavy        : require('../assets/fonts/NexaHeavy.otf'),
         nexaRegular      : require('../assets/fonts/NexaRegular.otf'),
         nexaXBold        : require('../assets/fonts/Nexa-XBold.otf'),
+        ...AntDesign.font,
+        ...Entypo.font,
       }),
       getHydrationPromise(),
       Amplitude.initialize(getAmplitudeApiKey()),
@@ -132,7 +135,7 @@ export default () => {
       just   : () => {
         return store.getState().userData.user.caseOf({
           just   : user => {
-            if(user.onboarded){
+            if (user.onboarded) {
               return 'Home'
             }
 

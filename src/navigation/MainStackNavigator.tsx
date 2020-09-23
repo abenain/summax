@@ -12,6 +12,7 @@ import { ProfileScreen } from '../screens/profile'
 import { ProfileObjectivesScreen } from '../screens/profile-objectives'
 import { SignUpOtpScreen } from '../screens/sign-up-otp'
 import { SignUpScreen } from '../screens/signup'
+import { SubscriptionScreen } from '../screens/subscription'
 import { BottomTabNavigator } from './BottomTabNavigator'
 import { ButtonsTint, RightButtons } from './header/RightButtons'
 import { HeaderTitle } from './header/Title'
@@ -75,6 +76,7 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <Stack.Screen name='Profile' component={ProfileScreen}
                     options={{ headerRight: () => <View style={{ padding: 6 }}/> }}/>
       <Stack.Screen name='ProfileObjectives' component={ProfileObjectivesScreen} options={{ headerRight: null }}/>
+      <Stack.Screen name='Subscription' component={SubscriptionScreen} options={{ headerShown: false }}/>
     </Stack.Navigator>
   )
 }
