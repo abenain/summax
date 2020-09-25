@@ -96,11 +96,15 @@ export function HomeScreen() {
             </Layout>
 
             <Layout style={{ paddingHorizontal: 16, marginBottom: 32 }}>
-              <WorkoutCard
-                themeOrWorkout={workoutCatalog[homepage.selectedForYou.id]}
-                cardStyle={WorkoutCardSize.WORKOUT_LARGE}
-                onPress={() => navigateToWorkout(workoutCatalog[homepage.selectedForYou.id])}
-                onToggleFavorite={(favorite: boolean) => toggleFavorite(homepage.selectedForYou.id, favorite)}/>
+              {
+                workoutCatalog[homepage.selectedForYou.id] && (
+                  <WorkoutCard
+                    themeOrWorkout={workoutCatalog[homepage.selectedForYou.id]}
+                    cardStyle={WorkoutCardSize.WORKOUT_LARGE}
+                    onPress={() => navigateToWorkout(workoutCatalog[homepage.selectedForYou.id])}
+                    onToggleFavorite={(favorite: boolean) => toggleFavorite(homepage.selectedForYou.id, favorite)}/>
+                )
+              }
             </Layout>
 
             <Separator style={styles.separator}/>
