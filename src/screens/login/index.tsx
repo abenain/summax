@@ -77,15 +77,16 @@ export function LoginScreen({ navigation }: Props) {
     authenticate(email, password).then(maybeTokens => {
       maybeTokens.caseOf({
         just   : ({ access, refresh }) => {
-          dispatch({
-            type: ActionType.GOT_TOKENS,
-            access,
-            refresh,
-          })
           Promise.all([
             fetchHomepageSequence(access),
             fetchUserDataSequence(access)
-          ])
+          ]).then(() => {
+            dispatch({
+              type: ActionType.GOT_TOKENS,
+              access,
+              refresh,
+            })
+          })
         },
         nothing: () => {
           setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
