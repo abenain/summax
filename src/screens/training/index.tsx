@@ -1,7 +1,8 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
+import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
@@ -29,6 +30,7 @@ const greenClockIcon = require('../../../assets/clock-green.png')
 const repsIcon = require('./reps.png')
 const nextIcon = require('./next.png')
 
+const KEEP_AWAKE_TAG = 'trainingScreen'
 
 function getSmallSide({ height, width }: ScaledSize) {
   if (height < width) {
@@ -170,9 +172,16 @@ export function TrainingScreen() {
       })
 
     return function componentWillUnmount() {
+      deactivateKeepAwake(KEEP_AWAKE_TAG)
       stopTimer()
     }
   }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      activateKeepAwake(KEEP_AWAKE_TAG)
+    }, [])
+  )
 
   useEffect(() => {
     if (isFullscreen === false && exerciseList.current) {
@@ -205,6 +214,7 @@ export function TrainingScreen() {
         }
       }}
       onQuit={() => {
+        deactivateKeepAwake(KEEP_AWAKE_TAG)
         if (videoPlayer.current) {
           videoPlayer.current.stop()
         }
