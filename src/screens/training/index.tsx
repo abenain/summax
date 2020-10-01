@@ -8,7 +8,7 @@ import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Dimensions, Image, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
+import { AppState, Dimensions, Image, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
@@ -56,6 +56,25 @@ export function TrainingScreen() {
   const [isLeaving, setIsLeaving] = useState(false)
   const exerciseList = useRef<ExerciseListHandle>()
   const videoPlayer = useRef<VideoPlayerHandle>()
+  const appState = useRef(AppState.currentState)
+
+  function handleAppStateChange(nextAppState) {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      console.log('app is active again')
+      startTimer()
+    }
+
+    if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
+      console.log('app is pausing now')
+      stopTimer()
+    }
+
+    appState.current = nextAppState
+  }
+
   const getPlaylist = useCallback(() => {
     return getWorkout().caseOf({
       just   : workout => workout.exercises.map(({ mediaId }) => ({ mediaId })),
@@ -140,6 +159,7 @@ export function TrainingScreen() {
   }
 
   useEffect(function componentDidMount() {
+    AppState.addEventListener('change', handleAppStateChange)
     Promise.resolve()
       .then(() => {
         if (warmup) {
@@ -172,6 +192,7 @@ export function TrainingScreen() {
       })
 
     return function componentWillUnmount() {
+      AppState.removeEventListener('change', handleAppStateChange)
       deactivateKeepAwake(KEEP_AWAKE_TAG)
       stopTimer()
     }
