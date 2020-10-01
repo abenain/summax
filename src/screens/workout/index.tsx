@@ -102,7 +102,7 @@ export function WorkoutScreen() {
                     <Text style={styles.workoutFeaturesText}>{workout.techniques.join(' ')}</Text>
                   </Layout>
                   <Layout style={styles.workoutFeaturesSplitRightContainer}>
-                    <Text style={styles.workoutFeaturesText}>{getTitleForTarget(workout.target)}</Text>
+                    <Text style={styles.workoutFeaturesText}>{workout.target.map(aTarget => getTitleForTarget(aTarget)).join(' ')}</Text>
                   </Layout>
                 </Layout>
 

@@ -28,6 +28,7 @@ interface Props {
 function getText(level: IntensityLevel) {
   switch (level) {
     case IntensityLevel.LOW:
+
       return i18n.t('Intensity - Low')
     case IntensityLevel.MEDIUM:
       return i18n.t('Intensity - Medium')
