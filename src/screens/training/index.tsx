@@ -281,7 +281,8 @@ export function TrainingScreen() {
 
   return getWorkout().caseOf({
     just   : workout => (
-      <SafeAreaView style={[styles.mainContainer, {paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight}]}>
+      <SafeAreaView
+        style={[styles.mainContainer, { paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }]}>
 
         <VideoPlayer
           ref={videoPlayer}
@@ -299,10 +300,6 @@ export function TrainingScreen() {
         {isFullscreen === false && (
           <SafeAreaView style={styles.safeContentsArea}>
             <Layout style={styles.contents}>
-
-              <Layout style={styles.titleContainer}>
-                <Text style={styles.title}>{workout.title}</Text>
-              </Layout>
 
               <Layout style={styles.controlsContainer}>
 
@@ -416,6 +413,7 @@ const styles = StyleSheet.create({
     lineHeight: 30,
   },
   controlsContainer: {
+    marginTop    : 33,
     flexDirection: 'row',
     marginBottom : 33,
   },
