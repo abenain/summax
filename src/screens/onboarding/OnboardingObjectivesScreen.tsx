@@ -52,7 +52,6 @@ export function OnboardingObjectivesScreen() {
 
           fetchHomepageSequence().then(() => {
             navigation.navigate('Home')
-            setLoading(false)
           })
 
         },
