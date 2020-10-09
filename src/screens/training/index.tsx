@@ -3,12 +3,13 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
+import Constants from 'expo-constants'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AppState, Dimensions, Image, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
+import { AppState, Dimensions, Image, Platform, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
@@ -280,7 +281,7 @@ export function TrainingScreen() {
 
   return getWorkout().caseOf({
     just   : workout => (
-      <Layout style={styles.mainContainer}>
+      <SafeAreaView style={[styles.mainContainer, {paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight}]}>
 
         <VideoPlayer
           ref={videoPlayer}
@@ -384,7 +385,7 @@ export function TrainingScreen() {
             </Layout>
           </SafeAreaView>
         )}
-      </Layout>
+      </SafeAreaView>
     ),
     nothing: () => <ErrorPage/>
   })
@@ -392,8 +393,9 @@ export function TrainingScreen() {
 
 const styles = StyleSheet.create({
   mainContainer    : {
-    alignItems: 'center',
-    flex      : 1,
+    alignItems     : 'center',
+    backgroundColor: 'black',
+    flex           : 1,
   },
   safeContentsArea : {
     alignSelf: 'stretch',
