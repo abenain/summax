@@ -1,9 +1,9 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useMemo, useState } from 'react'
-import { FlatList, Image, SafeAreaView, StyleSheet } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { ErrorPage } from '../../components/ErrorPage'
@@ -27,10 +27,9 @@ export function StatsScreen() {
   }))
   const [isLoading, setLoading] = useState(true)
   const [statisticsData, setStatisticsData] = useState(Maybe.nothing<StatisticsData>())
-  const keyExtractor = useCallback((workout, index) => workout === null ? 'poster' : `${workout.id}${index}`, [])
   const resumeWorkout = useCallback((workout: Workout, startAtExercise: number) => {
     dispatch({
-      type: ActionType.SELECTED_WORKOUT,
+      type     : ActionType.SELECTED_WORKOUT,
       workoutId: Maybe.just(workout.id)
     })
 
@@ -38,7 +37,7 @@ export function StatsScreen() {
     callAuthenticatedWebservice(WorkoutServices.load, { workoutId: workout.id })
       .then((workout: Maybe<Workout>) => {
         dispatch({
-          type: ActionType.UPDATE_WORKOUT_CATALOG,
+          type    : ActionType.UPDATE_WORKOUT_CATALOG,
           workouts: workout.map(workout => [workout])
         })
 
@@ -48,17 +47,6 @@ export function StatsScreen() {
           startAtExercise
         })
       })
-  }, [])
-  const renderItem = useCallback(({ item: workout }) => {
-    if (workout === null) {
-      return <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
-    }
-
-    return <UnfinishedWorkoutCard
-      workout={workout}
-      completionRatio={workout.doneExerciseCount / workout.totalExerciseCount}
-      onResumeWorkout={() => resumeWorkout(workout, workout.doneExerciseCount)}
-    />
   }, [])
 
   function loadStatistics() {
@@ -95,7 +83,7 @@ export function StatsScreen() {
     just   : statistics => statistics.unfinishedSessions.map(session => {
       return ({
         ...workoutCatalog[session.workoutId],
-        doneExerciseCount: session.doneExerciseCount,
+        doneExerciseCount : session.doneExerciseCount,
         totalExerciseCount: session.totalExerciseCount,
       })
     }),
@@ -108,7 +96,7 @@ export function StatsScreen() {
       just      : statistics => (
         <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
 
-          <Layout style={styles.mainContainer}>
+          <ScrollView style={styles.mainContainer}>
 
             <Text style={[styles.title, { marginBottom: 36, marginTop: 45 }]}>{i18n.t('Statistics - Workouts')}</Text>
 
@@ -122,21 +110,26 @@ export function StatsScreen() {
             <Text style={[styles.subtitle, { marginBottom: 22 }]}>{i18n.t('Statistics - Unfinished Workouts')}</Text>
 
             {unfinishedWorkouts.length === 0 ? (
-              <Layout style={{ flex: 1 }}>
+              <>
                 <Text style={styles.workoutTitle}>{i18n.t('Statistics - No unfinished workout')}</Text>
-                <Layout style={{ flex: 1 }}/>
-                <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
-              </Layout>
+                <Image resizeMode={'contain'} source={statsPoster} style={[styles.poster, { marginTop: 32 }]}/>
+              </>
             ) : (
-              <FlatList
-                data={unfinishedWorkouts.concat(null)}
-                keyExtractor={keyExtractor}
-                removeClippedSubviews={true}
-                renderItem={renderItem}
-              />
+              <>
+                {unfinishedWorkouts.map((workout, index) => (
+                  <UnfinishedWorkoutCard
+                    key={`${workout.id}${index}`}
+                    workout={workout}
+                    completionRatio={workout.doneExerciseCount / workout.totalExerciseCount}
+                    onResumeWorkout={() => resumeWorkout(workout, workout.doneExerciseCount)}
+                  />
+                ))}
+
+                <Image resizeMode={'contain'} source={statsPoster} style={styles.poster}/>
+              </>
             )}
 
-          </Layout>
+          </ScrollView>
 
         </SafeAreaView>
       ), nothing: () => (
