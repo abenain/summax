@@ -2,6 +2,7 @@ import { Maybe } from 'tsmonad'
 import { User } from '../types'
 import { Tokens } from './auth'
 import {
+  ApiVersion,
   checkFetchResponseIsOKOrThrow,
   getApiBaseUrl,
   getAuthorizationHeaders,
@@ -22,10 +23,30 @@ export function createUser(userData: { dob: Date, email: string, firstname: stri
       await checkFetchResponseIsOKOrThrow(response)
       return response.json()
     })
-    .then((user: User) => Maybe.maybe(user))
+    .then((user: User & { access: string, refresh: string }) => Maybe.maybe(user))
     .catch(error => {
       console.log(error)
-      return Maybe.nothing<User>()
+      return Maybe.nothing<User & { access: string, refresh: string }>()
+    })
+}
+
+export function createUserWithoutOtp(userData: { dob: Date, email: string, firstname: string, lastname: string, password: string }) {
+  return fetch(`${getApiBaseUrl(ApiVersion.V2)}/users`, {
+    method : 'POST',
+    headers: {
+      ...getClientIdHeader(),
+      ...getJsonPayloadHeaders()
+    },
+    body   : JSON.stringify(userData)
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then((user: User & { access: string, refresh: string }) => Maybe.maybe(user))
+    .catch(error => {
+      console.log(error)
+      return Maybe.nothing<User & { access: string, refresh: string }>()
     })
 }
 

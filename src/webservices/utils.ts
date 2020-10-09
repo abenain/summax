@@ -3,11 +3,14 @@ import { Exercise } from '../types'
 
 const SCHEME_HTTP = 'http'
 const SCHEME_HTTPS = 'https'
-const BACKEND_URL_DEV = '10.0.0.6:18000'
-//const BACKEND_URL_DEV = '192.168.1.28:18000'
+//const BACKEND_URL_DEV = '10.0.0.6:18000'
+const BACKEND_URL_DEV = '192.168.10.124:18000'
 const BACKEND_URL_PROD = 'api.summax.fr'
 
-const API_V1_PATH = 'v1'
+export enum ApiVersion {
+  V1 = 'v1',
+  V2 = 'v2'
+}
 
 const CLIENT_ID = 'ayhcwZdiy5rgWreq3wN6tA2hk2HC'
 
@@ -29,8 +32,8 @@ export function getBackendUrl() {
   return `${SCHEME_HTTP}://${BACKEND_URL_DEV}`
 }
 
-export function getApiBaseUrl() {
-  return `${getBackendUrl()}/${API_V1_PATH}`
+export function getApiBaseUrl(apiVersion = ApiVersion.V1) {
+  return `${getBackendUrl()}/${apiVersion}`
 }
 
 export function checkFetchResponseIsOKOrThrow(response: Response) {

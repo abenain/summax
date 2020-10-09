@@ -13,7 +13,7 @@ import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { ActionType } from '../../redux/actions'
-import { createUser } from '../../webservices/user'
+import { createUserWithoutOtp } from '../../webservices/user'
 import { Form as SignUpForm } from './form'
 
 const backgroundImage = require('../../../assets/login_background.png')
@@ -48,16 +48,21 @@ export function SignUpScreen() {
     setError(Maybe.nothing())
     setLoading(true)
 
-    createUser({ dob, email, firstname, lastname, password })
+    createUserWithoutOtp({ dob, email, firstname, lastname, password })
       .then(maybeUser => {
         setLoading(false)
         maybeUser.caseOf({
-          just   : user => {
+          just   : ({ access, refresh, ...user }) => {
             dispatch({
               type: ActionType.LOADED_USERDATA,
               user: Maybe.just(user)
             })
-            navigation.navigate('SignUpOtp', { id: user._id })
+            dispatch({
+              type: ActionType.GOT_TOKENS,
+              access,
+              refresh,
+            })
+            navigation.navigate('OnboardingSex', { id: user._id })
           },
           nothing: () => setError(Maybe.just(i18n.t('Sign up - Email already in use')))
         })
