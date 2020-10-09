@@ -42,7 +42,10 @@ export function WorkoutScreen() {
   const { id: workoutId } = route.params
   const navigation = useNavigation()
   const dispatch = useDispatch()
-  const {selectedWorkoutId, workoutCatalog} = useSelector(({ contents: {workoutCatalog}, uiState: { selectedWorkoutId } }: GlobalState) => ({selectedWorkoutId, workoutCatalog}))
+  const { selectedWorkoutId, workoutCatalog } = useSelector(({ contents: { workoutCatalog }, uiState: { selectedWorkoutId } }: GlobalState) => ({
+    selectedWorkoutId,
+    workoutCatalog
+  }))
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(function componentDidMount() {
@@ -137,10 +140,12 @@ export function WorkoutScreen() {
                   <Text style={styles.title}>{workout.title}</Text>
                 </Layout>
 
-                <TouchableOpacity onPress={() => handleToggleFavorite(workout.id, !workout.favorite)} activeOpacity={.5}>
+                <TouchableOpacity onPress={() => handleToggleFavorite(workout.id, !workout.favorite)}
+                                  activeOpacity={.5}>
                   <Layout style={styles.favoritesContainer}>
                     <Image source={workout.favorite ? checkIcon : plusIcon} style={styles.favoritesIcon}/>
-                    <Text style={styles.favoritesText}>{i18n.t(workout.favorite ? 'Workout Description - Remove from Favorites' : 'Workout Description - Add to Favorites')}</Text>
+                    <Text
+                      style={styles.favoritesText}>{i18n.t(workout.favorite ? 'Workout Description - Remove from Favorites' : 'Workout Description - Add to Favorites')}</Text>
                   </Layout>
                 </TouchableOpacity>
 
@@ -151,11 +156,12 @@ export function WorkoutScreen() {
                       <Text style={styles.workoutFeaturesText}>{workout.techniques.join(' ')}</Text>
                     </Layout>
                     <Layout style={styles.workoutFeaturesSplitRightContainer}>
-                      <Text style={styles.workoutFeaturesText}>{workout.target.map(aTarget => getTitleForTarget(aTarget)).join(' ')}</Text>
+                      <Text
+                        style={styles.workoutFeaturesText}>{workout.target.map(aTarget => getTitleForTarget(aTarget)).join(' ')}</Text>
                     </Layout>
                   </Layout>
 
-                  <Text style={styles.workoutFeaturesDetails}>{workout.details}</Text>
+                  <Text style={styles.workoutFeaturesDetails}>{workout.description}</Text>
 
                   <Layout style={styles.workoutFeaturesSplitContainer}>
                     <Layout style={styles.workoutFeaturesSplitLeftContainer}>
@@ -174,6 +180,10 @@ export function WorkoutScreen() {
                     </Layout>
                   </Layout>
 
+                </Layout>
+
+                <Layout style={[styles.workoutFeatures, { paddingVertical: 0 }]}>
+                  <Text style={styles.workoutFeaturesDetails}>{workout.details}</Text>
                 </Layout>
 
               </Layout>
