@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ScrollView, StyleSheet } from 'react-native'
-import { Style as WorkoutCardStyls, WorkoutCard } from '../../components/workout-card'
+import { Style as WorkoutCardStyle, WorkoutCard } from '../../components/workout-card'
 import { Workout } from '../../types'
 import { NoOp } from '../../utils'
 
@@ -15,7 +15,7 @@ export function VerticalWorkoutList({ onPress = NoOp, onToggleFavorite = NoOp, w
     <ScrollView style={styles.mainContainer}>
       {workouts.map(workout => (
         <WorkoutCard
-          cardStyle={WorkoutCardStyls.WORKOUT_LARGE}
+          cardStyle={WorkoutCardStyle.WORKOUT_LARGE}
           key={workout.id}
           onPress={() => onPress(workout)}
           onToggleFavorite={() => onToggleFavorite(workout)}

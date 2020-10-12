@@ -54,3 +54,16 @@ export function updateSession({ token, doneExerciseCount, finished = false, sess
     })
     .then(session => Maybe.maybe(session))
 }
+
+export function fetchLatestUnfinished({ token }: { token: string }) {
+  return fetch(`${getApiBaseUrl(ApiVersion.V2)}/workouts/sessions/latest-unfinished`, {
+    headers: {
+      ...getAuthorizationHeaders(token),
+    },
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then(workout => Maybe.maybe(workout))
+}

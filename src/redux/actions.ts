@@ -6,7 +6,6 @@ export enum ActionType {}
 export enum ActionType {
   GOT_TOKENS,
   UPDATED_HOMEPAGE,
-  LOADED_FAVORITE_WORKOUTS,
   LOADED_USERDATA,
   LOGOUT,
   SELECTED_WORKOUT,
@@ -37,10 +36,6 @@ export interface GotTokensAction extends Action {
 
 export interface LoadedUserDataAction extends Action {
   user: Maybe<User>
-}
-
-export interface LoadedWorkoutsAction extends Action {
-  workouts: Maybe<Workout[]>
 }
 
 export interface SetWorkoutFavoriteStatusAction extends Action {

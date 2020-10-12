@@ -4,7 +4,6 @@ import {
   Action,
   ActionType,
   LoadedHomepageAction,
-  LoadedWorkoutsAction,
   SetWorkoutFavoriteStatusAction,
   UpdateWorkoutCatalogAction
 } from '../actions'
@@ -21,21 +20,6 @@ const initialState = {
 
 export default function reducer(state = initialState, action: Action) {
   switch (action.type) {
-    case ActionType.LOADED_FAVORITE_WORKOUTS:
-      const { workouts: favoriteWorkouts } = action as LoadedWorkoutsAction
-      return {
-        ...state,
-        workoutCatalog: {
-          ...state.workoutCatalog,
-          ...(favoriteWorkouts.caseOf({
-            just: workoutTable => workoutTable.reduce((accumulator, workout) => ({
-              ...accumulator,
-              [workout.id]: workout,
-            }), {}),
-            nothing: () => ({})
-          }))
-        },
-      }
     case ActionType.SET_WORKOUT_FAVORITE_STATUS:
       const {favorite, workoutId} = action as SetWorkoutFavoriteStatusAction
       return {

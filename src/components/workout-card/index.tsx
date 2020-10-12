@@ -8,6 +8,7 @@ import { Intensity, Size as IntensitySize } from '../intensity'
 
 const plusIcon = require('../../../assets/plus-circle.png')
 const checkIcon = require('../../../assets/check-circle.png')
+const playIcon = require('./play.png')
 
 export enum Style {
   THEME,
@@ -16,9 +17,10 @@ export enum Style {
 }
 
 interface Props {
+  cardStyle: Style
+  showPlayButton?: boolean
   onPress?: () => void
   onToggleFavorite?: (favorite: boolean) => void
-  cardStyle: Style
   style?: ViewStyle
   themeOrWorkout: Partial<Workout>
 }
@@ -43,7 +45,7 @@ function getCardSize(style: Style) {
   }
 }
 
-export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp, style = {}, themeOrWorkout }: Props) {
+export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp, showPlayButton = false, style = {}, themeOrWorkout }: Props) {
   return (
     <TouchableOpacity style={[getCardSize(cardStyle), style]} activeOpacity={.8} onPress={onPress}>
       <ImageBackground source={{ uri: themeOrWorkout.posterUrl }} style={[styles.poster, getCardSize(cardStyle)]}
@@ -62,9 +64,13 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
           <Layout style={styles.footerContainer}>
             <Text style={styles.title}>{themeOrWorkout.title}</Text>
             {cardStyle !== Style.THEME && (
-              <TouchableOpacity onPress={() => onToggleFavorite(!themeOrWorkout.favorite)} activeOpacity={.5}>
-                <Image source={themeOrWorkout.favorite ? checkIcon : plusIcon} style={styles.plusIcon}/>
-              </TouchableOpacity>
+              showPlayButton ? (
+                <Image source={playIcon} style={styles.playIcon}/>
+              ) : (
+                <TouchableOpacity onPress={() => onToggleFavorite(!themeOrWorkout.favorite)} activeOpacity={.5}>
+                  <Image source={themeOrWorkout.favorite ? checkIcon : plusIcon} style={styles.plusIcon}/>
+                </TouchableOpacity>
+              )
             )}
           </Layout>
 
@@ -99,6 +105,13 @@ const styles = StyleSheet.create({
   plusIcon         : {
     height: 30,
     width : 30,
+  },
+  playIcon         : {
+    bottom  : 0,
+    height  : 69,
+    position: 'absolute',
+    right   : 0,
+    width   : 69,
   },
   featuresContainer: {
     flexDirection  : 'row',
