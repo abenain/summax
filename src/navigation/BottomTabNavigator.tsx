@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import i18n from 'i18n-js'
 import * as React from 'react'
-import { Image } from 'react-native'
+import { Image, Platform } from 'react-native'
 import { SummaxColors } from '../colors'
 import { MyWorkoutsScreen } from '../screens/my-workouts'
 import { StatsScreen } from '../screens/stats'
@@ -53,6 +53,11 @@ export function BottomTabNavigator() {
           fontFamily: 'nexaXBold',
           fontSize  : 12,
           lineHeight: 16,
+          paddingBottom: 8,
+        },
+        style: {
+          height: Platform.OS === 'ios' ? 100 : 60,
+          paddingTop: 8
         }
       }}
     >
