@@ -5,8 +5,10 @@ import { NoOp } from '../utils'
 
 export interface TimerConfig {
   countdown?: boolean
-  countdownFromMs?: number
+  initialValueMs?: number
+  notificationIntervalMs?: number
   onCountdownExpired?: () => void
+  onIntervalElapsed?: () => void
 }
 
 function formatNumberValue(value: number) {
@@ -21,21 +23,30 @@ export function format(durationMs: number) {
   return `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`
 }
 
-export function useTimer({ countdown, countdownFromMs, onCountdownExpired = NoOp } = {} as TimerConfig): [
+export function useTimer({ countdown, initialValueMs, notificationIntervalMs, onCountdownExpired = NoOp, onIntervalElapsed = NoOp } = {} as TimerConfig): [
   number,
   () => void,
   () => void,
   (newValueSeconds: number) => void
 ] {
   const latestTimeCapture = useRef(Maybe.nothing<moment.Moment>())
+  const nbElapsedPeriods = useRef(0)
   const isRunning = useRef(true)
   const animationFrameHandle = useRef(Maybe.nothing<number>())
-  const internalValue = useRef(countdownFromMs ? countdownFromMs : 0)
+  const internalValue = useRef(initialValueMs ? initialValueMs : 0)
   const [timerValue, setTimerValue] = useState(internalValue.current)
 
   const notifyTimerExpired = useCallback(() => {
-    onCountdownExpired()
+    if (onCountdownExpired && typeof onCountdownExpired === 'function') {
+      onCountdownExpired()
+    }
   }, [onCountdownExpired])
+
+  const notifyIntervalElapsed = useCallback(() => {
+    if (onIntervalElapsed && typeof onIntervalElapsed === 'function') {
+      onIntervalElapsed()
+    }
+  }, [onIntervalElapsed])
 
   function updateTimerValue() {
     const now = moment()
@@ -54,6 +65,15 @@ export function useTimer({ countdown, countdownFromMs, onCountdownExpired = NoOp
 
     latestTimeCapture.current = Maybe.just(now)
     setTimerValue(internalValue.current)
+
+    if (notificationIntervalMs) {
+      const previousNbElapsedPeriods = nbElapsedPeriods.current
+      nbElapsedPeriods.current = Math.floor(internalValue.current / notificationIntervalMs)
+
+      if (nbElapsedPeriods.current > previousNbElapsedPeriods) {
+        notifyIntervalElapsed()
+      }
+    }
 
     if (isRunning.current) {
       animationFrameHandle.current = Maybe.just(requestAnimationFrame(updateTimerValue))
