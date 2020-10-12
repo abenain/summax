@@ -2,8 +2,8 @@ import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navig
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
-import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
 import Constants from 'expo-constants'
+import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
@@ -33,6 +33,7 @@ const repsIcon = require('./reps.png')
 const nextIcon = require('./next.png')
 
 const KEEP_AWAKE_TAG = 'trainingScreen'
+const SESSION_REPORTING_INTERVAL_MS = 30000
 
 function getSmallSide({ height, width }: ScaledSize) {
   if (height < width) {
@@ -69,13 +70,13 @@ export function TrainingScreen() {
       appState.current.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      console.log('app is active again')
-      startTimer()
+      startCountdownTimer()
+      startTotalTimer()
     }
 
     if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
-      console.log('app is pausing now')
-      stopTimer()
+      stopCountdownTimer()
+      stopTotalTimer()
     }
 
     appState.current = nextAppState
@@ -124,16 +125,33 @@ export function TrainingScreen() {
       })
       navigation.navigate('Reward')
     }
-  }, [isFullscreen, selectedExerciseIndex])
+  }, [isFullscreen, selectedExerciseIndex, workoutSession.valueOr(null)])
 
-  const [timerValue, startTimer, stopTimer, setTimerValue] = useTimer({
+  const updateWorkoutSessionTimeSpent = useCallback(() => {
+    workoutSession.caseOf({
+      just   : session => {
+        callAuthenticatedWebservice(updateSession, {
+          sessionId: session._id,
+          timeSpentMs : SESSION_REPORTING_INTERVAL_MS,
+        })
+      },
+      nothing: NoOp,
+    })
+  }, [workoutSession.valueOr(null)])
+
+  const [countdownTimerValue, startCountdownTimer, stopCountdownTimer, setCountdownTimerValue] = useTimer({
     countdown         : true,
     onCountdownExpired: nextExercise,
   })
 
+  const [, startTotalTimer, stopTotalTimer, setTotalTimerValue] = useTimer({
+    notificationIntervalMs: SESSION_REPORTING_INTERVAL_MS,
+    onIntervalElapsed: updateWorkoutSessionTimeSpent
+  })
+
   useEffect(() => {
-    setTimerText(format(timerValue))
-  }, [Math.floor(timerValue / 1000)])
+    setTimerText(format(countdownTimerValue))
+  }, [Math.floor(countdownTimerValue / 1000)])
 
   useEffect(() => {
     const isTimedExercise = currentExercise.caseOf({
@@ -141,12 +159,16 @@ export function TrainingScreen() {
       nothing: () => false
     })
 
-    if (isTimedExercise && isPlaying) {
-      startTimer()
-    }
-
-    if (isTimedExercise && isPlaying === false) {
-      stopTimer()
+    if (isPlaying) {
+      startTotalTimer()
+      if (isTimedExercise) {
+        startCountdownTimer()
+      }
+    } else {
+      stopTotalTimer()
+      if (isTimedExercise) {
+        stopCountdownTimer()
+      }
     }
   }, [isPlaying])
 
@@ -158,7 +180,7 @@ export function TrainingScreen() {
           setCurrentExercise(Maybe.just(selectedExercise))
 
           if (selectedExercise.modality === ExerciseModality.TIME) {
-            setTimerValue(selectedExercise.duration * 1000)
+            setCountdownTimerValue(selectedExercise.duration * 1000)
           }
         }
       },
@@ -229,13 +251,16 @@ export function TrainingScreen() {
     return function componentWillUnmount() {
       AppState.removeEventListener('change', handleAppStateChange)
       deactivateKeepAwake(KEEP_AWAKE_TAG)
-      stopTimer()
+      stopCountdownTimer()
+      stopTotalTimer()
     }
   }, [])
 
   useFocusEffect(
     React.useCallback(() => {
       activateKeepAwake(KEEP_AWAKE_TAG)
+      setTotalTimerValue(0)
+      startTotalTimer()
     }, [])
   )
 
@@ -266,8 +291,10 @@ export function TrainingScreen() {
         setIsLeaving(false)
 
         if (isTimedExercise) {
-          startTimer()
+          startCountdownTimer()
         }
+
+        startTotalTimer()
       }}
       onQuit={() => {
         deactivateKeepAwake(KEEP_AWAKE_TAG)
@@ -362,8 +389,10 @@ export function TrainingScreen() {
                       })
 
                       if (isTimedExercise) {
-                        stopTimer()
+                        stopCountdownTimer()
                       }
+
+                      stopTotalTimer()
 
                       setIsLeaving(true)
 
