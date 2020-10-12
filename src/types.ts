@@ -26,6 +26,7 @@ export interface User {
   objectives: Objectives[]
   onboarded: boolean
   sex?: Sex
+  subscriptionPeriodEnd?: Date
   weightKg?: number
 }
 

@@ -35,6 +35,7 @@ const fr = {
 	'Home - Intensity'                             : 'Intensité',
 	'Home - No content available'                  : 'Nous n\'avons pas pu récupérer les données auprès du serveur, êtes vous connecté à internet?',
 	'Home - Popular workouts'                      : 'Les plus populaires',
+	'Home - Premium banner'                        : 'Decouvrir Summax Premium',
 	'Home - Selected for you'                      : 'Pour toi, {{firstname}}',
 	'Home - Target'                                : 'Zones ciblées',
 	'Intensity - High'                             : 'Haute',

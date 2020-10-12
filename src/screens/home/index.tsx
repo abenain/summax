@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { EVENTS } from '../../amplitude'
 import { DurationFilters } from '../../components/duration-filters'
 import { IntensityFilters } from '../../components/intensity-filters'
+import { PremiumBanner } from '../../components/premium-banner'
 import { Separator } from '../../components/separator'
 import { TargetFilters } from '../../components/target-filters'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
@@ -21,7 +22,7 @@ import { FeaturedWorkout } from './featuredWorkout'
 import { PopularWorkouts } from './popularWorkouts'
 
 export function HomeScreen() {
-  const { firstname = '' } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
+  const { firstname = '', subscriptionEndDate } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const { homepage, workoutCatalog } = useSelector(({ contents: { homepage, workoutCatalog } }: GlobalState) => ({
     homepage,
     workoutCatalog
@@ -46,7 +47,7 @@ export function HomeScreen() {
 
     dispatch({
       favorite,
-      type    : ActionType.SET_WORKOUT_FAVORITE_STATUS,
+      type: ActionType.SET_WORKOUT_FAVORITE_STATUS,
       workoutId,
     })
 
@@ -78,6 +79,12 @@ export function HomeScreen() {
       {homepage.caseOf({
         just   : homepage => (
           <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+
+            {Boolean(subscriptionEndDate) === false && (
+              <PremiumBanner onBannerPress={() => console.log('go to premium popup')}
+                             onCloseBanner={() => console.log('close banner')}/>
+            )}
+
             <Layout style={styles.titleContainer}>
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
             </Layout>
@@ -129,7 +136,7 @@ export function HomeScreen() {
             </ScrollView>
 
             <PopularWorkouts
-              workouts={homepage.popularWorkouts.map(({id}: {id: string}) => workoutCatalog[id])}
+              workouts={homepage.popularWorkouts.map(({ id }: { id: string }) => workoutCatalog[id])}
               onPress={navigateToWorkout}
               onToggleFavorite={toggleFavorite}/>
 

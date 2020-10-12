@@ -35,6 +35,7 @@ const en = {
 	'Home - Intensity'                             : 'Intensity',
 	'Home - No content available'                  : 'We could not fetch contents from the server for you, is your internet connectivity ok?',
 	'Home - Popular workouts'                      : 'Popular workouts',
+	'Home - Premium banner'                        : 'Try out Summax Premium',
 	'Home - Selected for you'                      : 'For you, {{firstname}}',
 	'Home - Target'                                : 'Target',
 	'Intensity - High'                             : 'High',
