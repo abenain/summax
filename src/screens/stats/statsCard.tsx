@@ -17,7 +17,7 @@ interface Props {
 function formatMinutesPerTraining(minutesPerTraining: number) {
   const hoursPer = Math.floor(minutesPerTraining / 60)
   const minutesPer = minutesPerTraining % 60
-  return `${hoursPer}h${minutesPer}`
+  return `${hoursPer}h${minutesPer.toString().padStart(2, '0')}`
 }
 
 export function StatsCard({ firstTrainingDate, style = {}, trainingCount, trainingTimeMinutes }: Props) {
