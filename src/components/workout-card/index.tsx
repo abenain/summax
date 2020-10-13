@@ -137,11 +137,13 @@ const styles = StyleSheet.create({
     borderRadius   : 30,
     height         : 23,
     justifyContent : 'center',
+    paddingTop     : 4,
     width          : 76,
   },
   premiumLabelText     : {
     color     : 'white',
-    fontFamily: 'nexaHeavy',
-    fontSize  : 11,
+    fontFamily: 'aktivGroteskBlackItalic',
+    fontSize  : 10,
+    lineHeight: 10
   },
 })

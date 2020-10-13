@@ -77,10 +77,11 @@ export default () => {
   function doLoadAssets() {
     return Promise.all([
       Font.loadAsync({
-        aktivGroteskXBold: require('../assets/fonts/AktivGrotesk-XBold.otf'),
-        nexaHeavy        : require('../assets/fonts/NexaHeavy.otf'),
-        nexaRegular      : require('../assets/fonts/NexaRegular.otf'),
-        nexaXBold        : require('../assets/fonts/Nexa-XBold.otf'),
+        aktivGroteskBlackItalic: require('../assets/fonts/AktivGrotesk-BlackItalic.otf'),
+        aktivGroteskXBold      : require('../assets/fonts/AktivGrotesk-XBold.otf'),
+        nexaHeavy              : require('../assets/fonts/NexaHeavy.otf'),
+        nexaRegular            : require('../assets/fonts/NexaRegular.otf'),
+        nexaXBold              : require('../assets/fonts/Nexa-XBold.otf'),
         ...AntDesign.font,
         ...Entypo.font,
       }),
@@ -135,15 +136,15 @@ export default () => {
       just   : () => {
         return store.getState().userData.user.caseOf({
           just   : user => {
-            if(!user.weightKg || !user.heightCm){
+            if (!user.weightKg || !user.heightCm) {
               return 'OnboardingSex'
             }
 
-            if(!user.objectives || user.objectives.length === 0){
+            if (!user.objectives || user.objectives.length === 0) {
               return 'OnboardingObjectives'
             }
 
-            if(!user.sportSkills || !user.planningIntensity){
+            if (!user.sportSkills || !user.planningIntensity) {
               return 'OnboardingSkillsAndPlanning'
             }
 
