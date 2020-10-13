@@ -123,6 +123,7 @@ const fr = {
 	'Training Exit - Are you sure'                 : 'Êtes-vous sûr de vouloir quitter l\'entraînement?',
 	'Training Exit - Quit'                         : 'Quitter l\'entraînement',
 	'Training Exit - Resume'                       : 'Retourner à l\'entraînement',
+	'Workout - Premium'                            : 'Premium',
 	'Workout Description - Add to Favorites'       : 'Ajouter à Mes entraînements',
 	'Workout Description - Remove from Favorites'  : 'Supprimer de Mes entraînements',
 	'Workout Description - Warm up'                : 'S\'échauffer',

@@ -42,6 +42,11 @@ export enum WorkoutDuration {
   LONG
 }
 
+export enum WorkoutPlan {
+  FREE,
+  PREMIUM,
+}
+
 export enum ExerciseModality {
   REPETITIONS,
   TIME,
@@ -63,6 +68,7 @@ export interface Workout {
   favorite: boolean
   id: string
   intensity: IntensityLevel
+  plan: WorkoutPlan
   posterUrl: string
   target: Target
   techniques: string[]
@@ -96,11 +102,11 @@ export interface Homepage {
 
 export interface WorkoutSession {
   _id: string
-  doneExerciseCount : number
-  finished          : boolean
-  timeSpentMs       : number
+  doneExerciseCount: number
+  finished: boolean
+  timeSpentMs: number
   totalExerciseCount: number
-  workoutId         : string
+  workoutId: string
 }
 
 export interface StatisticsData {

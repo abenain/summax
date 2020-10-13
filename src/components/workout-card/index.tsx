@@ -1,7 +1,9 @@
 import { Layout, Text } from '@ui-kitten/components'
+import i18n from 'i18n-js'
 import * as React from 'react'
 import { Dimensions, Image, ImageBackground, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
-import { Workout } from '../../types'
+import { SummaxColors } from '../../colors'
+import { Workout, WorkoutPlan } from '../../types'
 import { NoOp, PosterAspectRatio } from '../../utils'
 import { Duration, Size as DurationSize } from '../duration'
 import { Intensity, Size as IntensitySize } from '../intensity'
@@ -52,6 +54,12 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
                        imageStyle={{ borderRadius: 4, resizeMode: 'stretch' }}>
         <Layout style={styles.posterContents}>
 
+          {cardStyle !== Style.THEME && themeOrWorkout.plan === WorkoutPlan.PREMIUM && (
+            <Layout style={styles.premiumLabelContainer}>
+              <Text style={styles.premiumLabelText}>{i18n.t('Workout - Premium').toUpperCase()}</Text>
+            </Layout>
+          )}
+
           <Layout style={styles.posterFiller}/>
 
           {cardStyle !== Style.THEME && (
@@ -81,10 +89,10 @@ export function WorkoutCard({ cardStyle, onPress = NoOp, onToggleFavorite = NoOp
 }
 
 const styles = StyleSheet.create({
-  poster           : {
+  poster               : {
     borderRadius: 4,
   },
-  posterContents   : {
+  posterContents       : {
     position       : 'absolute',
     top            : 16,
     bottom         : 16,
@@ -92,35 +100,48 @@ const styles = StyleSheet.create({
     right          : 16,
     backgroundColor: 'transparent',
   },
-  posterFiller     : {
+  posterFiller         : {
     flex           : 1,
     backgroundColor: 'transparent',
   },
-  title            : {
+  title                : {
     color     : 'white',
     flex      : 1,
     fontFamily: 'nexaHeavy',
     fontSize  : 24,
   },
-  plusIcon         : {
+  plusIcon             : {
     height: 30,
     width : 30,
   },
-  playIcon         : {
+  playIcon             : {
     bottom  : 0,
     height  : 69,
     position: 'absolute',
     right   : 0,
     width   : 69,
   },
-  featuresContainer: {
+  featuresContainer    : {
     flexDirection  : 'row',
     backgroundColor: 'transparent',
     marginBottom   : 8,
   },
-  footerContainer  : {
+  footerContainer      : {
     flexDirection  : 'row',
     backgroundColor: 'transparent',
     alignItems     : 'center',
+  },
+  premiumLabelContainer: {
+    alignItems     : 'center',
+    backgroundColor: SummaxColors.lightishGreen,
+    borderRadius   : 30,
+    height         : 23,
+    justifyContent : 'center',
+    width          : 76,
+  },
+  premiumLabelText     : {
+    color     : 'white',
+    fontFamily: 'nexaHeavy',
+    fontSize  : 11,
   },
 })

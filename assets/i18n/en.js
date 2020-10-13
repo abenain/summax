@@ -123,6 +123,7 @@ const en = {
 	'Training Exit - Are you sure'                 : 'Do you really want to quit this workout?',
 	'Training Exit - Quit'                         : 'Quit workout',
 	'Training Exit - Resume'                       : 'Resume workout',
+	'Workout - Premium'                            : 'Premium',
 	'Workout Description - Add to Favorites'       : 'Add to My workouts',
 	'Workout Description - Remove from Favorites'  : 'Remove from My workouts',
 	'Workout Description - Warm up'                : 'Warm up',
