@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { ErrorPage } from '../../components/ErrorPage'
+import { PremiumBanner } from '../../components/premium-banner'
 import { Separator } from '../../components/separator'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
 import { ActionType } from '../../redux/actions'
@@ -52,6 +53,8 @@ export function ProfileScreen() {
       {user.caseOf({
         just   : user => (
           <ScrollView style={styles.mainContainer}>
+
+            <PremiumBanner canHideBanner={false} isPremium={moment().isBefore(user.subscriptionPeriodEnd)}/>
 
             <Text style={styles.title}>{i18n.t('Profile - Account')}</Text>
 
