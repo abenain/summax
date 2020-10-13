@@ -4,8 +4,10 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { SummaxColors } from '../../colors'
 
 const premiumBannerBackground = require('./premium-banner.png')
+const closeBannerIcon = require('./close.png')
 
 interface Props {
   canHideBanner?: boolean
@@ -37,7 +39,7 @@ export function PremiumBanner({ canHideBanner = true, isPremium }: Props) {
         canHideBanner && (
           <TouchableOpacity style={styles.premiumBannerCrossIcon} activeOpacity={.8}
                             onPress={() => setHideBanner(true)}>
-            <Text>X</Text>
+            <Image source={closeBannerIcon}/>
           </TouchableOpacity>
         )
       }
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     width       : '100%'
   },
   premiumBannerText               : {
+    color     : SummaxColors.midnightTransparency,
     fontFamily: 'nexaXBold',
     fontSize  : 14,
     marginLeft: 16,
