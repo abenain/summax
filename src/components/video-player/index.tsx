@@ -1,5 +1,6 @@
 import { Layout, Spinner } from '@ui-kitten/components'
-import { AVPlaybackStatus, Video } from 'expo-av'
+import { Audio, AVPlaybackStatus, Video } from 'expo-av'
+import { INTERRUPTION_MODE_ANDROID_DO_NOT_MIX, INTERRUPTION_MODE_IOS_DO_NOT_MIX } from 'expo-av/build/Audio'
 import * as React from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Dimensions, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
@@ -54,8 +55,12 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   const hideControlsTimeout = useRef<Maybe<number>>(Maybe.nothing())
 
   useEffect(() => {
-    if(!playlistLoaded && playlist && playlist.length){
+    if (!playlistLoaded && playlist && playlist.length) {
       setPlaylistLoaded(true)
+      Audio.setAudioModeAsync({
+        interruptionModeAndroid: INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+        interruptionModeIOS    : INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      })
     }
   }, [playlist])
 
@@ -86,7 +91,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     }
   }))
 
-  function handlePlaybackStatusUpdate_ios(status: AVPlaybackStatus){
+  function handlePlaybackStatusUpdate_ios(status: AVPlaybackStatus) {
     const newVideoStatus = (status.isLoaded && status.isPlaying && status.isBuffering === false) ? PlaybackStatus.PLAYING : PlaybackStatus.PAUSED
 
     setVideoIsLoaded(status.isLoaded)
@@ -96,28 +101,28 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     setPositionMs(status.isLoaded ? status.positionMillis : 0)
   }
 
-  function handlePlaybackStatusUpdate_android(status: AVPlaybackStatus){
+  function handlePlaybackStatusUpdate_android(status: AVPlaybackStatus) {
     const durationMillis = status.isLoaded ? status.durationMillis : 0
     const positionMillis = status.isLoaded ? status.positionMillis : 0
 
-    if(status.isLoaded){
+    if (status.isLoaded) {
       setVideoIsLoaded(status.isLoaded)
     }
     setVideoIsBuffering(status.isLoaded && status.isBuffering)
-    if(durationMillis){
+    if (durationMillis) {
       setDurationMs(durationMillis)
     }
-    if(positionMillis){
+    if (positionMillis) {
       setPositionMs(positionMillis)
     }
   }
 
   function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
-    if(Platform.OS === 'ios'){
+    if (Platform.OS === 'ios') {
       handlePlaybackStatusUpdate_ios(status)
     }
 
-    if(Platform.OS === 'android'){
+    if (Platform.OS === 'android') {
       handlePlaybackStatusUpdate_android(status)
     }
   }
@@ -138,8 +143,9 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
   function handlePress() {
     hideControlsTimeout.current.caseOf({
-      just: timeout => clearTimeout(timeout),
-      nothing: () => {}
+      just   : timeout => clearTimeout(timeout),
+      nothing: () => {
+      }
     })
     setShowControls(true)
     hideControlsTimeout.current = Maybe.just(setTimeout(() => setShowControls(false), 3000))
@@ -147,7 +153,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
   const videoIsPlaying = Platform.select({
     android: videoIsLoaded,
-    ios: videoIsLoaded && videoIsBuffering === false,
+    ios    : videoIsLoaded && videoIsBuffering === false,
   })
 
   return (
@@ -164,7 +170,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
             isMuted={false}
             onLoad={() => {
               setVideoIsLoaded(true)
-              if(Platform.OS !== 'ios'){
+              if (Platform.OS !== 'ios') {
                 setVideoStatus(PlaybackStatus.PLAYING)
               }
             }}
