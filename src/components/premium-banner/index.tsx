@@ -60,8 +60,9 @@ const styles = StyleSheet.create({
     top     : 0,
   },
   premiumBannerBackground         : {
-    height: 60,
-    width : '100%'
+    borderRadius: 5,
+    height      : 60,
+    width       : '100%'
   },
   premiumBannerText               : {
     fontFamily: 'nexaXBold',
