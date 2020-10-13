@@ -101,7 +101,7 @@ export function OnboardingSexScreen() {
         keyboardVerticalOffset={100}
         style={{ flex: 1 }}
       >
-        <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 2 }}>
+        <BaseScreen onContinue={goToNextPage} progress={{ current: 1, total: 3 }}>
           <HideWithKeyboard>
             <Text style={styles.instructions}>
               {i18n.t('Onboarding - Sex - Instructions')}

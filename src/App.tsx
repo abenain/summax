@@ -135,11 +135,19 @@ export default () => {
       just   : () => {
         return store.getState().userData.user.caseOf({
           just   : user => {
-            if (user.onboarded) {
-              return 'Home'
+            if(!user.weightKg || !user.heightCm){
+              return 'OnboardingSex'
             }
 
-            return user.weightKg && user.heightCm ? 'OnboardingObjectives' : 'OnboardingSex'
+            if(!user.objectives || user.objectives.length === 0){
+              return 'OnboardingObjectives'
+            }
+
+            if(!user.sportSkills || !user.planningIntensity){
+              return 'OnboardingSkillsAndPlanning'
+            }
+
+            return 'Home'
           },
           nothing: () => 'Login'
         })

@@ -6,6 +6,7 @@ import { Image, Platform, Text, View } from 'react-native'
 import { ForgotPasswordScreen } from '../screens/forgot-password'
 import { ForgotPasswordOtpScreen } from '../screens/forgot-password-otp'
 import { LoginScreen } from '../screens/login'
+import { OnboardingSkillsAndPlanningScreen } from '../screens/onboarding/OnboardingSkillsAndPlanningScreen'
 import { OnboardingObjectivesScreen } from '../screens/onboarding/OnboardingObjectivesScreen'
 import { OnboardingSexScreen } from '../screens/onboarding/OnboardingSexScreen'
 import { ProfileScreen } from '../screens/profile'
@@ -71,6 +72,8 @@ export function MainStackNavigator({ initialRouteName }: Props) {
       <Stack.Screen name="OnboardingSex" component={OnboardingSexScreen}
                     options={{ ...onboardingScreensConfig, headerBackImage: null }}/>
       <Stack.Screen name="OnboardingObjectives" component={OnboardingObjectivesScreen}
+                    options={{ ...onboardingScreensConfig, headerRight: () => <View style={{ padding: 6 }}/> }}/>
+      <Stack.Screen name="OnboardingSkillsAndPlanning" component={OnboardingSkillsAndPlanningScreen}
                     options={{ ...onboardingScreensConfig, headerRight: () => <View style={{ padding: 6 }}/> }}/>
       <Stack.Screen name='Home' component={BottomTabNavigator} options={{ headerShown: false }}/>
       <Stack.Screen name='Profile' component={ProfileScreen}

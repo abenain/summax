@@ -15,6 +15,18 @@ export enum Objectives {
   WEIGHT = 'weight',
 }
 
+export enum Skills {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ATHLETE = 'athlete',
+}
+
+export enum PlanningIntensity {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  INTENSE = 'intense',
+}
+
 export interface User {
   _id: string
   dob: Date
@@ -25,7 +37,9 @@ export interface User {
   lastname: string
   objectives: Objectives[]
   onboarded: boolean
+  planningIntensity?: PlanningIntensity
   sex?: Sex
+  sportSkills?: Skills
   subscriptionPeriodEnd?: Date
   weightKg?: number
 }
