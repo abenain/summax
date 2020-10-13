@@ -26,6 +26,26 @@ export function authenticate(email: string, plainTextPassword: string) {
     })
 }
 
+export function authenticateWithFacebook(token: string) {
+  return fetch(`${getBackendUrl()}/auth/facebook`, {
+    method : 'POST',
+    headers: {
+      ...getClientIdHeader(),
+      ...getJsonPayloadHeaders()
+    },
+    body   : JSON.stringify({ token })
+  })
+    .then(async response => {
+      await checkFetchResponseIsOKOrThrow(response)
+      return response.json()
+    })
+    .then((tokens: Tokens) => Maybe.maybe(tokens))
+    .catch(error => {
+      console.log(error)
+      return Maybe.nothing<Tokens>()
+    })
+}
+
 export function fetchTokensFromRefreshToken(refreshToken: string) {
   return fetch(`${getBackendUrl()}/auth/local/refresh`, {
     method : 'POST',

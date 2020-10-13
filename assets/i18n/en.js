@@ -41,6 +41,7 @@ const en = {
 	'Intensity - High'                             : 'High',
 	'Intensity - Low'                              : 'Low',
 	'Intensity - Medium'                           : 'Medium',
+	'Login With Facebook'                          : 'Login With Facebook',
 	'My Workouts - Favorite workouts'              : 'Favorite workouts',
 	'My Workouts - No favorite workout'            : 'You have no favorite workout for the moment',
 	'My Workouts - Resume'                         : 'Resume',

@@ -31,6 +31,7 @@ export interface User {
   _id: string
   dob: Date
   email: string
+  facebookId?: string
   favoriteWorkouts: string[]
   firstname: string
   heightCm?: number

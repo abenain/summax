@@ -1,6 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
+import * as Facebook from 'expo-facebook'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -17,7 +18,7 @@ import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { fetchHomepageSequence, fetchUserDataSequence } from '../../sequences'
 import { NoOp } from '../../utils'
-import { authenticate } from '../../webservices/auth'
+import { authenticate, authenticateWithFacebook } from '../../webservices/auth'
 import { Form as LoginForm } from './form'
 
 const backgroundImage = require('../../../assets/login_background.png')
@@ -101,6 +102,37 @@ export function LoginScreen({ navigation }: Props) {
     navigation.navigate('SignUp')
   }
 
+  function loginWithFacebook() {
+    Amplitude.logEvent(EVENTS.LOGIN_WITH_FACEBOOK)
+    return Facebook.initializeAsync()
+      .then(Facebook.logInWithReadPermissionsAsync)
+      .then(response => {
+        if(response.type === 'success'){
+          setLoading(true)
+          authenticateWithFacebook(response.token).then(maybeTokens => {
+            maybeTokens.caseOf({
+              just   : ({ access, refresh }) => {
+                Promise.all([
+                  fetchHomepageSequence(access),
+                  fetchUserDataSequence(access)
+                ]).then(() => {
+                  dispatch({
+                    type: ActionType.GOT_TOKENS,
+                    access,
+                    refresh,
+                  })
+                })
+              },
+              nothing: () => {
+                setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
+                setLoading(false)
+              }
+            })
+          })
+        }
+      })
+  }
+
   return isLoading ? (
     <Loading/>
   ) : (
@@ -134,6 +166,7 @@ export function LoginScreen({ navigation }: Props) {
           onForgotPassword={(email?: string) => {
             navigation.navigate('ForgotPassword', { email })
           }}
+          onLoginWithFacebookPressed={loginWithFacebook}
           onPasswordChanged={(password: string) => {
             setPassword(password)
             setError(Maybe.nothing())

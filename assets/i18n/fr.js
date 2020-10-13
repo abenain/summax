@@ -41,6 +41,7 @@ const fr = {
 	'Intensity - High'                             : 'Haute',
 	'Intensity - Low'                              : 'Faible',
 	'Intensity - Medium'                           : 'Moyen',
+	'Login With Facebook'                          : 'Se connecter avec Facebook',
 	'My Workouts - Favorite workouts'              : 'Entraînements enregistrés',
 	'My Workouts - No favorite workout'            : 'Vous n\'avez aucun entraînement enregistré pour le moment',
 	'My Workouts - Resume'                         : 'Reprendre',

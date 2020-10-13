@@ -47,6 +47,11 @@ export function ProfileScreen() {
   const user = useSelector(({ userData: { user } }: GlobalState) => user)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
 
+  function logout(){
+    dispatch({ type: ActionType.LOGOUT })
+    // TODO: logout from facebook here
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
 
@@ -135,7 +140,7 @@ export function ProfileScreen() {
 
             <SummaxButton
               buttonStyle={ButtonStyle.GREEN}
-              onPress={() => dispatch({ type: ActionType.LOGOUT })}
+              onPress={logout}
               text={i18n.t('Sign out')}
             />
 

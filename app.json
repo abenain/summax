@@ -31,6 +31,8 @@
       "config": {
         "usesNonExemptEncryption": false
       }
-    }
+    },
+    "facebookAppId": "756652878272329",
+    "facebookDisplayName": "Summax"
   }
 }
