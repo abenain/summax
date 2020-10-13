@@ -24,7 +24,7 @@ export function SignUpOtpScreen() {
   const [isLoading, setLoading] = useState(false)
   const [otp, setOtp] = useState('')
   const navigation = useNavigation()
-  const route = useRoute<RouteProp<RootStackParamList, 'Workout'>>()
+  const route = useRoute<RouteProp<RootStackParamList, 'SignUpOtp'>>()
   const { id: userId } = route.params
   const dispatch = useDispatch()
 

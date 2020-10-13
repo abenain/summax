@@ -10,6 +10,7 @@ import { Maybe } from 'tsmonad'
 import { RootStackParamList } from '../../App'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
+import { useNavigateToWorkout } from '../../hooks/useNavigateToWorkout'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
@@ -32,6 +33,7 @@ export function FilterScreen({}: Props) {
   const [isLoading, setIsLoading] = useState(true)
   const [workoutIds, setWorkoutIds] = useState(Maybe.nothing<string[]>())
   const workoutCatalog = useSelector(({ contents: { workoutCatalog } }: GlobalState) => workoutCatalog)
+  const navigateToWorkout = useNavigateToWorkout()
 
   const loadWorkouts = useCallback(() => {
     return callAuthenticatedWebservice(WorkoutServices.fetchWorkouts, {
@@ -60,13 +62,6 @@ export function FilterScreen({}: Props) {
 
   if (isLoading) {
     return <Loading/>
-  }
-
-  function navigateToWorkout(workout: Workout) {
-    navigation.navigate('Workout', {
-      id   : workout.id,
-      title: workout.title,
-    })
   }
 
   function toggleFavorite(workout: Workout) {

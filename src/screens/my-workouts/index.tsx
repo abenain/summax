@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
@@ -10,6 +9,7 @@ import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
 import { Separator } from '../../components/separator'
 import { Style as WorkoutCardStyle, WorkoutCard } from '../../components/workout-card'
+import { useNavigateToWorkout } from '../../hooks/useNavigateToWorkout'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
@@ -24,12 +24,12 @@ const { width: screenWidth } = Dimensions.get('window')
 export function MyWorkoutsScreen() {
   const [isLoading, setLoading] = useState(false)
   const dispatch = useDispatch()
-  const navigation = useNavigation()
   const { user, workoutCatalog } = useSelector(({ contents: { workoutCatalog }, userData: { user } }: GlobalState) => ({
     user,
     workoutCatalog
   }))
   const [latestUnfinishedWorkout, setLatestUnfinishedWorkout] = useState(Maybe.nothing<Workout>())
+  const navigateToWorkout = useNavigateToWorkout()
 
   const favoriteWorkouts = useMemo(() => user.caseOf({
     just   : user => user.favoriteWorkouts.map(id => workoutCatalog[id]),
@@ -68,10 +68,6 @@ export function MyWorkoutsScreen() {
       loadLatestUnfinished()
     ]).then(() => setLoading(false))
   }, [])
-
-  function navigateToWorkout(workout: Workout) {
-    navigation.navigate('Workout', { id: workout.id, title: workout.title })
-  }
 
   function remove(workoutId) {
     setLoading(true)

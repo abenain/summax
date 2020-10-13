@@ -14,9 +14,10 @@ import { PremiumBanner } from '../../components/premium-banner'
 import { Separator } from '../../components/separator'
 import { TargetFilters } from '../../components/target-filters'
 import { Style as WorkoutCardSize, WorkoutCard } from '../../components/workout-card'
+import { useNavigateToWorkout } from '../../hooks/useNavigateToWorkout'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
-import { Target, Workout } from '../../types'
+import { Target } from '../../types'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutService from '../../webservices/workouts'
 import { FeaturedWorkout } from './featuredWorkout'
@@ -30,14 +31,11 @@ export function HomeScreen() {
   }))
   const navigation = useNavigation()
   const dispatch = useDispatch()
+  const navigateToWorkout = useNavigateToWorkout()
 
   useEffect(function componentDidMount() {
     Amplitude.logEvent(EVENTS.SHOWED_HOME_PAGE)
   }, [])
-
-  function navigateToWorkout(workout: Workout) {
-    navigation.navigate('Workout', { id: workout.id, title: workout.title })
-  }
 
   function navigateToFilterScreen(filterValues: { subfilter?: string, title?: string, type: string, value: string | number }) {
     navigation.navigate('Filter', filterValues)
@@ -82,7 +80,7 @@ export function HomeScreen() {
           <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
 
             <PremiumBanner isPremium={Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)}
-                           onBannerPress={() => console.log('go to premium popup')} />
+                           onBannerPress={() => console.log('go to premium popup')}/>
 
             <Layout style={styles.titleContainer}>
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
