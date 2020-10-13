@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
+import moment from 'moment'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from 'react-native'
@@ -22,7 +23,7 @@ import { FeaturedWorkout } from './featuredWorkout'
 import { PopularWorkouts } from './popularWorkouts'
 
 export function HomeScreen() {
-  const { firstname = '', subscriptionEndDate } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
+  const { firstname = '', subscriptionPeriodEnd } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
   const { homepage, workoutCatalog } = useSelector(({ contents: { homepage, workoutCatalog } }: GlobalState) => ({
     homepage,
     workoutCatalog
@@ -80,10 +81,8 @@ export function HomeScreen() {
         just   : homepage => (
           <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
 
-            {Boolean(subscriptionEndDate) === false && (
-              <PremiumBanner onBannerPress={() => console.log('go to premium popup')}
-                             onCloseBanner={() => console.log('close banner')}/>
-            )}
+            <PremiumBanner isPremium={Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)}
+                           onBannerPress={() => console.log('go to premium popup')} />
 
             <Layout style={styles.titleContainer}>
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>
