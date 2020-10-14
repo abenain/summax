@@ -51,7 +51,7 @@ export function OnboardingObjectivesScreen() {
           })
 
           fetchHomepageSequence().then(() => {
-            navigation.navigate('Home')
+            navigation.navigate('OnboardingSkillsAndPlanning')
           })
 
         },
