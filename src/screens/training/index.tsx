@@ -461,10 +461,9 @@ const styles = StyleSheet.create({
   progressContainer: {
     alignItems     : 'center',
     backgroundColor: 'black',
-    height         : 48,
     justifyContent : 'center',
     marginBottom   : 8,
-    paddingBottom  : 8,
+    paddingVertical  : 8,
   },
   progressText     : {
     color     : 'white',
