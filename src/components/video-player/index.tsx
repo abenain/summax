@@ -4,7 +4,9 @@ import { INTERRUPTION_MODE_ANDROID_DO_NOT_MIX, INTERRUPTION_MODE_IOS_DO_NOT_MIX 
 import * as React from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Dimensions, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import * as Progress from 'react-native-progress'
 import { Maybe } from 'tsmonad'
+import { SummaxColors } from '../../colors'
 import { Exercise } from '../../types'
 import { NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
@@ -191,6 +193,13 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
           />
         )}
 
+        {fullscreen && (
+          <Layout style={styles.progressContainer}>
+            <Progress.Bar progress={Math.max(currentPlaylistItem, 0) / playlist.length}
+                          width={100} color={SummaxColors.lightishGreen}/>
+          </Layout>
+        )}
+
         <ControlBar
           disabled={videoIsPlaying === false}
           durationMs={durationMs}
@@ -214,7 +223,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 })
 
 const styles = StyleSheet.create({
-  loadingContainer: {
+  loadingContainer : {
     alignItems     : 'center',
     bottom         : 0,
     backgroundColor: 'transparent',
@@ -223,5 +232,13 @@ const styles = StyleSheet.create({
     position       : 'absolute',
     right          : 0,
     top            : 0,
+  },
+  progressContainer: {
+    backgroundColor: 'transparent',
+    height         : 32,
+    position       : 'absolute',
+    right          : 16,
+    top            : 16,
+    width          : 100,
   },
 })

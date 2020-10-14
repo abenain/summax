@@ -132,6 +132,7 @@ const en = {
 	'Training - Next exercise'                     : 'Next exercise',
 	'Training - Quit training'                     : 'I\'m done',
 	'Training - Quit warmup'                       : 'Go to workout',
+	'Training - Workout progress'                  : 'Workout progress',
 	'Training Exit - Are you sure'                 : 'Do you really want to quit this workout?',
 	'Training Exit - Quit'                         : 'Quit workout',
 	'Training Exit - Resume'                       : 'Resume workout',

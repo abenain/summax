@@ -10,10 +10,12 @@ import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppState, Dimensions, Image, Platform, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
+import * as Progress from 'react-native-progress'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { EVENTS } from '../../amplitude'
 import { RootStackParamList } from '../../App'
+import { SummaxColors } from '../../colors'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
 import { ButtonStyle, SummaxButton } from '../../components/summax-button/SummaxButton'
@@ -306,6 +308,8 @@ export function TrainingScreen() {
       }/>
   }
 
+  const { width: screenWidth } = Dimensions.get('window')
+
   return getWorkout().caseOf({
     just   : workout => (
       <>
@@ -330,8 +334,16 @@ export function TrainingScreen() {
 
           {isFullscreen === false && (
             <SafeAreaView style={styles.safeContentsArea}>
-              <Layout style={styles.contents}>
 
+              <Layout style={styles.progressContainer}>
+                <Text style={[styles.progressText, { marginBottom: 4, }]}>{i18n.t('Training - Workout progress')}</Text>
+                <Progress.Bar progress={Math.max(selectedExerciseIndex, 0) / workout.exercises.length}
+                              width={screenWidth - 32} color={SummaxColors.lightishGreen}/>
+                <Text
+                  style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(selectedExerciseIndex, 0) * 100 / workout.exercises.length)}%</Text>
+              </Layout>
+
+              <Layout style={styles.contents}>
                 <Layout style={styles.controlsContainer}>
 
                   <SummaxButton
@@ -446,8 +458,20 @@ const styles = StyleSheet.create({
     fontSize  : 30,
     lineHeight: 30,
   },
+  progressContainer: {
+    alignItems     : 'center',
+    backgroundColor: 'black',
+    height         : 48,
+    justifyContent : 'center',
+    marginBottom   : 8,
+    paddingBottom  : 8,
+  },
+  progressText     : {
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
+  },
   controlsContainer: {
-    marginTop    : 33,
     flexDirection: 'row',
     marginBottom : 33,
   },
