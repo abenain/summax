@@ -1,4 +1,4 @@
-import { Layout, Spinner } from '@ui-kitten/components'
+import { Layout, Spinner, Text } from '@ui-kitten/components'
 import { Audio, AVPlaybackStatus, Video } from 'expo-av'
 import { INTERRUPTION_MODE_ANDROID_DO_NOT_MIX, INTERRUPTION_MODE_IOS_DO_NOT_MIX } from 'expo-av/build/Audio'
 import * as React from 'react'
@@ -197,6 +197,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
           <Layout style={styles.progressContainer}>
             <Progress.Bar progress={Math.max(currentPlaylistItem, 0) / playlist.length}
                           width={100} color={SummaxColors.lightishGreen}/>
+            <Text
+              style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(currentPlaylistItem, 0) * 100 / playlist.length)}%</Text>
           </Layout>
         )}
 
@@ -234,11 +236,16 @@ const styles = StyleSheet.create({
     top            : 0,
   },
   progressContainer: {
+    alignItems     : 'center',
     backgroundColor: 'transparent',
-    height         : 32,
     position       : 'absolute',
     right          : 16,
     top            : 16,
     width          : 100,
+  },
+  progressText     : {
+    color     : 'white',
+    fontFamily: 'nexaXBold',
+    fontSize  : 14,
   },
 })
