@@ -131,8 +131,8 @@ export function TrainingScreen() {
     workoutSession.caseOf({
       just   : session => {
         callAuthenticatedWebservice(updateSession, {
-          sessionId: session._id,
-          timeSpentMs : SESSION_REPORTING_INTERVAL_MS,
+          sessionId  : session._id,
+          timeSpentMs: SESSION_REPORTING_INTERVAL_MS,
         })
       },
       nothing: NoOp,
@@ -146,7 +146,7 @@ export function TrainingScreen() {
 
   const [, startTotalTimer, stopTotalTimer, setTotalTimerValue] = useTimer({
     notificationIntervalMs: SESSION_REPORTING_INTERVAL_MS,
-    onIntervalElapsed: updateWorkoutSessionTimeSpent
+    onIntervalElapsed     : updateWorkoutSessionTimeSpent
   })
 
   useEffect(() => {
@@ -308,110 +308,115 @@ export function TrainingScreen() {
 
   return getWorkout().caseOf({
     just   : workout => (
-      <SafeAreaView
-        style={[styles.mainContainer, { paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }]}>
+      <>
 
-        <VideoPlayer
-          ref={videoPlayer}
-          currentPlaylistItem={selectedExerciseIndex}
-          fullscreen={isFullscreen}
-          height={233}
-          onFullscreenButtonPress={onFullscreenButtonPress}
-          onPlaybackStatusChanged={(status) => {
-            setIsPlaying(status === PlaybackStatus.PLAYING)
-          }}
-          width={screenWidthPortrait.current}
-          playlist={getPlaylist()}
-        />
+        <SafeAreaView style={{ flex: 0, backgroundColor: 'black' }}/>
 
-        {isFullscreen === false && (
-          <SafeAreaView style={styles.safeContentsArea}>
-            <Layout style={styles.contents}>
+        <SafeAreaView
+          style={[styles.mainContainer, { paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }]}>
 
-              <Layout style={styles.controlsContainer}>
+          <VideoPlayer
+            ref={videoPlayer}
+            currentPlaylistItem={selectedExerciseIndex}
+            fullscreen={isFullscreen}
+            height={233}
+            onFullscreenButtonPress={onFullscreenButtonPress}
+            onPlaybackStatusChanged={(status) => {
+              setIsPlaying(status === PlaybackStatus.PLAYING)
+            }}
+            width={screenWidthPortrait.current}
+            playlist={getPlaylist()}
+          />
 
-                <SummaxButton
-                  buttonStyle={ButtonStyle.WHITE}
-                  style={styles.chronoRepControl}>
-                  {
-                    currentExercise.caseOf({
-                      just   : exercise => {
-                        const icon = currentExercise && exercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
-                        const text = currentExercise && exercise.modality === ExerciseModality.TIME ? timerText : `${exercise.duration} reps`
+          {isFullscreen === false && (
+            <SafeAreaView style={styles.safeContentsArea}>
+              <Layout style={styles.contents}>
 
-                        return (
-                          <>
-                            <Image
-                              source={icon}
-                              style={styles.clockIcon}
-                              resizeMode={'contain'}/>
-                            <Text style={[styles.controlsText, styles.timerText]}>{text}</Text>
-                          </>
-                        )
-                      },
-                      nothing: () => null
-                    })
-                  }
-                </SummaxButton>
+                <Layout style={styles.controlsContainer}>
 
-                <SummaxButton
-                  buttonStyle={ButtonStyle.GREEN}
-                  style={styles.nextControl}
-                  onPress={nextExercise}>
-                  <Image
-                    source={nextIcon}
-                    style={styles.nextIcon}
-                    resizeMode={'contain'}/>
-                  <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
-                </SummaxButton>
-              </Layout>
+                  <SummaxButton
+                    buttonStyle={ButtonStyle.WHITE}
+                    style={styles.chronoRepControl}>
+                    {
+                      currentExercise.caseOf({
+                        just   : exercise => {
+                          const icon = currentExercise && exercise.modality === ExerciseModality.TIME ? greenClockIcon : repsIcon
+                          const text = currentExercise && exercise.modality === ExerciseModality.TIME ? timerText : `${exercise.duration} reps`
 
-              <Layout style={{ flex: 1 }}>
-                <ExerciseList
-                  activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
-                  exercises={workout.exercises}
-                  onPress={index => selectExerciseAt(index, true)}
-                  ref={exerciseList}
-                />
-              </Layout>
-
-              <Layout style={styles.buttonContainer}>
-                <SummaxButton
-                  buttonStyle={ButtonStyle.GREEN}
-                  text={warmup ? i18n.t('Training - Quit warmup') : i18n.t('Training - Quit training')}
-                  onPress={() => {
-                    if (warmup) {
-                      navigation.replace('Training', {})
-                    } else {
-                      const isTimedExercise = currentExercise.caseOf({
-                        just   : exercise => exercise.modality === ExerciseModality.TIME,
-                        nothing: () => false
-                      })
-
-                      if (isTimedExercise) {
-                        stopCountdownTimer()
-                      }
-
-                      stopTotalTimer()
-
-                      setIsLeaving(true)
-
-                      Amplitude.logEventWithProperties(EVENTS.PRESSED_LEAVE_COURSE_BTN, {
-                        course  : workout.title,
-                        exercise: currentExercise.caseOf(({
-                          just   : ({ title }) => title,
-                          nothing: () => ''
-                        }))
+                          return (
+                            <>
+                              <Image
+                                source={icon}
+                                style={styles.clockIcon}
+                                resizeMode={'contain'}/>
+                              <Text style={[styles.controlsText, styles.timerText]}>{text}</Text>
+                            </>
+                          )
+                        },
+                        nothing: () => null
                       })
                     }
-                  }}
-                />
-              </Layout>
+                  </SummaxButton>
 
-            </Layout>
-          </SafeAreaView>
-        )}
-      </SafeAreaView>
+                  <SummaxButton
+                    buttonStyle={ButtonStyle.GREEN}
+                    style={styles.nextControl}
+                    onPress={nextExercise}>
+                    <Image
+                      source={nextIcon}
+                      style={styles.nextIcon}
+                      resizeMode={'contain'}/>
+                    <Text style={[styles.controlsText, styles.nextText]}>{i18n.t('Training - Next exercise')}</Text>
+                  </SummaxButton>
+                </Layout>
+
+                <Layout style={{ flex: 1 }}>
+                  <ExerciseList
+                    activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
+                    exercises={workout.exercises}
+                    onPress={index => selectExerciseAt(index, true)}
+                    ref={exerciseList}
+                  />
+                </Layout>
+
+                <Layout style={styles.buttonContainer}>
+                  <SummaxButton
+                    buttonStyle={ButtonStyle.GREEN}
+                    text={warmup ? i18n.t('Training - Quit warmup') : i18n.t('Training - Quit training')}
+                    onPress={() => {
+                      if (warmup) {
+                        navigation.replace('Training', {})
+                      } else {
+                        const isTimedExercise = currentExercise.caseOf({
+                          just   : exercise => exercise.modality === ExerciseModality.TIME,
+                          nothing: () => false
+                        })
+
+                        if (isTimedExercise) {
+                          stopCountdownTimer()
+                        }
+
+                        stopTotalTimer()
+
+                        setIsLeaving(true)
+
+                        Amplitude.logEventWithProperties(EVENTS.PRESSED_LEAVE_COURSE_BTN, {
+                          course  : workout.title,
+                          exercise: currentExercise.caseOf(({
+                            just   : ({ title }) => title,
+                            nothing: () => ''
+                          }))
+                        })
+                      }
+                    }}
+                  />
+                </Layout>
+
+              </Layout>
+            </SafeAreaView>
+          )}
+        </SafeAreaView>
+      </>
     ),
     nothing: () => <ErrorPage/>
   })
@@ -420,7 +425,7 @@ export function TrainingScreen() {
 const styles = StyleSheet.create({
   mainContainer    : {
     alignItems     : 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     flex           : 1,
   },
   safeContentsArea : {
