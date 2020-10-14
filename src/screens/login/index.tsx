@@ -104,7 +104,7 @@ export function LoginScreen({ navigation }: Props) {
 
   function loginWithFacebook() {
     Amplitude.logEvent(EVENTS.LOGIN_WITH_FACEBOOK)
-    return Facebook.initializeAsync()
+    return Facebook.initializeAsync("756652878272329", "Summax")
       .then(Facebook.logInWithReadPermissionsAsync)
       .then(response => {
         if(response.type === 'success'){
