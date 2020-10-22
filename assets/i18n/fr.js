@@ -107,6 +107,7 @@ const fr = {
 	'Sign in - Forgot password'                    : 'Mot de passe oublié?',
 	'Sign in - Go to sign up'                      : 'Inscrivez-vous',
 	'Sign in - Incorrect credentials'              : 'Ces identifiants sont incorrects',
+	'Sign in - Network error'                      : 'Impossible de se connecter aux serveurs\nEtes-vous connecté à internet?',
 	'Sign in - No account yet'                     : 'Pas encore de compte?',
 	'Sign out'                                     : 'Se déconnecter',
 	'Sign up'                                      : 'S\'inscrire',

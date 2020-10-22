@@ -75,7 +75,7 @@ export function LoginScreen({ navigation }: Props) {
     setError(Maybe.nothing())
     setLoading(true)
 
-    authenticate(email, password).then(maybeTokens => {
+    authenticate(email, password).then(({tokens: maybeTokens, error: maybeError}) => {
       maybeTokens.caseOf({
         just   : ({ access, refresh }) => {
           Promise.all([
@@ -90,8 +90,21 @@ export function LoginScreen({ navigation }: Props) {
           })
         },
         nothing: () => {
-          setError(Maybe.just(i18n.t('Sign in - Incorrect credentials')))
+          const errorMessage = maybeError.caseOf({
+            just: error => {
+              if(error.message === 'Network request failed'){
+                return i18n.t('Sign in - Network error')
+              }
+
+              return i18n.t('Sign in - Incorrect credentials')
+            },
+            nothing: () => i18n.t('Sign in - Incorrect credentials')
+          })
+
+          setError(Maybe.just(errorMessage))
           setLoading(false)
+
+
         }
       })
 

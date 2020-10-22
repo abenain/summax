@@ -107,6 +107,7 @@ const en = {
 	'Sign in - Forgot password'                    : 'Forgot password?',
 	'Sign in - Go to sign up'                      : 'Sign up',
 	'Sign in - Incorrect credentials'              : 'These credentials don\'t seem to work',
+	'Sign in - Network error'                      : 'Couldn\'t connect to the servers\nPlease check your internet connection',
 	'Sign in - No account yet'                     : 'Don\'t have an account?',
 	'Sign out'                                     : 'Sign out',
 	'Sign up'                                      : 'Sign up',

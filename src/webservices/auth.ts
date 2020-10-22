@@ -19,10 +19,16 @@ export function authenticate(email: string, plainTextPassword: string) {
       await checkFetchResponseIsOKOrThrow(response)
       return response.json()
     })
-    .then((tokens: Tokens) => Maybe.maybe(tokens))
+    .then((tokens: Tokens) => ({
+      tokens: Maybe.just(tokens),
+      error: Maybe.nothing<Error>()
+    }))
     .catch(error => {
       console.log(error)
-      return Maybe.nothing<Tokens>()
+      return {
+        tokens: Maybe.nothing<Tokens>(),
+        error: Maybe.just<Error>(error)
+      }
     })
 }
 
