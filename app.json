@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "2.1.6",
+    "version": "2.1.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,7 @@
     ],
     "android": {
       "package": "fr.summax.app",
-      "versionCode": 213
+      "versionCode": 218
     },
     "ios": {
       "bundleIdentifier": "fr.summax.app",
@@ -33,6 +33,7 @@
       }
     },
     "facebookAppId": "756652878272329",
-    "facebookDisplayName": "Summax"
+    "facebookDisplayName": "Summax",
+    "facebookScheme": "fb756652878272329",
   }
 }
