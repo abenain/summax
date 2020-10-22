@@ -21,6 +21,7 @@ import { NoOp } from '../../utils'
 import { authenticate, authenticateWithFacebook } from '../../webservices/auth'
 import { Form as LoginForm } from './form'
 
+const { expo: { facebookAppId = '', facebookDisplayName = '' } = {} } = require('../../../app.json')
 const backgroundImage = require('../../../assets/login_background.png')
 
 interface Props {
@@ -75,7 +76,7 @@ export function LoginScreen({ navigation }: Props) {
     setError(Maybe.nothing())
     setLoading(true)
 
-    authenticate(email, password).then(({tokens: maybeTokens, error: maybeError}) => {
+    authenticate(email, password).then(({ tokens: maybeTokens, error: maybeError }) => {
       maybeTokens.caseOf({
         just   : ({ access, refresh }) => {
           Promise.all([
@@ -91,8 +92,8 @@ export function LoginScreen({ navigation }: Props) {
         },
         nothing: () => {
           const errorMessage = maybeError.caseOf({
-            just: error => {
-              if(error.message === 'Network request failed'){
+            just   : error => {
+              if (error.message === 'Network request failed') {
                 return i18n.t('Sign in - Network error')
               }
 
@@ -103,8 +104,6 @@ export function LoginScreen({ navigation }: Props) {
 
           setError(Maybe.just(errorMessage))
           setLoading(false)
-
-
         }
       })
 
@@ -117,10 +116,13 @@ export function LoginScreen({ navigation }: Props) {
 
   function loginWithFacebook() {
     Amplitude.logEvent(EVENTS.LOGIN_WITH_FACEBOOK)
-    return Facebook.initializeAsync({})
-      .then(() => Facebook.logInWithReadPermissionsAsync({permissions: ["public_profile", "email"]}))
+    return Facebook.initializeAsync({
+      appId  : facebookAppId,
+      appName: facebookDisplayName,
+    })
+      .then(() => Facebook.logInWithReadPermissionsAsync({ permissions: ['public_profile', 'email'] }))
       .then(response => {
-        if(response.type === 'success'){
+        if (response.type === 'success') {
           setLoading(true)
           authenticateWithFacebook(response.token).then(maybeTokens => {
             maybeTokens.caseOf({
