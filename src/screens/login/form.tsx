@@ -44,6 +44,7 @@ export function Form({ emailValue = '', onEmailChanged = NoOp, onForgotPassword,
         value={emailValue}
         onChangeText={onEmailChanged}
         textStyle={styles.inputText}
+        keyboardType={'email-address'}
       />
       <Input
         style={styles.input}

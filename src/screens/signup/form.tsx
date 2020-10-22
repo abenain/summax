@@ -63,6 +63,7 @@ export function Form({ confirmPasswordValue, dobValue, emailValue, firstnameValu
         value={emailValue}
         onChangeText={onEmailChanged}
         textStyle={styles.inputText}
+        keyboardType={'email-address'}
       />
       <Datepicker
         date={dobValue}
