@@ -329,19 +329,25 @@ export function TrainingScreen() {
               setIsPlaying(status === PlaybackStatus.PLAYING)
             }}
             width={screenWidthPortrait.current}
+            showProgress={warmup === false && isFullscreen}
             playlist={getPlaylist()}
           />
 
           {isFullscreen === false && (
             <SafeAreaView style={styles.safeContentsArea}>
 
-              <Layout style={styles.progressContainer}>
-                <Text style={[styles.progressText, { marginBottom: 4, }]}>{i18n.t('Training - Workout progress')}</Text>
-                <Progress.Bar progress={Math.max(selectedExerciseIndex, 0) / workout.exercises.length}
-                              width={screenWidth - 32} color={SummaxColors.lightishGreen}/>
-                <Text
-                  style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(selectedExerciseIndex, 0) * 100 / workout.exercises.length)}%</Text>
-              </Layout>
+              {warmup ? (
+                <Layout style={{ marginBottom: 8 }}/>
+              ) : (
+                <Layout style={styles.progressContainer}>
+                  <Text
+                    style={[styles.progressText, { marginBottom: 4, }]}>{i18n.t('Training - Workout progress')}</Text>
+                  <Progress.Bar progress={Math.max(selectedExerciseIndex, 0) / workout.exercises.length}
+                                width={screenWidth - 32} color={SummaxColors.lightishGreen}/>
+                  <Text
+                    style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(selectedExerciseIndex, 0) * 100 / workout.exercises.length)}%</Text>
+                </Layout>
+              )}
 
               <Layout style={styles.contents}>
                 <Layout style={styles.controlsContainer}>
@@ -463,7 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     justifyContent : 'center',
     marginBottom   : 8,
-    paddingVertical  : 8,
+    paddingVertical: 8,
   },
   progressText     : {
     color     : 'white',

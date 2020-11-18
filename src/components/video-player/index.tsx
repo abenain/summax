@@ -34,6 +34,7 @@ interface Props {
   onFullscreenButtonPress?: () => void
   onPlaybackStatusChanged?: (status: PlaybackStatus) => void
   playlist: Playlist
+  showProgress?: boolean
   width: number
 }
 
@@ -44,6 +45,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
                                                                    onFullscreenButtonPress = NoOp,
                                                                    onPlaybackStatusChanged = NoOp as any,
                                                                    playlist,
+                                                                   showProgress = false,
                                                                    width
                                                                  }, ref) => {
   const videoPlayer = useRef<Video>()
@@ -193,7 +195,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
           />
         )}
 
-        {fullscreen && (
+        {showProgress && (
           <Layout style={styles.progressContainer}>
             <Progress.Bar progress={Math.max(currentPlaylistItem, 0) / playlist.length}
                           width={100} color={SummaxColors.lightishGreen}/>
