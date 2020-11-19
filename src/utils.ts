@@ -1,5 +1,5 @@
 import qs from 'qs'
-import { Linking } from 'react-native'
+import { Linking, ScaledSize } from 'react-native'
 
 export const CONTACT_US_EMAIL = 'contact@summax.fr'
 export const CONTACT_US_PHONE_NUMBER = '0686501605'
@@ -49,4 +49,20 @@ export async function openUrl(url: string){
   }
 
   return Linking.openURL(url)
+}
+
+export function getSmallSide({ height, width }: Partial<ScaledSize>) {
+  if (height < width) {
+    return height
+  }
+
+  return width
+}
+
+export function getLargeSide({ height, width }: Partial<ScaledSize>) {
+  if (height > width) {
+    return height
+  }
+
+  return width
 }

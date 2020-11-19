@@ -2,13 +2,13 @@ import { Layout, Spinner, Text } from '@ui-kitten/components'
 import { Audio, AVPlaybackStatus, Video } from 'expo-av'
 import { INTERRUPTION_MODE_ANDROID_DO_NOT_MIX, INTERRUPTION_MODE_IOS_DO_NOT_MIX } from 'expo-av/build/Audio'
 import * as React from 'react'
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { Dimensions, Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { Dimensions, Platform, StatusBar, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Exercise } from '../../types'
-import { NoOp } from '../../utils'
+import { getLargeSide, getSmallSide, NoOp } from '../../utils'
 import { getExerciseVideoUrl } from '../../webservices/utils'
 import { ControlBar } from './ControlBar'
 
@@ -57,6 +57,18 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   const [positionMs, setPositionMs] = useState(0)
   const [showControls, setShowControls] = useState(false)
   const hideControlsTimeout = useRef<Maybe<number>>(Maybe.nothing())
+
+  const getPlayerDimensions = useCallback(() => {
+    if (!fullscreen) {
+      return { height, width }
+    }
+
+    const windowDimensions = Dimensions.get('window')
+    return {
+      height: getSmallSide(windowDimensions),
+      width : getLargeSide(windowDimensions),
+    }
+  }, [fullscreen, height, width])
 
   useEffect(() => {
     if (!playlistLoaded && playlist && playlist.length) {
@@ -165,9 +177,14 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
       <Layout
         style={{
           backgroundColor: 'black',
-          height         : fullscreen ? Dimensions.get('window').height : height,
-          width          : fullscreen ? Dimensions.get('window').width : width,
+          height         : getPlayerDimensions().height,
+          width          : getPlayerDimensions().width,
         }}>
+
+        {fullscreen && (
+          <StatusBar hidden={true}/>
+        )}
+
         {playlistLoaded && (
           <Video
             isLooping={true}
@@ -187,8 +204,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
               uri: getExerciseVideoUrl({ mediaId: playlist[0].mediaId } as Exercise)
             }}
             style={{
-              height: fullscreen ? Dimensions.get('window').height : height,
-              width : fullscreen ? Dimensions.get('window').width : width,
+              height: getPlayerDimensions().height,
+              width : getPlayerDimensions().width,
             }}
             useNativeControls={false}
             volume={1.0}

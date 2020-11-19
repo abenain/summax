@@ -57,7 +57,6 @@ export function BottomTabNavigator() {
         },
         style: {
           height: Platform.OS === 'ios' ? 100 : 60,
-          paddingTop: 8
         }
       }}
     >

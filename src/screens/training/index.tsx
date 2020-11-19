@@ -9,7 +9,7 @@ import { OrientationLock } from 'expo-screen-orientation'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AppState, Dimensions, Image, Platform, SafeAreaView, ScaledSize, StyleSheet } from 'react-native'
+import { AppState, Dimensions, Image, Platform, SafeAreaView, StyleSheet } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
@@ -23,7 +23,7 @@ import { PlaybackStatus, VideoPlayer, VideoPlayerHandle } from '../../components
 import { format, useTimer } from '../../hooks/useTimer'
 import { GlobalState } from '../../redux/store'
 import { Exercise, ExerciseModality, Workout, WorkoutSession } from '../../types'
-import { NoOp } from '../../utils'
+import { getSmallSide, NoOp } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import { fetchWarmup } from '../../webservices/workouts'
 import { getOrCreateSession, updateSession } from '../../webservices/workoutSessions'
@@ -36,14 +36,6 @@ const nextIcon = require('./next.png')
 
 const KEEP_AWAKE_TAG = 'trainingScreen'
 const SESSION_REPORTING_INTERVAL_MS = 30000
-
-function getSmallSide({ height, width }: ScaledSize) {
-  if (height < width) {
-    return height
-  }
-
-  return width
-}
 
 export function TrainingScreen() {
   const screenWidthPortrait = useRef(getSmallSide(Dimensions.get('window')))
@@ -317,7 +309,7 @@ export function TrainingScreen() {
         <SafeAreaView style={{ flex: 0, backgroundColor: 'black' }}/>
 
         <SafeAreaView
-          style={[styles.mainContainer, { paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }]}>
+          style={[styles.mainContainer, { paddingTop: isFullscreen || Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }]}>
 
           <VideoPlayer
             ref={videoPlayer}
@@ -513,7 +505,8 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   buttonContainer  : {
-    marginTop: 33,
+    marginBottom: 8,
+    marginTop: 25,
     height   : 56,
   },
 })
