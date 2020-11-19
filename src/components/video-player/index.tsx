@@ -33,6 +33,7 @@ interface Props {
   height: number
   onFullscreenButtonPress?: () => void
   onPlaybackStatusChanged?: (status: PlaybackStatus) => void
+  onPlayPauseButtonPress?: () => void
   playlist: Playlist
   showProgress?: boolean
   width: number
@@ -43,6 +44,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
                                                                    fullscreen,
                                                                    height,
                                                                    onFullscreenButtonPress = NoOp,
+                                                                   onPlayPauseButtonPress = NoOp,
                                                                    onPlaybackStatusChanged = NoOp as any,
                                                                    playlist,
                                                                    showProgress = false,
@@ -144,6 +146,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
   }
 
   function handlePlayPauseButtonPress() {
+    onPlayPauseButtonPress()
     if (videoStatus === PlaybackStatus.PLAYING) {
       videoPlayer.current.pauseAsync()
       setVideoStatus(PlaybackStatus.PAUSED)

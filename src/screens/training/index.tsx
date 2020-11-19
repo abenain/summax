@@ -58,11 +58,13 @@ export function TrainingScreen() {
   const exerciseList = useRef<ExerciseListHandle>()
   const videoPlayer = useRef<VideoPlayerHandle>()
   const appState = useRef(AppState.currentState)
+  const isPaused = useRef(false)
 
   function handleAppStateChange(nextAppState) {
     if (
       appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
+      nextAppState === 'active' &&
+      isPaused.current === false
     ) {
       startCountdownTimer()
       startTotalTimer()
@@ -181,6 +183,10 @@ export function TrainingScreen() {
       nothing: NoOp
     })
   }, [selectedExerciseIndex])
+
+  function handlePlayPauseButtonPress(){
+    isPaused.current = !isPaused.current
+  }
 
   const selectExerciseAt = useCallback((index: number, scrollToExercise: boolean) => {
     if (scrollToExercise && exerciseList.current) {
@@ -320,6 +326,7 @@ export function TrainingScreen() {
             onPlaybackStatusChanged={(status) => {
               setIsPlaying(status === PlaybackStatus.PLAYING)
             }}
+            onPlayPauseButtonPress={handlePlayPauseButtonPress}
             width={screenWidthPortrait.current}
             showProgress={warmup === false && isFullscreen}
             playlist={getPlaylist()}
@@ -506,7 +513,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer  : {
     marginBottom: 8,
-    marginTop: 25,
-    height   : 56,
+    marginTop   : 25,
+    height      : 56,
   },
 })
