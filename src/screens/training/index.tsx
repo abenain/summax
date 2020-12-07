@@ -49,7 +49,7 @@ export function TrainingScreen() {
   const [warmupWorkout, setWarmupWorkout] = useState(Maybe.nothing<Workout>())
   const [isLoading, setIsLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(-1)
+  const selectedExerciseIndex = useRef(-1)
   const [currentExercise, setCurrentExercise] = useState(Maybe.nothing<Exercise>())
   const [isPlaying, setIsPlaying] = useState(false)
   const [timerText, setTimerText] = useState(format(0))
@@ -96,12 +96,12 @@ export function TrainingScreen() {
   const nextExercise = useCallback(async () => {
     const exerciseCount = getWorkout().valueOr({ exercises: [] }).exercises.length
 
-    if (selectedExerciseIndex < 0) {
+    if (selectedExerciseIndex.current < 0) {
       return
     }
 
-    if (selectedExerciseIndex < exerciseCount - 1) {
-      selectExerciseAt(selectedExerciseIndex + 1, isFullscreen === false)
+    if (selectedExerciseIndex.current < exerciseCount - 1) {
+      selectExerciseAt(selectedExerciseIndex.current + 1, isFullscreen === false)
       return
     }
 
@@ -121,7 +121,7 @@ export function TrainingScreen() {
       })
       navigation.navigate('Reward')
     }
-  }, [isFullscreen, selectedExerciseIndex, workoutSession.valueOr(null)])
+  }, [isFullscreen, workoutSession.valueOr(null)])
 
   const updateWorkoutSessionTimeSpent = useCallback(() => {
     workoutSession.caseOf({
@@ -171,8 +171,8 @@ export function TrainingScreen() {
   useEffect(() => {
     getWorkout().caseOf({
       just   : workout => {
-        if (selectedExerciseIndex >= 0 && selectedExerciseIndex < workout.exercises.length) {
-          const selectedExercise = workout.exercises[selectedExerciseIndex]
+        if (selectedExerciseIndex.current >= 0 && selectedExerciseIndex.current < workout.exercises.length) {
+          const selectedExercise = workout.exercises[selectedExerciseIndex.current]
           setCurrentExercise(Maybe.just(selectedExercise))
 
           if (selectedExercise.modality === ExerciseModality.TIME) {
@@ -182,7 +182,7 @@ export function TrainingScreen() {
       },
       nothing: NoOp
     })
-  }, [selectedExerciseIndex])
+  }, [selectedExerciseIndex.current])
 
   function handlePlayPauseButtonPress(){
     isPaused.current = !isPaused.current
@@ -192,7 +192,7 @@ export function TrainingScreen() {
     if (scrollToExercise && exerciseList.current) {
       exerciseList.current.scrollToExercise(index)
     }
-    setSelectedExerciseIndex(index)
+    selectedExerciseIndex.current = index
 
     workoutSession.caseOf({
       just   : session => {
@@ -266,7 +266,7 @@ export function TrainingScreen() {
 
   useEffect(() => {
     if (isFullscreen === false && exerciseList.current) {
-      exerciseList.current.scrollToExercise(selectedExerciseIndex)
+      exerciseList.current.scrollToExercise(selectedExerciseIndex.current)
     }
   }, [isFullscreen])
 
@@ -319,7 +319,7 @@ export function TrainingScreen() {
 
           <VideoPlayer
             ref={videoPlayer}
-            currentPlaylistItem={selectedExerciseIndex}
+            currentPlaylistItemIndex={selectedExerciseIndex.current}
             fullscreen={isFullscreen}
             height={233}
             onFullscreenButtonPress={onFullscreenButtonPress}
@@ -341,10 +341,10 @@ export function TrainingScreen() {
                 <Layout style={styles.progressContainer}>
                   <Text
                     style={[styles.progressText, { marginBottom: 4, }]}>{i18n.t('Training - Workout progress')}</Text>
-                  <Progress.Bar progress={Math.max(selectedExerciseIndex, 0) / workout.exercises.length}
+                  <Progress.Bar progress={Math.max(selectedExerciseIndex.current, 0) / workout.exercises.length}
                                 width={screenWidth - 32} color={SummaxColors.lightishGreen}/>
                   <Text
-                    style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(selectedExerciseIndex, 0) * 100 / workout.exercises.length)}%</Text>
+                    style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(selectedExerciseIndex.current, 0) * 100 / workout.exercises.length)}%</Text>
                 </Layout>
               )}
 
@@ -389,7 +389,7 @@ export function TrainingScreen() {
 
                 <Layout style={{ flex: 1 }}>
                   <ExerciseList
-                    activeIndex={selectedExerciseIndex >= 0 ? Maybe.just(selectedExerciseIndex) : Maybe.nothing()}
+                    activeIndex={selectedExerciseIndex.current >= 0 ? Maybe.just(selectedExerciseIndex.current) : Maybe.nothing()}
                     exercises={workout.exercises}
                     onPress={index => selectExerciseAt(index, true)}
                     ref={exerciseList}

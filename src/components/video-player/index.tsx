@@ -28,7 +28,7 @@ export interface VideoPlayerHandle {
 }
 
 interface Props {
-  currentPlaylistItem: number
+  currentPlaylistItemIndex: number
   fullscreen?: boolean
   height: number
   onFullscreenButtonPress?: () => void
@@ -40,7 +40,7 @@ interface Props {
 }
 
 export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
-                                                                   currentPlaylistItem,
+                                                                   currentPlaylistItemIndex,
                                                                    fullscreen,
                                                                    height,
                                                                    onFullscreenButtonPress = NoOp,
@@ -92,7 +92,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
     if (videoPlayer.current) {
       videoPlayer.current.unloadAsync()
         .then(() => videoPlayer.current.loadAsync({
-          uri: getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItem].mediaId } as Exercise)
+          uri: getExerciseVideoUrl({ mediaId: playlist[currentPlaylistItemIndex].mediaId } as Exercise)
         }, {
           positionMillis: 0,
           shouldPlay    : true,
@@ -101,7 +101,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
         }))
         .catch(console.log)
     }
-  }, [currentPlaylistItem])
+  }, [currentPlaylistItemIndex])
 
   useImperativeHandle(ref, () => ({
     stop: async () => {
@@ -217,10 +217,10 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, Props>(({
 
         {showProgress && (
           <Layout style={styles.progressContainer}>
-            <Progress.Bar progress={Math.max(currentPlaylistItem, 0) / playlist.length}
+            <Progress.Bar progress={Math.max(currentPlaylistItemIndex, 0) / playlist.length}
                           width={100} color={SummaxColors.lightishGreen}/>
             <Text
-              style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(currentPlaylistItem, 0) * 100 / playlist.length)}%</Text>
+              style={[styles.progressText, { marginTop: 8, }]}>{Math.floor(Math.max(currentPlaylistItemIndex, 0) * 100 / playlist.length)}%</Text>
           </Layout>
         )}
 
