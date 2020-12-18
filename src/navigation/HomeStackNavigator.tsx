@@ -1,4 +1,4 @@
-import { createStackNavigator, StackHeaderTitleProps } from '@react-navigation/stack'
+import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants'
 import * as React from 'react'
 import { Image, Platform, View } from 'react-native'
@@ -38,9 +38,8 @@ export function HomeStackNavigator() {
       <Stack.Screen name='Reward' component={RewardScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='Workout'
                     component={WorkoutScreen}
-                    options={({ route }) => ({
-                      headerTitle      : (props: StackHeaderTitleProps) => <HeaderTitle
-                        title={route.params['title']} {...props}/>,
+                    options={() => ({
+                      headerTitle      : () => null,
                       headerTransparent: true,
                       headerRight      : props => <RightButtons {...props} tint={ButtonsTint.LIGHT}/>
                     })}
