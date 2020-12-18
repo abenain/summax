@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "2.1.11",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,7 @@
     ],
     "android": {
       "package": "fr.summax.app",
-      "versionCode": 2111
+      "versionCode": 220
     },
     "ios": {
       "bundleIdentifier": "fr.summax.app",
