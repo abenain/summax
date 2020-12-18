@@ -123,7 +123,7 @@ const fr = {
 	'Statistics - Per workout'                     : 'par entraînement',
 	'Statistics - Since'                           : 'Depuis le',
 	'Statistics - Thats'                           : 'Soit',
-	'Statistics - Training duration'               : 'Heures passées à transpirer',
+	'Statistics - Training duration'               : 'Minutes passées à transpirer',
 	'Statistics - Unfinished Workouts'             : 'Entraînements non terminés',
 	'Statistics - Workouts'                        : 'Entraînements',
 	'Statistics - Workout count'                   : 'Entraînements effectués',

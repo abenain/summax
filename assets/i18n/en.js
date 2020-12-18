@@ -123,7 +123,7 @@ const en = {
 	'Statistics - Per workout'                     : 'per workout',
 	'Statistics - Since'                           : 'Since',
 	'Statistics - Thats'                           : 'That\'s',
-	'Statistics - Training duration'               : 'Hours spent sweating',
+	'Statistics - Training duration'               : 'Minutes spent sweating',
 	'Statistics - Unfinished Workouts'             : 'Unfinished workouts',
 	'Statistics - Workouts'                        : 'Workouts',
 	'Statistics - Workout count'                   : 'Workouts done',

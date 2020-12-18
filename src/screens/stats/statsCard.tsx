@@ -21,7 +21,6 @@ function formatMinutesPerTraining(minutesPerTraining: number) {
 }
 
 export function StatsCard({ firstTrainingDate, style = {}, trainingCount, trainingTimeMinutes }: Props) {
-  const trainingTimeHours = Math.floor(trainingTimeMinutes / 60)
   const minutesPerWorkout = Math.floor(trainingTimeMinutes / trainingCount)
 
   return (
@@ -38,7 +37,7 @@ export function StatsCard({ firstTrainingDate, style = {}, trainingCount, traini
         </Layout>
 
         <Layout style={styles.statCell}>
-          <Text style={styles.title}>{trainingTimeHours}</Text>
+          <Text style={styles.title}>{trainingTimeMinutes}</Text>
           <Text style={styles.subtitle}>{i18n.t('Statistics - Training duration')}</Text>
           <Layout style={styles.textContainer}>
             <Text style={styles.text}>{`${i18n.t('Statistics - Thats')} `}</Text>
