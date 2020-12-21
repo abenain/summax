@@ -59,10 +59,12 @@ export function Form({ emailValue = '', onEmailChanged = NoOp, onForgotPassword,
       <Text onPress={() => onForgotPassword(emailValue)}
             style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>
 
-      <TouchableOpacity style={styles.loginWithFacebookButton} activeOpacity={.8} onPress={onLoginWithFacebookPressed}>
-        <Image source={facebook} style={styles.loginWithFacebookIcon}/>
-        <Text style={styles.loginWithFacebookText}>{i18n.t('Login With Facebook')}</Text>
-      </TouchableOpacity>
+      {false && (
+        <TouchableOpacity style={styles.loginWithFacebookButton} activeOpacity={.8} onPress={onLoginWithFacebookPressed}>
+          <Image source={facebook} style={styles.loginWithFacebookIcon}/>
+          <Text style={styles.loginWithFacebookText}>{i18n.t('Login With Facebook')}</Text>
+        </TouchableOpacity>
+      )}
 
       <HideWithKeyboard>
         <Layout style={{ height: 100 }}/>
