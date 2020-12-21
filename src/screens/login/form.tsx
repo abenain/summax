@@ -2,7 +2,7 @@ import { Icon, Input, Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useState } from 'react'
-import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { Image, Platform, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import HideWithKeyboard from 'react-native-hide-with-keyboard'
 import { SummaxColors } from '../../colors'
 import { NoOp } from '../../utils'
@@ -59,8 +59,9 @@ export function Form({ emailValue = '', onEmailChanged = NoOp, onForgotPassword,
       <Text onPress={() => onForgotPassword(emailValue)}
             style={[styles.hyperlinkText, { marginBottom: 32 }]}>{i18n.t('Sign in - Forgot password')}</Text>
 
-      {false && (
-        <TouchableOpacity style={styles.loginWithFacebookButton} activeOpacity={.8} onPress={onLoginWithFacebookPressed}>
+      {Platform.OS !== 'ios' && (
+        <TouchableOpacity style={styles.loginWithFacebookButton} activeOpacity={.8}
+                          onPress={onLoginWithFacebookPressed}>
           <Image source={facebook} style={styles.loginWithFacebookIcon}/>
           <Text style={styles.loginWithFacebookText}>{i18n.t('Login With Facebook')}</Text>
         </TouchableOpacity>
