@@ -27,24 +27,28 @@ export function StatsCard({ firstTrainingDate, style = {}, trainingCount, traini
     <ImageBackground source={statsCardBackground} style={[styles.posterContainer, style]}>
       <Layout style={styles.mainContainer}>
         <Layout style={[styles.statCell, { marginRight: 30 }]}>
-          <Text style={styles.title}>{trainingCount}</Text>
+          <Text style={styles.title}>{trainingCount || 0}</Text>
           <Text style={styles.subtitle}>{i18n.t('Statistics - Workout count')}</Text>
-          <Layout style={styles.textContainer}>
-            <Text style={styles.text}>{`${i18n.t('Statistics - Since')} `}</Text>
-            <Text
-              style={[styles.text, { color: SummaxColors.slateGrey }]}>{moment(firstTrainingDate).format('DD/MM/YYYY')}</Text>
-          </Layout>
+          {firstTrainingDate ? (
+            <Layout style={styles.textContainer}>
+              <Text style={styles.text}>{`${i18n.t('Statistics - Since')} `}</Text>
+              <Text
+                style={[styles.text, { color: SummaxColors.slateGrey }]}>{moment(firstTrainingDate).format('DD/MM/YYYY')}</Text>
+            </Layout>
+          ) : null}
         </Layout>
 
         <Layout style={styles.statCell}>
-          <Text style={styles.title}>{trainingTimeMinutes}</Text>
+          <Text style={styles.title}>{trainingTimeMinutes || 0}</Text>
           <Text style={styles.subtitle}>{i18n.t('Statistics - Training duration')}</Text>
-          <Layout style={styles.textContainer}>
-            <Text style={styles.text}>{`${i18n.t('Statistics - Thats')} `}</Text>
-            <Text
-              style={[styles.text, { color: SummaxColors.slateGrey }]}>{`${formatMinutesPerTraining(minutesPerWorkout)} `}</Text>
-            <Text style={styles.text}>{`${i18n.t('Statistics - Per workout')} `}</Text>
-          </Layout>
+          {trainingTimeMinutes ? (
+            <Layout style={styles.textContainer}>
+              <Text style={styles.text}>{`${i18n.t('Statistics - Thats')} `}</Text>
+              <Text
+                style={[styles.text, { color: SummaxColors.slateGrey }]}>{`${formatMinutesPerTraining(minutesPerWorkout)} `}</Text>
+              <Text style={styles.text}>{`${i18n.t('Statistics - Per workout')} `}</Text>
+            </Layout>
+          ) : null}
         </Layout>
       </Layout>
 
