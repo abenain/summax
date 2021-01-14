@@ -11,16 +11,9 @@ export interface TimerConfig {
   onIntervalElapsed?: () => void
 }
 
-function formatNumberValue(value: number) {
-  return value.toString().padStart(2, '0')
-}
-
 export function format(durationMs: number) {
   const duration = moment.duration(durationMs)
-  const formattedHours = formatNumberValue(duration.hours())
-  const formattedMinutes = formatNumberValue(duration.minutes())
-  const formattedSeconds = formatNumberValue(duration.seconds())
-  return `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`
+  return `${Math.floor(duration.asSeconds())} "`
 }
 
 export function useTimer({ countdown, initialValueMs, notificationIntervalMs, onCountdownExpired = NoOp, onIntervalElapsed = NoOp } = {} as TimerConfig): [
