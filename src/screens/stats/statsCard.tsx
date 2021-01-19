@@ -12,6 +12,7 @@ interface Props {
   style?: ViewStyle
   trainingCount: number
   trainingTimeMinutes: number
+  userIsPremium?: boolean
 }
 
 function formatMinutesPerTraining(minutesPerTraining: number) {
@@ -20,16 +21,40 @@ function formatMinutesPerTraining(minutesPerTraining: number) {
   return `${hoursPer}h${minutesPer.toString().padStart(2, '0')}`
 }
 
-export function StatsCard({ firstTrainingDate, style = {}, trainingCount, trainingTimeMinutes }: Props) {
+function shouldShowFirstTrainingDate(userIsPremium?: boolean, firstTrainingDate?: Date){
+  return userIsPremium && firstTrainingDate
+}
+
+function getTrainingCountText(userIsPremium?: boolean, trainingCount?: number){
+  if(!userIsPremium){
+    return '-'
+  }
+
+  return (trainingCount || 0).toString()
+}
+
+function shouldShowMinutesPerTraining(userIsPremium?: boolean, trainingTimeMinutes?: number){
+  return userIsPremium && trainingTimeMinutes
+}
+
+function getTrainingTimeMinutesText(userIsPremium?: boolean, trainingTimeMinutes?: number){
+  if(!userIsPremium){
+    return '-'
+  }
+
+  return (trainingTimeMinutes || 0).toString()
+}
+
+export function StatsCard({ firstTrainingDate, style = {}, trainingCount, trainingTimeMinutes, userIsPremium }: Props) {
   const minutesPerWorkout = Math.floor(trainingTimeMinutes / trainingCount)
 
   return (
     <ImageBackground source={statsCardBackground} style={[styles.posterContainer, style]}>
       <Layout style={styles.mainContainer}>
         <Layout style={[styles.statCell, { marginRight: 30 }]}>
-          <Text style={styles.title}>{trainingCount || 0}</Text>
+          <Text style={styles.title}>{getTrainingCountText(userIsPremium, trainingCount)}</Text>
           <Text style={styles.subtitle}>{i18n.t('Statistics - Workout count')}</Text>
-          {firstTrainingDate ? (
+          {shouldShowFirstTrainingDate(userIsPremium, firstTrainingDate) ? (
             <Layout style={styles.textContainer}>
               <Text style={styles.text}>{`${i18n.t('Statistics - Since')} `}</Text>
               <Text
@@ -39,9 +64,9 @@ export function StatsCard({ firstTrainingDate, style = {}, trainingCount, traini
         </Layout>
 
         <Layout style={styles.statCell}>
-          <Text style={styles.title}>{trainingTimeMinutes || 0}</Text>
+          <Text style={styles.title}>{getTrainingTimeMinutesText(userIsPremium, trainingTimeMinutes)}</Text>
           <Text style={styles.subtitle}>{i18n.t('Statistics - Training duration')}</Text>
-          {trainingTimeMinutes ? (
+          {shouldShowMinutesPerTraining() ? (
             <Layout style={styles.textContainer}>
               <Text style={styles.text}>{`${i18n.t('Statistics - Thats')} `}</Text>
               <Text

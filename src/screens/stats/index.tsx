@@ -11,6 +11,7 @@ import { Loading } from '../../components/Loading'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { StatisticsData, Workout } from '../../types'
+import { isPremium } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
 import * as WorkoutSessionsServices from '../../webservices/workoutSessions'
@@ -25,6 +26,8 @@ export function StatsScreen() {
   const { workoutCatalog } = useSelector(({ contents: { workoutCatalog } }: GlobalState) => ({
     workoutCatalog
   }))
+  const { subscriptionPeriodEnd } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
+  const userIsPremium = isPremium(subscriptionPeriodEnd)
   const [isLoading, setLoading] = useState(true)
   const [statisticsData, setStatisticsData] = useState(Maybe.nothing<StatisticsData>())
   const resumeWorkout = useCallback((workout: Workout, startAtExercise: number) => {
@@ -105,6 +108,7 @@ export function StatsScreen() {
               trainingCount={statistics.sessionCount}
               trainingTimeMinutes={Math.floor(statistics.timeSpentMs / 60000)}
               style={{ marginBottom: 52 }}
+              userIsPremium={userIsPremium}
             />
 
             <Text style={[styles.subtitle, { marginBottom: 22 }]}>{i18n.t('Statistics - Unfinished Workouts')}</Text>

@@ -1,3 +1,4 @@
+import moment from 'moment'
 import qs from 'qs'
 import { Linking, ScaledSize } from 'react-native'
 
@@ -65,4 +66,8 @@ export function getLargeSide({ height, width }: Partial<ScaledSize>) {
   }
 
   return width
+}
+
+export function isPremium(subscriptionPeriodEnd?: Date){
+  return Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)
 }

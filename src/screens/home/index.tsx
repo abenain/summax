@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native'
 import { Layout, Text } from '@ui-kitten/components'
 import * as Amplitude from 'expo-analytics-amplitude'
 import i18n from 'i18n-js'
-import moment from 'moment'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet } from 'react-native'
@@ -18,6 +17,7 @@ import { useNavigateToWorkout } from '../../hooks/useNavigateToWorkout'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Target } from '../../types'
+import { isPremium } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutService from '../../webservices/workouts'
 import { FeaturedWorkout } from './featuredWorkout'
@@ -79,7 +79,7 @@ export function HomeScreen() {
         just   : homepage => (
           <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
 
-            <PremiumBanner isPremium={Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)}/>
+            <PremiumBanner isPremium={isPremium(subscriptionPeriodEnd)}/>
 
             <Layout style={styles.titleContainer}>
               <Text style={styles.title}>{i18n.t('Home - Featured workout')}</Text>

@@ -1,16 +1,15 @@
-import moment from 'moment'
+import { useNavigation } from '@react-navigation/native'
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { GlobalState } from '../redux/store'
 import { Workout, WorkoutPlan } from '../types'
-import { useNavigation } from '@react-navigation/native'
 
 export function useNavigateToWorkout() {
   const navigation = useNavigation()
   const { subscriptionPeriodEnd } = useSelector(({ userData: { user } }: GlobalState) => user.valueOr({} as any))
 
   const isPremium = useCallback(() => {
-    return Boolean(subscriptionPeriodEnd) && moment().isBefore(subscriptionPeriodEnd)
+    return isPremium(subscriptionPeriodEnd)
   }, [subscriptionPeriodEnd])
 
   return function(workout: Workout){

@@ -15,7 +15,7 @@ import { GlobalState } from '../../redux/store'
 import { Sex } from '../../types'
 import {
   CONTACT_US_EMAIL,
-  CONTACT_US_PHONE_NUMBER,
+  CONTACT_US_PHONE_NUMBER, isPremium,
   LIABILITY_URL,
   makePhoneCall,
   openUrl,
@@ -59,7 +59,7 @@ export function ProfileScreen() {
         just   : user => (
           <ScrollView style={styles.mainContainer}>
 
-            <PremiumBanner canHideBanner={false} isPremium={moment().isBefore(user.subscriptionPeriodEnd)}/>
+            <PremiumBanner canHideBanner={false} isPremium={isPremium(user.subscriptionPeriodEnd)}/>
 
             <Text style={styles.title}>{i18n.t('Profile - Account')}</Text>
 
