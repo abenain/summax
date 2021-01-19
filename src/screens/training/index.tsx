@@ -36,6 +36,7 @@ const nextIcon = require('./next.png')
 
 const KEEP_AWAKE_TAG = 'trainingScreen'
 const SESSION_REPORTING_INTERVAL_MS = 30000
+const FINISHED_EXERCISED_SLACK_MS = 15000
 
 export function TrainingScreen() {
   const screenWidthPortrait = useRef(getSmallSide(Dimensions.get('window')))
@@ -123,10 +124,16 @@ export function TrainingScreen() {
     }
   }, [isFullscreen, workoutSession.valueOr(null)])
 
+  const [countdownTimerValue, startCountdownTimer, stopCountdownTimer, setCountdownTimerValue] = useTimer({
+    countdown         : true,
+    onCountdownExpired: nextExercise,
+  })
+
   const updateWorkoutSessionTimeSpent = useCallback(() => {
     workoutSession.caseOf({
       just   : session => {
         callAuthenticatedWebservice(updateSession, {
+          finished   : countdownTimerValue <= FINISHED_EXERCISED_SLACK_MS,
           sessionId  : session._id,
           timeSpentMs: SESSION_REPORTING_INTERVAL_MS,
         })
@@ -134,11 +141,6 @@ export function TrainingScreen() {
       nothing: NoOp,
     })
   }, [workoutSession.valueOr(null)])
-
-  const [countdownTimerValue, startCountdownTimer, stopCountdownTimer, setCountdownTimerValue] = useTimer({
-    countdown         : true,
-    onCountdownExpired: nextExercise,
-  })
 
   const [, startTotalTimer, stopTotalTimer, setTotalTimerValue] = useTimer({
     notificationIntervalMs: SESSION_REPORTING_INTERVAL_MS,
@@ -184,7 +186,7 @@ export function TrainingScreen() {
     })
   }, [selectedExerciseIndex.current])
 
-  function handlePlayPauseButtonPress(){
+  function handlePlayPauseButtonPress() {
     isPaused.current = !isPaused.current
   }
 
@@ -197,8 +199,9 @@ export function TrainingScreen() {
     workoutSession.caseOf({
       just   : session => {
         callAuthenticatedWebservice(updateSession, {
-          sessionId        : session._id,
           doneExerciseCount: index,
+          finished         : false,
+          sessionId        : session._id,
         })
       },
       nothing: NoOp,
