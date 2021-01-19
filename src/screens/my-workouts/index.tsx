@@ -2,18 +2,19 @@ import { Layout, Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { SummaxColors } from '../../colors'
 import { Loading } from '../../components/Loading'
+import { PremiumBanner } from '../../components/premium-banner'
 import { Separator } from '../../components/separator'
 import { Style as WorkoutCardStyle, WorkoutCard } from '../../components/workout-card'
 import { useNavigateToWorkout } from '../../hooks/useNavigateToWorkout'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { Workout } from '../../types'
-import { PosterAspectRatio } from '../../utils'
+import { isPremium, PosterAspectRatio } from '../../utils'
 import { callAuthenticatedWebservice } from '../../webservices'
 import * as WorkoutServices from '../../webservices/workouts'
 import * as WorkoutSessionServices from '../../webservices/workoutSessions'
@@ -28,6 +29,7 @@ export function MyWorkoutsScreen() {
     user,
     workoutCatalog
   }))
+  const userIsPremium = isPremium(user.valueOr({} as any).subscriptionPeriodEnd)
   const [latestUnfinishedWorkout, setLatestUnfinishedWorkout] = useState(Maybe.nothing<Workout>())
   const navigateToWorkout = useNavigateToWorkout()
 
@@ -125,12 +127,22 @@ export function MyWorkoutsScreen() {
   const cardHeight = Math.round((screenWidth - 32) * PosterAspectRatio.workoutCard)
   const margin = (cardHeight - 102) / 2
 
+  const ViewContainer = userIsPremium ? ScrollView : View
+
   return isLoading ? (
     <Loading/>
   ) : (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
 
-      <ScrollView style={[styles.mainPadding, { flex: 1 }]}>
+      {userIsPremium === false && (
+        <View style={{ paddingVertical: 24 }}>
+          <PremiumBanner canHideBanner={false} isPremium={false}/>
+        </View>
+      )}
+
+      <ViewContainer style={[styles.mainPadding, { flex: 1 }]}>
+
+        {userIsPremium === false && (<View style={styles.dimmer}/>)}
 
         {latestUnfinishedWorkout.caseOf({
           just   : workout => (
@@ -169,7 +181,7 @@ export function MyWorkoutsScreen() {
           favoriteWorkouts.map(renderItem)
         )}
 
-      </ScrollView>
+      </ViewContainer>
 
     </SafeAreaView>
   )
@@ -197,4 +209,13 @@ const styles = StyleSheet.create({
     fontSize  : 14,
     lineHeight: 24,
   },
+  dimmer      : {
+    position       : 'absolute',
+    top            : 0,
+    bottom         : 0,
+    left           : 0,
+    right          : 0,
+    backgroundColor: 'rgba(100, 100, 100, .7)',
+    zIndex         : 100
+  }
 })

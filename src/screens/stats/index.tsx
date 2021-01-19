@@ -3,11 +3,12 @@ import { Text } from '@ui-kitten/components'
 import i18n from 'i18n-js'
 import * as React from 'react'
 import { useCallback, useMemo, useState } from 'react'
-import { Image, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Maybe } from 'tsmonad'
 import { ErrorPage } from '../../components/ErrorPage'
 import { Loading } from '../../components/Loading'
+import { PremiumBanner } from '../../components/premium-banner'
 import { ActionType } from '../../redux/actions'
 import { GlobalState } from '../../redux/store'
 import { StatisticsData, Workout } from '../../types'
@@ -93,13 +94,23 @@ export function StatsScreen() {
     nothing: () => []
   }), [statisticsData.valueOr(null), Object.keys(workoutCatalog).map(key => JSON.stringify(workoutCatalog[key])).join('')])
 
+  const ViewContainer = userIsPremium ? ScrollView : View
+
   return isLoading ? (
     <Loading/>
   ) : (statisticsData.caseOf({
       just      : statistics => (
         <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
 
-          <ScrollView style={styles.mainContainer}>
+          {userIsPremium === false && (
+            <View style={{ paddingVertical: 24 }}>
+              <PremiumBanner canHideBanner={false} isPremium={false}/>
+            </View>
+          )}
+
+          <ViewContainer style={styles.mainContainer}>
+
+            {userIsPremium === false && (<View style={styles.dimmer}/>)}
 
             <Text style={[styles.title, { marginBottom: 36, marginTop: 45 }]}>{i18n.t('Statistics - Workouts')}</Text>
 
@@ -133,7 +144,7 @@ export function StatsScreen() {
               </>
             )}
 
-          </ScrollView>
+          </ViewContainer>
 
         </SafeAreaView>
       ), nothing: () => (
@@ -172,4 +183,13 @@ const styles = StyleSheet.create({
     width       : '100%',
     height      : 85,
   },
+  dimmer       : {
+    position       : 'absolute',
+    top            : 0,
+    bottom         : 0,
+    left           : 0,
+    right          : 0,
+    backgroundColor: 'rgba(100, 100, 100, .7)',
+    zIndex         : 100
+  }
 })
