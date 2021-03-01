@@ -1,10 +1,11 @@
 import Constants from 'expo-constants'
+import { Platform } from 'react-native'
 import { Exercise } from '../types'
 
 const SCHEME_HTTP = 'http'
 const SCHEME_HTTPS = 'https'
 const BACKEND_URL_DEV = '10.0.0.6:18000'
-//const BACKEND_URL_DEV = '192.168.10.124:18000'
+//const BACKEND_URL_DEV = '192.168.1.28:18000'
 const BACKEND_URL_PROD = 'api.summax.fr'
 
 export enum ApiVersion {
@@ -69,9 +70,14 @@ const JWPLAYER_THUMBS_FOLDER = 'thumbs'
 const JWPLAYER_VIDEO_FOLDER = 'videos'
 const JWPLAYER_THUMB_WIDTH = '150'
 const JWPLAYER_1080P_CODEC_ID_PROD = 'XbWGWCTK'
+const JWPLAYER_HLS_MANIFEST_EXTENSION = 'm3u8'
 
 export function getExerciseVideoUrl(exercise: Exercise){
-  return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_VIDEO_FOLDER}/${exercise.mediaId}-${JWPLAYER_1080P_CODEC_ID_PROD}.mp4`
+  if(Platform.OS === 'ios'){
+    return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_VIDEO_FOLDER}/${exercise.mediaId}.${JWPLAYER_HLS_MANIFEST_EXTENSION}`
+  }else{
+    return `${SCHEME_HTTPS}://${BASE_JWPLAYER_URL}/${JWPLAYER_VIDEO_FOLDER}/${exercise.mediaId}-${JWPLAYER_1080P_CODEC_ID_PROD}.mp4`
+  }
 }
 
 export function getExerciseThumbnail(exercise: Exercise){
